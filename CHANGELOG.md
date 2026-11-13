@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.0 (not yet released)
+## 1.1.0 (November 13, 2026)
 
 The book's defaults now follow Bringhurst's *Elements of Typographic Style* (Beaux, from his
 digest of book-layout principles). The output changes; saved profiles are upgraded (profile

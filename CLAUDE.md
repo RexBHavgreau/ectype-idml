@@ -12,9 +12,10 @@ scripts and other programs. The plan is in `PLAN.md`; keep it up to date when de
 Keep this section current: update it with every batch of work (what was done, what was
 checked and where, what's next), so a new session knows where the tool stands.
 
-**Version:** 1.0.0 (November 13: the name Ectype IDML, the long-title fix), merged; its
-release is published by Beaux from the tag. Earlier releases: 0.2.0 (Oct 21, first .exe),
-0.3.0, 0.4.0 (Oct 22), 0.5.0, 0.6.0, 0.7.0 (Oct 23), 0.8.0 (Oct 24). Details in CHANGELOG.md.
+**Version:** 1.1.0 (November 13: defaults from Bringhurst, margin schemes, page-number
+placing), merged; its release is published by Beaux from the tag. Earlier releases: 0.2.0
+(Oct 21, first .exe), 0.3.0, 0.4.0 (Oct 22), 0.5.0, 0.6.0, 0.7.0 (Oct 23), 0.8.0 (Oct 24),
+1.0.0 (Nov 13, the name Ectype IDML). Details in CHANGELOG.md.
 
 | Area | State | Checked in |
 |---|---|---|
@@ -31,13 +32,16 @@ release is published by Beaux from the tag. Earlier releases: 0.2.0 (Oct 21, fir
 | Use by other programs (`convert`, program.json, daily update) | Done | The .exe's convert on GitHub's Windows runner; not yet called by Ectype OCR; the silent update not yet with a real release |
 | Golden files (tests/golden) | Done | Windows and Linux CI |
 
-**In progress (1.1.0, branch):** defaults from Bringhurst (Beaux's digest, November 13): margin
+**1.1.0 (merged):** defaults from Bringhurst (Beaux's digest, November 13): margin
 schemes (canon default, Gress, economical = before 1.1.0, the user's own), 11/13 leading with a
 pop-up preview, the type scale, headings A larger roman / B spaced small caps / C italic and
 run-in below C, whole-line spacing, 1 em indent, block-quote indents, folio size and placing,
 tracked caps, lining figures in tables, hyphen 2/3, Greek sized by height, "none" heads, report
 checks (lines per page, signatures); profile version 11. Tests, schema check and the window
-under Xvfb here; not yet opened in InDesign, Affinity or DesignCraft, nor seen on Windows.
+under Xvfb here, CI on Windows and Linux; not yet opened in InDesign, Affinity or
+DesignCraft, nor the window seen on Windows (Beaux, before or after tagging). CI fixed in
+1.1.0: jing runs with `-Djdk.xml.elementAttributeLimit=0` (newer JDKs refuse InDesign's
+200+-attribute elements).
 
 **Next / open:**
 - Convert The Broken Heart again with 1.0.0 (its export failed in 0.8.0 on the long title).
