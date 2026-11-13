@@ -12,12 +12,12 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 
 from docx_builder import (NUMBERING, endnote_ref, footnote_ref, image, make_docx, numbered, para,
                           run, run_tests, table)
-from docx2idml.content import Numbering, read_content
-from docx2idml.docx_reader import read_docx
-from docx2idml import layout
-from docx2idml.layout import _half
-from docx2idml.export import ExportError, Exporter, export, segments
-from docx2idml.profile import default_profile
+from ectype_idml.content import Numbering, read_content
+from ectype_idml.docx_reader import read_docx
+from ectype_idml import layout
+from ectype_idml.layout import _half
+from ectype_idml.export import ExportError, Exporter, export, segments
+from ectype_idml.profile import default_profile
 
 TMP = tempfile.mkdtemp()
 SAMPLE = os.path.join(ROOT, "tests", "data", "sample.jpg")
@@ -276,7 +276,7 @@ def test_pagination_and_bleed():
                                                  "E-Blank"]
         assert doc.bleed == 9
         assert any(line.startswith("Margins (in)") for line in ex.report)
-        from docx2idml.idml.writer import write_idml
+        from ectype_idml.idml.writer import write_idml
         path = write_idml(doc, os.path.join(TMP, "bleed.idml"))
         assert not check(path)
         with zipfile.ZipFile(path) as z:
@@ -288,7 +288,7 @@ def test_pagination_and_bleed():
 
 
 def test_no_runt():
-    from docx2idml.idml.model import Paragraph, Run
+    from ectype_idml.idml.model import Paragraph, Run
     ex, doc = _build()
     try:
         long = "word " * 20
@@ -321,7 +321,7 @@ def test_no_runt():
 
 def test_front_matter_and_heads():
     from idml_check import check
-    from docx2idml.idml.writer import write_idml
+    from ectype_idml.idml.writer import write_idml
     prof = default_profile()
     prof["notices"] = [{"name": "ESV", "text": "Scripture quotations are from the ESV."}]
     prof["running_heads"]["verso"] = "author"
@@ -360,7 +360,7 @@ def test_hebrew_in_generated_text():
     in a running head, as in the manuscript's own headings (a chapter's own head: see
     test_hebrew_running_head_master)."""
     from idml_check import check
-    from docx2idml.idml.writer import write_idml
+    from ectype_idml.idml.writer import write_idml
     path = make_docx(os.path.join(TMP, "heb-title.docx"), [
         para("The " + HEB + " Covenant", "Title"),
         para("Chapter One: " + HEB, "Heading1"),
@@ -422,7 +422,7 @@ def test_openers_lowered_by_style():
     invisible rule kept in the frame for InDesign), not by a shorter frame, so the drop moves
     with the title. Styles based on Chapter Title don't inherit it."""
     from idml_check import check
-    from docx2idml.idml.writer import write_idml
+    from ectype_idml.idml.writer import write_idml
     long = [para("Text of the chapter goes on for a while. " * 30)] * 3
     path = make_docx(os.path.join(TMP, "openers.docx"),
                      [para("The Book", "Title"), para("A Subtitle", "Subtitle"),
@@ -458,7 +458,7 @@ def test_last_pages_to_check():
     """The report names units whose estimated last page is nearly full (may run past it in
     Affinity and DesignCraft) or nearly empty (may be left blank), with the page."""
     from types import SimpleNamespace as NS
-    from docx2idml.layout import Placed
+    from ectype_idml.layout import Placed
     ex = Exporter(_files(), default_profile())
     try:
         ex.build()
@@ -471,7 +471,7 @@ def test_last_pages_to_check():
         ex._fit_note(blocks, placed)
         full = [l for l in ex.report if l.startswith("Check where these end")]
         empty = [l for l in ex.report if l.startswith("Check these last pages")]
-        names = __import__("docx2idml.idml.writer", fromlist=["page_names"]).page_names(ex.doc)
+        names = __import__("ectype_idml.idml.writer", fromlist=["page_names"]).page_names(ex.doc)
         assert len(full) == 1 and "Full One (to page %s)" % names[7] in full[0]
         assert len(empty) == 1 and "Empty One (page %s)" % names[10] in empty[0]
         assert "Fine" not in full[0] + empty[0]
@@ -534,10 +534,34 @@ def test_running_head_style_from_profile():
             ex.cleanup()
 
 
+def test_export_folder_name():
+    """The export's folder and file name: short title, else the title before a colon; cut at
+    a word; never ending in a space or dot (Windows drops them from a folder's name, and the
+    export then failed: Beaux's "The Broken Heart: or, David's Penance..." cut at 80
+    characters ended in a space)."""
+    from ectype_idml.export import file_name
+    title = ("The Broken Heart: or, David's Penance, Fully Expressed in Holy Meditations upon "
+             "the Fifty-First Psalm")
+    assert file_name(title) == "The Broken Heart"
+    assert file_name(title, "Broken Heart") == "Broken Heart"
+    long = "A Very Long Title Without Any Colon That Goes On and On Past the Limit of Sixty"
+    got = file_name(long)
+    assert len(got) <= 60 and long.startswith(got) and not got.endswith((" ", "."))
+    assert file_name("Ends with dots...") == "Ends with dots"
+    assert file_name('What? Why/How "now"') == "What- Why-How -now-"
+    assert file_name("nul") == "nul book" and file_name("") == "Book"
+    path = make_docx(os.path.join(TMP, "broken.docx"),
+                     [para(title, "Title"), para("Chapter", "Heading1"),
+                      para("Text of the chapter. " * 40)])
+    idml, _report = export([path], os.path.join(TMP, "named"), default_profile())
+    assert os.path.basename(idml) == "The Broken Heart.idml" and os.path.exists(idml)
+    assert os.path.basename(os.path.dirname(idml)) == "The Broken Heart"
+
+
 def test_web_addresses_can_break():
     """Chicago 6.8 break points in web addresses (zero-width spaces), so a justified line
     with a long link isn't spaced out letter by letter."""
-    from docx2idml.export import url_breaks
+    from ectype_idml.export import url_breaks
     z = "\u200b"
     assert url_breaks("See https://search.ebscohost.com/login.aspx?db=rfh&AN=1.") == (
         "See https://" + z + "search" + z + ".ebscohost" + z + ".com" + z + "/login" + z +
@@ -556,7 +580,7 @@ def test_web_addresses_can_break():
 
 
 def test_title_and_sentence_case():
-    from docx2idml import textcase as t
+    from ectype_idml import textcase as t
     assert t.title_case("the objectives of soul care: a look into the church") == \
         "The Objectives of Soul Care: A Look into the Church"
     assert t.title_case("SOUL CARE AND WORLDVIEWS") == "Soul Care and Worldviews"
@@ -581,8 +605,8 @@ def test_hebrew_running_head_master():
     report says so in an Alert (a pop-up in the window); other chapters keep A-Body and the
     section marker. With script_masters off, only a warning."""
     from idml_check import check
-    from docx2idml.idml.writer import write_idml
-    from docx2idml.pagination import Alert
+    from ectype_idml.idml.writer import write_idml
+    from ectype_idml.pagination import Alert
     long = [para("Text of the chapter goes on for a while. " * 30)] * 8
     path = make_docx(os.path.join(TMP, "heb-head.docx"),
                      [para("Book", "Title"), para("One: " + HEB, "Heading1")] + long +
@@ -626,7 +650,7 @@ def test_hebrew_running_head_master():
 def test_hebrew_takes_the_face_around_it():
     """The Hebrew style sets no face: Hebrew in italic text is italic, in roman text roman,
     by the Hebrew font's own face names (Culmus: "Medium", "Medium Oblique")."""
-    from docx2idml import fonts
+    from ectype_idml import fonts
     index = {"taamey david clm": {"medium": 1, "medium oblique": 2, "bold": 3},
              "noitalic hebrew": {"regular": 1}}
     assert fonts.matching_face("Taamey David CLM", "Italic", index) == ("Medium Oblique", True)
@@ -695,8 +719,8 @@ def test_manuscript_copyright_page_not_duplicated():
 def test_bylines_and_book_record():
     """Title-page bylines by role in the contributors' order (Chicago: serial comma); volume,
     series and call number lines; wording per language."""
-    from docx2idml import frontmatter as fm
-    from docx2idml.outline import Outline
+    from ectype_idml import frontmatter as fm
+    from ectype_idml.outline import Outline
     assert fm.split_names("Nicolas Ellen, Josh Stephens, and Brett Williams") == [
         "Nicolas Ellen", "Josh Stephens", "Brett Williams"]
     assert fm.split_names("John Smith, Jr. and Ann Lee") == ["John Smith, Jr.", "Ann Lee"]
@@ -743,7 +767,7 @@ def test_bylines_and_book_record():
 
 def test_regular_face_by_its_own_name():
     """InDesign wants a face's own name: the Culmus Hebrew fonts' upright face is "Medium"."""
-    from docx2idml import fonts
+    from ectype_idml import fonts
     index = {"taamey david clm": {"medium": ("a", 0), "bold": ("b", 0)},
              "minion pro": {"regular": ("c", 0), "italic": ("d", 0)}}
     assert fonts.regular_face("Taamey David CLM", index) == "Medium"
@@ -752,8 +776,8 @@ def test_regular_face_by_its_own_name():
 
 
 def test_short_title_flagged_and_part_heads():
-    from docx2idml.outline import Unit
-    from docx2idml.export import Block
+    from ectype_idml.outline import Unit
+    from ectype_idml.export import Block
     prof = default_profile()
     prof["running_heads"]["verso"] = "part"
     prof["page"]["spare_pages"] = 1
@@ -842,7 +866,7 @@ def test_styles_from_template():
         assert not any(line.startswith("Body font") for line in ex.report)
         assert any(line.startswith("Styles from 12-character-styles.idml") for line in ex.report)
         assert any("World-Ready" in line for line in ex.report)
-        from docx2idml.idml.writer import write_idml
+        from ectype_idml.idml.writer import write_idml
         assert not check(write_idml(doc, os.path.join(TMP, "tpl.idml")))
     finally:
         ex.cleanup()
@@ -920,7 +944,7 @@ def test_body_size_leading_and_baseline_grid():
         assert any(line.startswith("Body type: 10 pt on %g pt leading (open" % open_)
                    for line in ex.report)
         from idml_check import check
-        from docx2idml.idml.writer import write_idml
+        from ectype_idml.idml.writer import write_idml
         assert not check(write_idml(doc, os.path.join(TMP, "grid.idml")))
     finally:
         ex.cleanup()
@@ -934,7 +958,7 @@ def test_body_size_leading_and_baseline_grid():
 
 def test_fonts_never_from_word():
     """The test manuscript's Word fonts are Calibri; the book's are book fonts."""
-    from docx2idml import fonts
+    from ectype_idml import fonts
     ex = Exporter(_files(), default_profile())
     try:
         doc = ex.build()
@@ -976,7 +1000,7 @@ def test_custom_style_look_from_style_map():
 
 def test_book_style_roles_are_book_styles():
     """Every style the mapping panel offers is one the export makes."""
-    from docx2idml.export import BOOK_STYLE_ROLES
+    from ectype_idml.export import BOOK_STYLE_ROLES
     ex = Exporter(_files(), default_profile())
     try:
         ex.build()

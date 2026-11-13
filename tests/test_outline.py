@@ -8,9 +8,9 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from docx_builder import field, footnote_ref, make_docx, para, run, run_tests, section_break
-from docx2idml.docx_reader import read_docx
-from docx2idml.outline import build_outline, classify
-from docx2idml.stylemap import StyleMap, display_name
+from ectype_idml.docx_reader import read_docx
+from ectype_idml.outline import build_outline, classify
+from ectype_idml.stylemap import StyleMap, display_name
 
 TMP = tempfile.mkdtemp()
 
@@ -145,7 +145,7 @@ def test_stylemap_mappings():
 
 
 def test_endorsements_and_kinds_set_by_user():
-    from docx2idml.outline import KINDS, apply_kinds, classify, kind_key
+    from ectype_idml.outline import KINDS, apply_kinds, classify, kind_key
     for title in ("Endorsements", "Praise for The Covenant Formula", "Advance Praise",
                   "What Others Are Saying", "Elogios"):
         assert classify(title, False) == ("display", "endorsements"), title
@@ -164,7 +164,7 @@ def test_endorsements_and_kinds_set_by_user():
 
 
 def test_text_before_the_title_page_is_endorsements():
-    from docx2idml.outline import kind_key
+    from ectype_idml.outline import kind_key
     # One file: endorsements with no heading, then the title page, then chapters.
     one = read_docx(make_docx(os.path.join(TMP, "pre.docx"), [
         para("\u201cA wonderful book.\u201d \u2014 A. Reader"),
@@ -285,7 +285,7 @@ def front_matter_book():
 
 
 def test_front_matter_files_by_formatting():
-    from docx2idml.stylemap import StyleMap
+    from ectype_idml.stylemap import StyleMap
     docs = front_matter_book()
     sm = StyleMap()
     out = build_outline(docs, sm)
@@ -326,7 +326,7 @@ def test_front_matter_files_by_formatting():
 
 
 def test_copyright_lines_read():
-    from docx2idml.frontmatter import parse_copyright
+    from ectype_idml.frontmatter import parse_copyright
     got = parse_copyright([
         "A Theology of Soul Care", "Copyright \u00a9 2026 by Central Baptist Seminary",
         "Published by Kress Biblical Resources", "www.kressbiblical.com",
@@ -350,7 +350,7 @@ def test_copyright_lines_read():
     assert got["copyright_title"] is True and got["leftover"] == []
     assert parse_copyright(["\u00a9 2019 Jane Smith. All rights reserved."]) == {
         "year": "2019", "holder": "Jane Smith", "notices": [], "leftover": []}
-    from docx2idml.frontmatter import notice_name
+    from ectype_idml.frontmatter import notice_name
     assert notice_name(notices[0]) == "NKJV"
 
 

@@ -15,8 +15,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from docx_builder import run_tests
-from docx2idml import __version__
-from docx2idml import updates as U
+from ectype_idml import __version__
+from ectype_idml import updates as U
 
 PROGRAM = b"MZ" + bytes(range(256)) * 2000
 
@@ -48,17 +48,19 @@ def opener_for(data):
 
 
 def test_names_and_versions():
-    assert U.exe_name("0.3.0") == "docx-to-idml-0.3.0.exe"
-    assert U.version_in_name("docx-to-idml-0.3.0.exe") == (0, 3, 0)
-    assert U.version_in_name("docx-to-idml.0.3.1.exe") == (0, 3, 1)   # as GitHub may write it
+    assert U.exe_name("0.3.0") == "Ectype-IDML-0.3.0.exe"
+    assert U.version_in_name("Ectype-IDML-0.3.0.exe") == (0, 3, 0)
+    assert U.version_in_name("Ectype-IDML.0.3.1.exe") == (0, 3, 1)   # as GitHub may write it
     assert U.version_in_name("Indicat 0.4.1.exe") is None
+    # The name before 1.0.0 is still recognized (older copies, the release's second copy).
+    assert U.version_in_name("docx-to-idml-0.8.0.exe") == (0, 8, 0)
     assert U.parse_version("v1.2") == (1, 2, 0)
 
 
 def test_check():
     r = U.check(opener=opener_for(release("v99.0.0")))
     assert r["status"] == "newer" and r["latest"] == "99.0.0"
-    assert r["asset"]["name"] == "docx-to-idml-99.0.0.exe"
+    assert r["asset"]["name"] == "Ectype-IDML-99.0.0.exe"
     assert U.check(opener=opener_for(release("v" + __version__)))["status"] == "current"
 
     def missing(req, timeout=0):
@@ -100,23 +102,33 @@ def test_install_falls_back_to_downloads():
     asset = U._pick_asset(release("v9.9.9")["assets"])
     good = Path(tempfile.mkdtemp())
     path, fell = U.install(asset, "9.9.9", folder=good, opener=opener_for(PROGRAM))
-    assert path == good / "docx-to-idml-9.9.9.exe" and not fell
+    assert path == good / "Ectype-IDML-9.9.9.exe" and not fell
     fb = Path(tempfile.mkdtemp())
     path, fell = U.install(asset, "9.9.9", folder=good / "missing" / "folder", fallback=fb,
                            opener=opener_for(PROGRAM))
-    assert fell and path == fb / "docx-to-idml-9.9.9.exe"
+    assert fell and path == fb / "Ectype-IDML-9.9.9.exe"
 
 
 def test_older_copies():
     d = Path(tempfile.mkdtemp())
-    names = ["docx-to-idml-0.0.1.exe", "docx-to-idml-%s.exe" % __version__,
-             "docx-to-idml-99.0.0.exe", "other.exe"]
+    names = ["Ectype-IDML-0.0.1.exe", "Ectype-IDML-%s.exe" % __version__,
+             "Ectype-IDML-99.0.0.exe", "other.exe", "docx-to-idml-0.8.0.exe"]
     for n in names:
         (d / n).write_bytes(b"x")
-    old = U.older_copies(d, d / ("docx-to-idml-%s.exe" % __version__))
-    assert [p.name for p in old] == ["docx-to-idml-0.0.1.exe"]
+    old = U.older_copies(d, d / ("Ectype-IDML-%s.exe" % __version__))
+    assert [p.name for p in old] == ["Ectype-IDML-0.0.1.exe", "docx-to-idml-0.8.0.exe"]
     deleted, left = U.delete_old(old, wait=0)
-    assert deleted == old and not left and not (d / "docx-to-idml-0.0.1.exe").exists()
+    assert deleted == old and not left and not (d / "Ectype-IDML-0.0.1.exe").exists()
+
+
+def test_release_with_both_names():
+    """A release carries the program under both names (for copies before 1.0.0); this
+    version takes the one under its own name, whichever comes first."""
+    data = release("v99.0.0")
+    first = dict(data["assets"][0], name="docx-to-idml-99.0.0.exe")
+    data["assets"] = [first] + data["assets"]
+    r = U.check(opener=opener_for(data))
+    assert r["asset"]["name"] == "Ectype-IDML-99.0.0.exe"
 
 
 class FakeShortcut:

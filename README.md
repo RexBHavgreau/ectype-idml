@@ -1,4 +1,4 @@
-# docx-to-idml (working name)
+# Ectype IDML
 
 Turns a Word book manuscript (one .docx or several) into an IDML file that opens in InDesign,
 Affinity or DesignCraft with most of the book already laid out: page geometry, masters, styles,
@@ -6,11 +6,15 @@ front matter, running heads and pagination. The plan is in [PLAN.md](PLAN.md).
 
 ## Versions
 
-Download the program (`docx-to-idml-X.Y.Z.exe`) from
-[Releases](https://github.com/RexBHavgreau/docx-to-idml/releases); once installed, it offers
+Download the program (`Ectype-IDML-X.Y.Z.exe`; before 1.0.0 it was `docx-to-idml`) from
+[Releases](https://github.com/RexBHavgreau/ectype-idml/releases); once installed, it offers
 new versions itself. The full list of changes is in [CHANGELOG.md](CHANGELOG.md).
 
-- **0.8.0** (October 24, 2026, latest release): Hebrew or Greek in running heads gets masters of its own by
+- **1.0.0** (November 13, 2026, latest release): the tool's name is now Ectype IDML (the program, its window and its
+  settings folder; saved profiles and settings carry over, and copies of docx-to-idml update
+  to it as usual); exports of books with long titles no longer fail, and the export is named
+  after the short title, or the title before a colon.
+- **0.8.0** (October 24, 2026): Hebrew or Greek in running heads gets masters of its own by
   default when the head font lacks it, with a pop-up saying so; the "Open the export folder"
   button is back after an export; long web addresses (in footnotes) break at Chicago's break
   points instead of being spaced out; the report names the last pages to check; other
@@ -64,19 +68,19 @@ version. See [docs/ENGINE.md](docs/ENGINE.md).
 
 ```
 pip install -r requirements.txt
-python run_app.py            # or: python -m docx2idml
+python run_app.py            # or: python -m ectype_idml
 ```
 
 Add the .docx files (or drop them, with tkinterdnd2 installed), put them in order, fill in the
 book details and running heads, choose or adjust the layout profile, then Export IDML. File >
 Save book keeps all of it for a re-export after corrections. `build_exe.bat` builds the
-Windows program (`dist\docx-to-idml-X.Y.Z.exe`).
+Windows program (`dist\Ectype-IDML-X.Y.Z.exe`).
 
 ## Export
 
 ```
-python -m docx2idml export "Chapter 1.docx" "Chapter 2.docx" --out books
-python -m docx2idml export manuscript-folder --out books --profile "Series A"
+python -m ectype_idml export "Chapter 1.docx" "Chapter 2.docx" --out books
+python -m ectype_idml export manuscript-folder --out books --profile "Series A"
 ```
 
 Each export is a folder of its own (named after the book title, or `--name`) holding the IDML
@@ -87,10 +91,10 @@ or sent on.
 
 ```
 pip install -r requirements.txt
-python -m docx2idml preflight "Chapter 1.docx" "Chapter 2.docx"   # files in book order
-python -m docx2idml preflight manuscript-folder                   # a folder, natural name order
-python -m docx2idml preflight manuscript-folder --save-book book.json
-python -m docx2idml preflight --book book.json --json --out report.json
+python -m ectype_idml preflight "Chapter 1.docx" "Chapter 2.docx"   # files in book order
+python -m ectype_idml preflight manuscript-folder                   # a folder, natural name order
+python -m ectype_idml preflight manuscript-folder --save-book book.json
+python -m ectype_idml preflight --book book.json --json --out report.json
 ```
 
 The report covers:
@@ -111,15 +115,16 @@ Tracked changes and unusual fields are also listed.
 ## Profiles
 
 ```
-python -m docx2idml profile new "Series A"
-python -m docx2idml profile show "Series A"
-python -m docx2idml profile export "Series A" "Series A.json"
-python -m docx2idml profile import "Series A.json"
-python -m docx2idml preflight ms-folder --profile "Series A"
+python -m ectype_idml profile new "Series A"
+python -m ectype_idml profile show "Series A"
+python -m ectype_idml profile export "Series A" "Series A.json"
+python -m ectype_idml profile import "Series A.json"
+python -m ectype_idml preflight ms-folder --profile "Series A"
 ```
 
-Profiles are saved in `%APPDATA%\docx-to-idml\profiles` (on Linux and Mac,
-`~/.config/docx-to-idml/profiles`).
+Profiles are saved in `%APPDATA%\Ectype IDML\profiles` (on Linux and Mac,
+`~/.config/Ectype IDML/profiles`). Before 1.0.0 the folder was `docx-to-idml`; the first start
+of 1.0.0 copies it to the new one.
 
 ## Tests
 

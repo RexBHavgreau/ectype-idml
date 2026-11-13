@@ -255,7 +255,7 @@ class Exporter(PaginationMixin):
                                    self.settings.get("unit_kinds"))
         self.doc = Document(name=self.outline.title or os.path.splitext(
             os.path.basename(self.paths[0]))[0])
-        self.tmp = tempfile.mkdtemp(prefix="docx2idml-")
+        self.tmp = tempfile.mkdtemp(prefix="ectype_idml-")
         self._fonts()
         self._page()
         self._book_styles()
@@ -1432,13 +1432,32 @@ def export(paths, out_dir, profile=None, name=None, settings=None):
     ex = Exporter(paths, profile, settings)
     try:
         doc = ex.build()
-        path = export_book(doc, out_dir, name or _safe(doc.name))
+        info = getattr(ex, "info", None) or {}
+        path = export_book(doc, out_dir, file_name(name) if name else file_name(
+            info.get("title") or doc.name, info.get("short_title")))
     finally:
         ex.cleanup()
     return path, ex.report
 
 
-def _safe(name):
-    import re
-    s = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", name).strip(" .")
-    return s[:80] or "Book"
+_RESERVED = {"con", "prn", "aux", "nul"} | {"com%d" % n for n in range(1, 10)} | \
+    {"lpt%d" % n for n in range(1, 10)}
+
+
+def file_name(title, short_title=None, limit=60):
+    """A name for the export folder and IDML that Windows accepts as it is: the short title if
+    there is one, else the title before a colon (its subtitle left off); characters Windows
+    forbids replaced, cut at a word to `limit` characters, no space or dot at the end (Windows
+    drops them from a folder's name, so the path written would not be the one made), and not
+    a reserved device name."""
+    name = (short_title or "").strip() or re.split(r"\s*:\s+|\s+[\u2013\u2014]\s+",
+                                                   title or "")[0]
+    name = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "-", name)
+    name = " ".join(name.split())
+    if len(name) > limit:
+        cut = name[:limit + 1].rsplit(" ", 1)[0]
+        name = cut if len(cut) >= limit // 2 else name[:limit]
+    name = name.rstrip(" .").lstrip(" ")
+    if name.split(".")[0].lower() in _RESERVED:
+        name += " book"
+    return name or "Book"

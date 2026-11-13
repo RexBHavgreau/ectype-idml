@@ -2,7 +2,7 @@
 
     python tools/make_base.py [reference.idml]
 
-Writes docx2idml/idml/base/: InDesign's own designmap, preferences, colours, fonts and root
+Writes ectype_idml/idml/base/: InDesign's own designmap, preferences, colours, fonts and root
 styles with the document's content stripped out (spreads, masters, stories, sections, its
 paragraph and character styles, metadata). The generator adds its own content to this, so every
 setting InDesign always writes is present, as Affinity may rely on them.
@@ -25,7 +25,7 @@ from lxml import etree
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "reference", "idml", "01-footnotes.idml")
-OUT = os.path.join(ROOT, "docx2idml", "idml", "base")
+OUT = os.path.join(ROOT, "ectype_idml", "idml", "base")
 PKG = "http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging"
 
 KEEP_PARAGRAPH = {"ParagraphStyle/$ID/[No paragraph style]", "ParagraphStyle/$ID/NormalParagraphStyle"}

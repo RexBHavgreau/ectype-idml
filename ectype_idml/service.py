@@ -1,6 +1,6 @@
 """The converter as a tool for other programs (Ectype OCR and others): see docs/ENGINE.md.
 
-Another program runs the installed docx-to-idml .exe with the `convert` command and reads the
+Another program runs the installed Ectype IDML .exe with the `convert` command and reads the
 result from a JSON file (the .exe has no console). To find the current .exe, whose name
 changes with each version, it reads `program.json` in the settings folder, which every start
 of the program (window or command) rewrites with its own location.
@@ -21,7 +21,7 @@ from pathlib import Path
 
 from . import __version__
 from . import appsettings, updates
-from .profile import settings_dir
+from .profile import old_settings_dir, settings_dir
 
 API_VERSION = 1          # the command and result format; raised only for changes callers see
 
@@ -37,15 +37,19 @@ def record_location(exe=None, version=None):
     if exe is None:
         return None
     data = {"exe": str(exe), "version": version or __version__, "api": API_VERSION}
-    p = locator_path()
-    try:
-        p.parent.mkdir(parents=True, exist_ok=True)
-        tmp = p.with_suffix(".tmp")
-        with open(tmp, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2)
-        os.replace(tmp, p)
-    except OSError:
-        return None
+    # Also in the folder of the tool's name before 1.0.0, while it exists, for callers
+    # written against that name.
+    old = old_settings_dir() / "program.json"
+    for p in [locator_path()] + ([old] if old.parent.is_dir() else []):
+        try:
+            p.parent.mkdir(parents=True, exist_ok=True)
+            tmp = p.with_suffix(".tmp")
+            with open(tmp, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=2)
+            os.replace(tmp, p)
+        except OSError:
+            if p == locator_path():
+                return None
     return data
 
 

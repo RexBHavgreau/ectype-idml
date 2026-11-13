@@ -2,7 +2,7 @@
 
 The check reads the latest release of REPO (its tag, e.g. "v0.3.0") and compares it with the
 running version, at every start (unless turned off) and from the Help menu. Nothing is downloaded unless the user says so. Each version's program carries
-its version in its name ("docx-to-idml-0.3.0.exe"), so a new version is saved beside the running
+its version in its name ("Ectype-IDML-1.0.0.exe"; "docx-to-idml-0.8.0.exe" before 1.0.0), so a new version is saved beside the running
 one and never overwrites it. The download goes to a temporary name, is checked against the
 release's SHA-256 digest and size, then renamed. If the program's folder can't be written (e.g.
 under Program Files), the new version goes to Downloads. The new version, at its first start,
@@ -22,10 +22,12 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-from . import EXE_BASE, REPO, __version__
+from . import EXE_BASE, OLD_EXE_BASE, REPO, __version__
 
 API = "https://api.github.com/repos/{repo}/releases/latest"
-EXE_RE = re.compile(r"^%s[ ._-]+(\d+(?:\.\d+){1,2})\.exe$" % re.escape(EXE_BASE), re.I)
+# The program's file under its name, or its name before 1.0.0 (still recognized).
+EXE_RE = re.compile(r"^(?:%s|%s)[ ._-]+(\d+(?:\.\d+){1,2})\.exe$" % (
+    re.escape(EXE_BASE), re.escape(OLD_EXE_BASE)), re.I)
 
 
 class UpdateError(Exception):
@@ -42,7 +44,10 @@ def exe_name(version):
 
 
 def _pick_asset(assets):
-    for a in assets or []:
+    """The release's program; under the current name when the release has both."""
+    assets = sorted(assets or [], key=lambda a: not (a.get("name") or "").lower().startswith(
+        EXE_BASE.lower()))
+    for a in assets:
         if EXE_RE.match(a.get("name") or "") and a.get("browser_download_url"):
             return {"name": a["name"], "url": a["browser_download_url"], "size": a.get("size") or 0,
                     "digest": a.get("digest") or ""}

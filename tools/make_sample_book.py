@@ -3,7 +3,7 @@
     python tools/make_sample_book.py
 
 Writes reference/manuscript/*.docx (three files, as an author might send chapters) and
-exports them with docx2idml.export to reference/generated/e01-sample-book/ (IDML and Links),
+exports them with ectype_idml.export to reference/generated/e01-sample-book/ (IDML and Links),
 then checks the IDML with tools/idml_check.py. Open the IDML in InDesign and Affinity.
 """
 
@@ -18,8 +18,8 @@ sys.path.insert(0, os.path.join(ROOT, "tests"))
 from docx_builder import (NUMBERING, footnote_ref, image, make_docx, numbered, para, run,
                           section_break, table)
 from make_generated_files import GEN, GEN_PLAIN, HEBREW_FONT, JOHN, filler
-from docx2idml.export import export
-from docx2idml.profile import default_profile
+from ectype_idml.export import export
+from ectype_idml.profile import default_profile
 
 MS = os.path.join(ROOT, "reference", "manuscript")
 OUT = os.path.join(ROOT, "reference", "generated")

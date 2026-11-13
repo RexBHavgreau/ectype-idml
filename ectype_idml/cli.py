@@ -1,4 +1,4 @@
-"""Command line: python -m docx2idml preflight|export|profile|convert|update ... (the built .exe
+"""Command line: python -m ectype_idml preflight|export|profile|convert|update ... (the built .exe
 takes the same commands; with none it opens the window). `convert` and `update` are for other
 programs calling the converter (docs/ENGINE.md)."""
 
@@ -119,11 +119,12 @@ def main(argv=None):
         if getattr(sys, name) is None:
             setattr(sys, name, open(os.devnull, "w"))
     from . import service
+    profiles.carry_over_old_settings()        # first start under the name Ectype IDML
     service.record_location()
     if argv == []:
         from .gui import main as gui_main      # no arguments: open the window
         return gui_main()
-    ap = argparse.ArgumentParser(prog="docx2idml", description="Word manuscript to IDML book.")
+    ap = argparse.ArgumentParser(prog="Ectype-IDML", description="Ectype IDML: Word manuscript to IDML book.")
     ap.add_argument("--version", action="version", version=__version__)
     sub = ap.add_subparsers(dest="cmd", required=True)
 

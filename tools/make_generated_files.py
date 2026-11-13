@@ -2,7 +2,7 @@
 
     python tools/make_generated_files.py
 
-Writes reference/generated/gNN-*.idml with docx2idml.idml.writer, each built to match the
+Writes reference/generated/gNN-*.idml with ectype_idml.idml.writer, each built to match the
 InDesign reference file of the same number (same pages, styles and text as
 reference/make_reference_files.jsx makes), and checks each with tools/idml_check.py. Compare
 with the reference using tools/idml_inspect.py; then open in InDesign and Affinity.
@@ -15,11 +15,11 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 
-from docx2idml.idml.model import (CellStyle, Document, Frame, Image, Master, Paragraph,
+from ectype_idml.idml.model import (CellStyle, Document, Frame, Image, Master, Paragraph,
                                   PlacedImage, Run, Section, Story, Style, Table, TableStyle,
                                   TOCStyle)
-from docx2idml.idml.writer import write_idml
-from docx2idml.profile import default_profile
+from ectype_idml.idml.writer import write_idml
+from ectype_idml.profile import default_profile
 
 OUT = os.path.join(ROOT, "reference", "generated")
 
@@ -496,7 +496,7 @@ FILES = [("g01-footnotes", g01_footnotes), ("g02-section-marker-heads", g02_sect
 
 def main():
     from idml_check import check
-    from docx2idml.idml.writer import export_book
+    from ectype_idml.idml.writer import export_book
     os.makedirs(OUT, exist_ok=True)
     bad = 0
     jobs = [(name, build, None) for name, build in FILES if name != "g11-images"]

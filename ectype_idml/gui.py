@@ -29,7 +29,7 @@ from .export import TRIMS, ExportError, export
 from .outline import KIND_LABELS, KINDS, kind_key
 from .stylemap import ROLES
 
-TITLE = "docx-to-idml"     # working name
+TITLE = "Ectype IDML"
 LOOKS = {"book": "the book style's", "word": "Word's, in book terms"}
 
 # Profile fields: (path in the profile, label, kind, choices). Kinds: bool, text, number

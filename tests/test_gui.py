@@ -41,7 +41,7 @@ def _descendants(w):
 
 
 def _app():
-    from docx2idml import gui
+    from ectype_idml import gui
     root = tk.Tk()
     root.withdraw()
     return gui.App(root, dnd=False), root
@@ -134,7 +134,7 @@ def test_preflight_export_and_book_file():
         path = os.path.join(TMP, "book.json")
         app.book_path = path
         assert app.save_book()
-        from docx2idml.book import Book
+        from ectype_idml.book import Book
         b = Book.load(path)
         assert b.files == app.book.files
         assert b.settings["front"]["isbn_print"] == "978-0-000-00000-0"
@@ -144,8 +144,8 @@ def test_preflight_export_and_book_file():
 
 
 def test_profile_save_and_settings():
-    from docx2idml import appsettings
-    from docx2idml import profile as profiles
+    from ectype_idml import appsettings
+    from ectype_idml import profile as profiles
     app, root = _app()
     try:
         app.pvar(("fonts", "body")).set("Arno Pro")
@@ -160,7 +160,7 @@ def test_profile_save_and_settings():
 
 
 def test_font_dropdowns():
-    from docx2idml import fonts
+    from ectype_idml import fonts
     app, root = _app()
     try:
         end = time.time() + 60
@@ -223,7 +223,7 @@ def test_calculated_margins_shown_and_filled():
         form.vars[("page", "margins", "top")][0].set('1"')
         app.fill_margins()
         assert form.vars[("page", "margins", "top")][0].get() == '1"'      # kept as typed
-        from docx2idml.gui import format_points
+        from ectype_idml.gui import format_points
         assert form.vars[("page", "margins", "inside")][0].get() == \
             format_points(g2.margins["inside"])
         app._forms_to_profile()
@@ -245,7 +245,7 @@ def test_update_check_at_every_start():
     """The startup check runs at every start (not once a day); a declined version isn't
     offered again at startup, but is from the Help menu."""
     from tkinter import messagebox
-    from docx2idml import updates
+    from ectype_idml import updates
     asked = []
     real_check, real_ask = updates.check, messagebox.askyesno
     updates.check = lambda *a, **k: {"status": "newer", "latest": "9.9.9", "url": "u",
@@ -279,7 +279,7 @@ def test_style_mapping_panel():
     """All styles in the Style Map tab after the automatic mapping (shown after the first
     preflight); the user's choices are saved in the profile and used by the export. The
     manuscript's own contents styles aren't listed."""
-    from docx2idml import gui
+    from ectype_idml import gui
     app, root = _app()
     try:
         assert not app.mapping.rows                   # nothing read yet
@@ -312,7 +312,7 @@ def test_style_mapping_panel():
         assert app.report is not None                 # read again with the new map
         rows = {w: iv for w, iv, _rv, _lv, _i in app.mapping.rows}
         assert rows["Epigraph"].get() == "Block Quote"
-        from docx2idml.export import Exporter
+        from ectype_idml.export import Exporter
         ex = Exporter(app.book.files, app.profile)
         try:
             doc = ex.build()
@@ -370,7 +370,7 @@ def test_contributors_in_order():
     page come in as editors; old books' single author is upgraded."""
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     from test_outline import front_matter_book
-    from docx2idml.book import Book
+    from ectype_idml.book import Book
     app, root = _app()
     try:
         app._add([d.path for d in front_matter_book()])
@@ -410,7 +410,7 @@ def test_contributors_in_order():
         assert "Copyright \u00a9 2026 by A Seminary" in old and "Edited by" in old
         assert "Copyright \u00a9 2026 by A Seminary" in new and "Edited by" not in new
         assert "ISBN 978-1-934952-94-8" in new
-        from docx2idml.frontmatter import book_info
+        from ectype_idml.frontmatter import book_info
         title = book_info(app.report.outline, app.book.settings["front"])[0]["title"]
         assert texts("Copyright page")[0].startswith(title)       # the box ticked above
         assert any(t.startswith("Edited by") for t in texts("Title page"))
@@ -497,7 +497,7 @@ def test_opener_drop_field():
 
 
 def app_auto(app):
-    from docx2idml.gui import format_points
+    from ectype_idml.gui import format_points
     return format_points(app._auto_drop())
 
 
@@ -505,7 +505,7 @@ def test_hebrew_head_alert_after_export():
     """A chapter head with Hebrew the head font lacks gets a master of its own, and the
     window says so in a pop-up after the export."""
     from docx_builder import make_docx, para
-    from docx2idml import gui
+    from ectype_idml import gui
     heb = "\u05e0\u05e9\u05c2\u05d9\u05d0"
     long = [para("Text of the chapter goes on for a while. " * 30)] * 4
     path = make_docx(os.path.join(TMP, "heb-alert.docx"),
@@ -533,7 +533,7 @@ def test_cleanup_after_update():
     aren't asked about again."""
     from pathlib import Path
     from tkinter import messagebox
-    from docx2idml import __version__, updates
+    from ectype_idml import __version__, updates
     folder = Path(tempfile.mkdtemp())
     me = folder / updates.exe_name(__version__)
     old = folder / updates.exe_name("0.2.0")
