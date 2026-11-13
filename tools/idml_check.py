@@ -85,7 +85,10 @@ def validate_schema(z):
                 with open(dest, "wb") as f:
                     f.write(z.read(n))
                 files.append(dest)
-            r = subprocess.run(["java", "-jar", jar, os.path.join(SCHEMA_DIR, schema)] + files,
+            # Newer JDKs refuse elements with over 200 attributes (InDesign's TextDefault and
+            # styles have more): no limit (jdk.xml.elementAttributeLimit 0).
+            r = subprocess.run(["java", "-Djdk.xml.elementAttributeLimit=0", "-jar", jar,
+                                os.path.join(SCHEMA_DIR, schema)] + files,
                                capture_output=True, text=True, encoding="utf-8", errors="replace")
             for line in (r.stdout + r.stderr).splitlines():
                 line = line.strip()

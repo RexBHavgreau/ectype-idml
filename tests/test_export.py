@@ -1107,7 +1107,11 @@ def test_bringhurst_styles():
         ex._book_styles()                    # all of them, not only those the book uses
         lead = ex.body_lead
         r = lambda n: doc.resolved(n)  # noqa: E731
-        assert lead == 13                                  # 11/13, Bringhurst's routine
+        # 11/13, Bringhurst's routine, for a typical x-height; an installed body font (a book
+        # font on Windows) may shift it, so the expectation uses the font measured.
+        assert lead == layout.leading_suggestions(11, ex.x_height, ex.geo.cpl)[0]["standard"][2]
+        if ex.x_height is None:
+            assert lead == 13
         assert r("Body")[0]["FirstLineIndent"] == 11 and r("Body")[0]["HyphenateBeforeLast"] == 3
         assert [r(n)[0]["PointSize"] for n in ("Chapter Title", "Heading A", "Footnote")] == \
             [18, 14, 9]
