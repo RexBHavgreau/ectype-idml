@@ -91,6 +91,7 @@ Tests and schema check here; not yet opened in InDesign, Affinity or DesignCraft
 | `ectype_idml/book.py` | Input files: drop/folder collection, natural order, saved order |
 | `ectype_idml/content.py` | The text of a .docx for the exporter: runs with formatting features, notes, tables, images, list numbers; paragraph indexes match `docx_reader`'s |
 | `ectype_idml/export.py` | Step 4, the exporter core: book styles, Word styles kept by name, runs to character styles, Hebrew/Greek, one story and section per outline unit, page estimate; `export()` writes the export folder |
+| `ectype_idml/styles.py` | `StylesMixin` of the Exporter (moved out of export.py, 1.1.0): the book's paragraph and character styles, Word styles kept by name, a style template's; `body_size`, `leading_for` |
 | `ectype_idml/pagination.py` | `PaginationMixin` of the Exporter (moved out of export.py, 0.6.0): pages, stories, sections and markers, masters and running-head frames |
 | `ectype_idml/layout.py` | Step 5: margins and measure (30 times the type size within 45-80 characters, floors, KDP gutter by page count), pagination (roman front matter, recto rules, masters per page) |
 | `ectype_idml/frontmatter.py` | Step 6: book details (settings, then detected, else bracketed placeholders), half-title, title, copyright (English/Spanish, notices from the profile's library), contents entries and reserved pages |
@@ -98,6 +99,7 @@ Tests and schema check here; not yet opened in InDesign, Affinity or DesignCraft
 | `ectype_idml/fonts.py` | Installed fonts (system and user folders) and a font's average character width (fontTools), for the measure |
 | `ectype_idml/cli.py` | `python -m ectype_idml preflight / export / profile / convert / update` (the .exe takes the same; no arguments opens the window) |
 | `ectype_idml/gui.py` | Step 7, the window (ttk): Files, Book Details, Running Heads, Layout Profile, Style Map, Report tabs; forms declared as field tables bound to the profile and book settings; work in threads, results through a queue polled by the window |
+| `ectype_idml/gui_forms.py`, `gui_heads.py`, `gui_layout.py` | Moved out of gui.py (1.1.0): `Form` and the points helpers; `HeadsTabMixin` (Running Heads tab); `LayoutTabMixin` (Layout Profile tab, calculated margins, leading note) |
 | `ectype_idml/gui_book.py` | `BookTabMixin` of the window (moved out of gui.py, 0.6.0): the Book Details tab, filling from the manuscript, the notice library |
 | `ectype_idml/service.py`, `docs/ENGINE.md` | The converter as a tool for other programs (0.8.0): `convert` (JSON result), `program.json` (the .exe's location, rewritten at every start by `cli.main`), the silent daily update (`daily_check` starts a detached `update --quiet`); the contract for callers, API version 1 |
 | `ectype_idml/updates.py`, `appsettings.py` | Update check and install (as Indicat's: versioned .exe beside the running one, SHA-256 digest, Downloads fallback, older copies offered for deletion); the program's own settings.json |
