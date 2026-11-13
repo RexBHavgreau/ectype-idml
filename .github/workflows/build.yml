@@ -29,7 +29,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt -r requirements-dev.txt pyinstaller tkinterdnd2
 
+      # bash stops at the first failing test; PowerShell (Windows' default) only reported the
+      # last one's result, so a failure before it went unnoticed (1.0.0).
       - name: Test
+        shell: bash
         run: |
           python tests/test_reader.py
           python tests/test_outline.py

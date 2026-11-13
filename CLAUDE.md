@@ -396,6 +396,10 @@ python tests/test_gui.py             # needs a display: on Linux, xvfb-run (and 
 ```
 
 Run them all before pushing; CI (`.github/workflows/tests.yml`) runs them on Windows and Linux.
+The build's Test step runs in bash so the first failure stops it (in PowerShell only the last
+test file's result counted, and a failure in 1.0.0's tests slipped through). jing runs with
+`-Djdk.xml.elementAttributeLimit=0` (newer Java refuses InDesign's 200+ attribute elements).
+Don't compare file lists in an order that depends on the system (Windows sorts ignoring case).
 On Windows set `PYTHONUTF8=1`. Tests must not depend on which fonts are installed: CI's
 Windows has book fonts (Palatino, Georgia) that this Linux machine lacks, and their x-height
 and widths change leading and estimates (0.3.0's leading test failed there for that reason). `test_preflight` includes a LibreOffice round trip when
