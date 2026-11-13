@@ -196,7 +196,7 @@ def test_leading_note():
     try:
         app.update_margins()
         note = app.leading_note.get()
-        assert note.startswith("Suggested for 11 pt") and "standard 13.5" in note
+        assert note.startswith("Suggested for 11 pt") and "standard 13" in note
         app.pvar(("body_size",)).set("10")
         app.pvar(("leading", "feel")).set("tight")
         app.update_margins()
@@ -222,8 +222,9 @@ def test_calculated_margins_shown_and_filled():
         mlab, _t = app._form_of(("page", "measure")).labels[("page", "measure")]
         assert " picas" in str(mlab.cget("text")) and "pt (" in str(mlab.cget("text"))
         g, _pages, _found = app.calculated()
-        # By default the outside margin is never wider than the inside.
-        assert g.margins["outside"] <= g.margins["inside"]
+        # By default the classical canon: inside < top < outside < bottom.
+        m = g.margins
+        assert m["inside"] < m["top"] < m["outside"] < m["bottom"]
         app.pvar(("page", "trim")).set("5x8")
         g2, _p, _f = app.calculated()
         assert g2.measure != g.measure or g2.margins != g.margins
@@ -324,7 +325,8 @@ def test_style_mapping_panel():
         try:
             doc = ex.build()
             styles = {p.style for st in doc.stories for p in st.paragraphs}
-            assert "Block Quote" in styles and "Epigraph" not in styles
+            # A quotation's first paragraph is Block Quote First.
+            assert "Block Quote First" in styles and "Epigraph" not in styles
             runs = [r for st in doc.stories for p in st.paragraphs for r in p.runs
                     if "Lev 26:12" in r.text]
             assert runs and runs[0].style == "Small Caps"
@@ -573,6 +575,46 @@ def test_cleanup_after_update():
         app.quit(force=True)
     finally:
         messagebox.askyesno, updates.retarget_shortcuts = real_ask, real_retarget
+
+
+def test_leading_preview_and_margin_schemes():
+    """The leading preview pops up under its button, draws the sample at the size and
+    leading the forms give, tries a feel, and closes; margin schemes: the canon by default, a
+    scheme of one's own saved in the profile and used for the margins, then deleted."""
+    from ectype_idml import layout
+    app, root = _app()
+    try:
+        root.deiconify()
+        root.update()
+        app.pvar(("leading", "feel")).set("standard")
+        app.preview_leading()
+        root.update()
+        assert app.leading_popup is not None and app.leading_lines > 4
+        assert "pt on 13 pt leading" in app.leading_caption.get()
+        app._try_feel("open")
+        assert app.pvar(("leading", "feel")).get() == "open"
+        assert "pt on 14 pt leading" in app.leading_caption.get()
+        app.close_leading_preview()
+        assert app.leading_popup is None
+
+        assert app.scheme_var.get() == layout.MARGIN_SCHEMES["canon"]["name"]
+        assert app.save_scheme({"name": "Wide", "inside": "1", "top": "1", "outside": "3",
+                                "bottom": "2"}) is None
+        assert app.profile["page"]["margin_scheme"] == "Wide"
+        assert app.scheme_var.get() == "Wide (1:1:3:2)"
+        g, _pages, _found = app.calculated()
+        assert g.margins["outside"] > 2 * g.margins["inside"] - 1
+        assert "above 0" in app.save_scheme({"name": "Bad", "inside": "0", "top": "1",
+                                             "outside": "1", "bottom": "1"})
+        assert "built-in" in app.save_scheme({"name": "canon", "inside": "1", "top": "1",
+                                              "outside": "1", "bottom": "1"})
+        app.delete_scheme()
+        assert app.profile["page"]["margin_schemes"] == []
+        assert app.profile["page"]["margin_scheme"] == "canon"
+        dlg = app._scheme_dialog(None)
+        dlg.destroy()
+    finally:
+        app.quit(force=True)
 
 
 if __name__ == "__main__":

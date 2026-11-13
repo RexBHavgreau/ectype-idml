@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<idPkg:Story xmlns:idPkg="http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging" DOMVersion="21.5">
+<Story Self="u104f" AiGeneratedStory="false" AiModelName="$ID/" AiDigitalSourceType="$ID/" AiFirstParty="false" AiTextContent="$ID/" AppliedTOCStyle="n" UserText="true" IsEndnoteStory="false" TrackChanges="false" StoryTitle="$ID/" AppliedNamedGrid="n">
+<StoryPreference OpticalMarginAlignment="true" OpticalMarginSize="11" FrameType="TextFrameType" StoryOrientation="Horizontal" StoryDirection="LeftToRightDirection"/>
+<InCopyExportOption IncludeGraphicProxies="true" IncludeAllResources="false"/>
+<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Chapter Title">
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
+<Content>Bibliography</Content>
+<Br/>
+</CharacterStyleRange>
+</ParagraphStyleRange>
+<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Bibliography">
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
+<Content>Author, A. N. </Content>
+</CharacterStyleRange>
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/Italic">
+<Content>The Covenant in the Prophets</Content>
+</CharacterStyleRange>
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
+<Content>. City: </Content>
+</CharacterStyleRange>
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/No Break">
+<Content>Press, 2020.</Content>
+<Br/>
+</CharacterStyleRange>
+</ParagraphStyleRange>
+<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Bibliography">
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
+<Content>Writer, B. </Content>
+</CharacterStyleRange>
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/Italic">
+<Content>Greek and Hebrew Together</Content>
+</CharacterStyleRange>
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
+<Content>. City: </Content>
+</CharacterStyleRange>
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/No Break">
+<Content>Press, 2018.</Content>
+</CharacterStyleRange>
+</ParagraphStyleRange>
+</Story>
+</idPkg:Story>

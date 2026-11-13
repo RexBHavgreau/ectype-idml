@@ -3,10 +3,24 @@ and typography forms, the calculated margins and the leading note."""
 
 import copy
 import tkinter as tk
-from tkinter import ttk
+import tkinter.font as tkfont
+from tkinter import messagebox, ttk
 
+from . import layout
 from .export import TRIMS
-from .gui_forms import Form, _num, format_points
+from .gui_forms import TITLE, Form, _num, format_points
+
+# The leading preview's text (the tool's own words, about the setting it shows).
+SAMPLE = [
+    "Leading is the space from one line of type to the next. Too little and the lines crowd "
+    "each other, so the eye slips to the wrong line on its way back to the left; too much and "
+    "the page turns grey and loose, the lines drifting apart like boats that have slipped "
+    "their moorings.",
+    "Bringhurst's routine settings add two points or so to the type: 10 on 12, 11 on 13. A "
+    "font with a large x-height, a long line, or text thick with capitals and accents wants a "
+    "little more. Read a few lines at each setting and choose the one that reads most easily.",
+]
+PREVIEW_WIDTH = 640           # pixels: wider measures are shown reduced
 
 PROFILE_FIELDS = {
     # The Page Layout tab in three sections.
@@ -47,6 +61,12 @@ PROFILE_FIELDS = {
         (("leading", "feel"), "Leading", "choice", ["tight", "standard", "open"]),
         (("leading", "value"), "Exact leading (blank = from the choice above)", "number", None),
         (("leading", "unit"), "Leading unit", "choice", ["pt", "multiple", "percent"]),
+        (("typography", "paragraph_indent"), "Paragraph indent (ems of the body size; 1 usual)",
+         "number", None),
+        (("block_quotes", "indent_first"), "Indent a block quotation's first paragraph",
+         "bool", None),
+        (("block_quotes", "indent_next"), "Indent a block quotation's later paragraphs",
+         "bool", None),
         (("front_matter", "language"), "Language", "choice", ["en", "es"]),
         (("baseline_grid",), "Baseline grid (body text on the leading)", "bool", None),
         (("typography", "paragraph_composer"), "World-Ready composer (off = single-line)",
@@ -112,14 +132,33 @@ class LayoutTabMixin:
         self.leading_note = tk.StringVar()
         ttk.Label(typetab, textvariable=self.leading_note, wraplength=820, justify="left").grid(
             row=-(-ntype // 2) + 1, column=0, columnspan=4, sticky="w", padx=6, pady=(10, 4))
+        self.leading_button = ttk.Button(typetab, text="Preview the leading",
+                                         command=self.preview_leading)
+        self.leading_button.grid(row=-(-ntype // 2) + 2, column=0, columnspan=2, sticky="w",
+                                 padx=6)
+        self.leading_popup = None
         # The margins the export would calculate, under the margin fields.
         row = len(PROFILE_FIELDS["Page Layout"]["Page Margins"]) + 1
+        # The margin scheme: proportions for the calculated margins.
+        schemes = ttk.Frame(margins)
+        schemes.grid(row=row, column=0, columnspan=4, sticky="w", padx=6, pady=(8, 0))
+        ttk.Label(schemes, text="Margin proportions (inside : top : outside : bottom)").pack(
+            side="left", padx=(0, 6))
+        self.scheme_var = tk.StringVar()
+        self.scheme_box = ttk.Combobox(schemes, textvariable=self.scheme_var, state="readonly",
+                                       width=34)
+        self.scheme_box.pack(side="left")
+        self.scheme_box.bind("<<ComboboxSelected>>", self._scheme_chosen)
+        for text, cmd in (("New...", self.new_scheme), ("Edit...", self.edit_scheme),
+                          ("Delete", self.delete_scheme)):
+            ttk.Button(schemes, text=text, command=cmd).pack(side="left", padx=(6, 0))
         self.margin_note = tk.StringVar()
         ttk.Label(margins, textvariable=self.margin_note, wraplength=820, justify="left").grid(
-            row=row, column=0, columnspan=4, sticky="w", padx=6, pady=(10, 4))
+            row=row + 1, column=0, columnspan=4, sticky="w", padx=6, pady=(10, 4))
         ttk.Button(margins, text="Fill in the calculated margins",
-                   command=self.fill_margins).grid(row=row + 1, column=0, columnspan=2,
+                   command=self.fill_margins).grid(row=row + 2, column=0, columnspan=2,
                                                    sticky="w", padx=6)
+        self._refresh_schemes()
         watched = [self.pvar(p) for p in (("page", "trim"), ("page", "custom_width"),
                                           ("page", "custom_height"), ("page", "measure"),
                                           ("fonts", "body"), ("leading", "value"),
@@ -129,6 +168,242 @@ class LayoutTabMixin:
             var.trace_add("write", lambda *_: self._margins_later())
         ttk.Label(tab, text="Changes apply to the next export. Profile > Save profile keeps them "
                             "for the next book in the series.").pack(anchor="w", pady=(6, 0))
+
+    # ---- margin schemes ----
+
+    def _schemes(self):
+        """[(key, label)]: the presets, then the profile's own schemes."""
+        out = [(k, s["name"]) for k, s in layout.MARGIN_SCHEMES.items()]
+        for s in self.profile["page"].get("margin_schemes") or []:
+            out.append((s["name"], "%s (%s)" % (s["name"], ":".join(
+                "%g" % float(s[k]) for k in layout.SCHEME_SIDES))))
+        return out
+
+    def _refresh_schemes(self):
+        if not hasattr(self, "scheme_box"):
+            return
+        schemes = self._schemes()
+        self.scheme_box["values"] = [label for _k, label in schemes]
+        key = self.profile["page"].get("margin_scheme") or layout.DEFAULT_SCHEME
+        label = dict(schemes).get(key) or dict(schemes)[layout.DEFAULT_SCHEME]
+        self.scheme_var.set(label)
+
+    def _scheme_key(self):
+        labels = {label: k for k, label in self._schemes()}
+        return labels.get(self.scheme_var.get(), layout.DEFAULT_SCHEME)
+
+    def _scheme_chosen(self, _event=None):
+        self.profile["page"]["margin_scheme"] = self._scheme_key()
+        self._margins_later()
+
+    def new_scheme(self):
+        self._scheme_dialog(None)
+
+    def edit_scheme(self):
+        key = self._scheme_key()
+        if key in layout.MARGIN_SCHEMES:
+            base = layout.MARGIN_SCHEMES[key]
+            if base.get("economical"):
+                messagebox.showinfo(TITLE, "The economical margins aren't proportions, so they "
+                                    "can't be edited. Choose New... for a scheme of your own.",
+                                    parent=self.root)
+                return
+            # A preset is copied, not changed.
+            self._scheme_dialog(dict(base, name=base["name"].split(" (")[0] + " (mine)"),
+                                new=True)
+            return
+        own = next(s for s in self.profile["page"]["margin_schemes"] if s["name"] == key)
+        self._scheme_dialog(own)
+
+    def delete_scheme(self):
+        key = self._scheme_key()
+        if key in layout.MARGIN_SCHEMES:
+            messagebox.showinfo(TITLE, "The built-in schemes can't be deleted.",
+                                parent=self.root)
+            return
+        page = self.profile["page"]
+        page["margin_schemes"] = [s for s in page["margin_schemes"] if s["name"] != key]
+        page["margin_scheme"] = layout.DEFAULT_SCHEME
+        self._refresh_schemes()
+        self._margins_later()
+
+    def save_scheme(self, scheme, old_name=None):
+        """Add or replace one of the profile's own schemes and choose it. Returns an error
+        message, or None."""
+        name = (scheme.get("name") or "").strip()
+        if not name:
+            return "Give the scheme a name."
+        if name in layout.MARGIN_SCHEMES or any(
+                label == name for _k, label in self._schemes()[:len(layout.MARGIN_SCHEMES)]):
+            return "That name belongs to a built-in scheme. Choose another."
+        if not layout.valid_scheme(scheme):
+            return "Each proportion must be a number above 0."
+        page = self.profile["page"]
+        own = [s for s in page.get("margin_schemes") or [] if s["name"] not in (old_name, name)]
+        own.append({"name": name, **{k: float(scheme[k]) for k in layout.SCHEME_SIDES}})
+        page["margin_schemes"] = own
+        page["margin_scheme"] = name
+        self._refresh_schemes()
+        self._margins_later()
+        return None
+
+    def _scheme_dialog(self, scheme, new=False):
+        """A small dialog for a scheme's name and four proportions."""
+        dlg = tk.Toplevel(self.root)
+        dlg.title("Margin scheme")
+        dlg.transient(self.root)
+        dlg.resizable(False, False)
+        body = ttk.Frame(dlg, padding=10)
+        body.pack(fill="both")
+        ttk.Label(body, text="Proportions of the four margins, e.g. 2, 3, 4, 6 for the "
+                             "classical canon. The line length sets the inside and outside "
+                             "together; the same unit gives the top and bottom.",
+                  wraplength=360, justify="left").grid(row=0, column=0, columnspan=2,
+                                                       sticky="w", pady=(0, 8))
+        vars_ = {"name": tk.StringVar(value=(scheme or {}).get("name", ""))}
+        rows = [("name", "Name")] + [(k, k.capitalize()) for k in layout.SCHEME_SIDES]
+        for n, (k, label) in enumerate(rows, 1):
+            if k != "name":
+                vars_[k] = tk.StringVar(value="%g" % float((scheme or {}).get(k, 1)))
+            ttk.Label(body, text=label).grid(row=n, column=0, sticky="w", pady=2)
+            ttk.Entry(body, textvariable=vars_[k], width=24 if k == "name" else 8).grid(
+                row=n, column=1, sticky="w", pady=2)
+        old = None if (scheme is None or new) else scheme["name"]
+
+        def ok():
+            data = {k: v.get().strip() for k, v in vars_.items()}
+            err = self.save_scheme(data, old)
+            if err:
+                messagebox.showerror(TITLE, err, parent=dlg)
+                return
+            dlg.destroy()
+        btns = ttk.Frame(body)
+        btns.grid(row=len(rows) + 1, column=0, columnspan=2, sticky="e", pady=(8, 0))
+        ttk.Button(btns, text="OK", command=ok).pack(side="left", padx=4)
+        ttk.Button(btns, text="Cancel", command=dlg.destroy).pack(side="left")
+        dlg.bind("<Return>", lambda _e: ok())
+        dlg.bind("<Escape>", lambda _e: dlg.destroy())
+        self.scheme_dialog = dlg
+        return dlg
+
+    # ---- leading preview ----
+
+    def preview_leading(self):
+        """A pop-up under the button showing two paragraphs in the body font at the size,
+        leading and line length the forms give. It closes when you click anywhere else (or
+        press Esc); its buttons try tight, standard and open."""
+        self.close_leading_preview()
+        top = tk.Toplevel(self.root)
+        top.overrideredirect(True)
+        top.transient(self.root)
+        frame = ttk.Frame(top, padding=8, relief="solid", borderwidth=1)
+        frame.pack(fill="both", expand=True)
+        self.leading_caption = tk.StringVar()
+        ttk.Label(frame, textvariable=self.leading_caption, wraplength=PREVIEW_WIDTH,
+                  justify="left").pack(anchor="w")
+        self.leading_canvas = tk.Canvas(frame, background="white", highlightthickness=0,
+                                        width=PREVIEW_WIDTH + 24, height=200)
+        self.leading_canvas.pack(anchor="w", pady=(6, 6))
+        btns = ttk.Frame(frame)
+        btns.pack(anchor="w")
+        for feel in ("tight", "standard", "open"):
+            ttk.Button(btns, text=feel.capitalize(),
+                       command=lambda f=feel: self._try_feel(f)).pack(side="left", padx=(0, 6))
+        ttk.Label(btns, text="Click anywhere else to close.", foreground="#555").pack(
+            side="left", padx=(8, 0))
+        self.leading_popup = top
+        self._draw_leading()
+        b = self.leading_button
+        top.update_idletasks()
+        x = b.winfo_rootx()
+        y = b.winfo_rooty() + b.winfo_height() + 2
+        sw, sh = top.winfo_screenwidth(), top.winfo_screenheight()
+        x = max(0, min(x, sw - top.winfo_reqwidth()))
+        if y + top.winfo_reqheight() > sh:
+            y = max(0, b.winfo_rooty() - top.winfo_reqheight() - 2)
+        top.geometry("+%d+%d" % (x, y))
+        top.bind("<ButtonPress>", self._leading_click, add="+")
+        top.bind("<Escape>", lambda _e: self.close_leading_preview())
+        try:
+            top.grab_set()
+            top.focus_set()
+        except tk.TclError:
+            pass
+
+    def _leading_click(self, event):
+        """With the grab on, a click outside the pop-up comes here too: close it then."""
+        top = self.leading_popup
+        if top is None:
+            return
+        w = top.winfo_containing(event.x_root, event.y_root)
+        if w is None or not str(w).startswith(str(top)):
+            self.close_leading_preview()
+
+    def close_leading_preview(self):
+        top, self.leading_popup = getattr(self, "leading_popup", None), None
+        if top is not None:
+            try:
+                top.grab_release()
+                top.destroy()
+            except tk.TclError:
+                pass
+
+    def _try_feel(self, feel):
+        """Use one of the leading choices (clearing an exact leading) and show it."""
+        self.pvar(("leading", "value")).set("")
+        self.pvar(("leading", "feel")).set(feel)
+        self._draw_leading()
+
+    def leading_sample(self):
+        """(font family, size, leading, measure, indent) in points, from the forms."""
+        from . import fonts
+        from .export import body_size, leading_for
+        from .styles import paragraph_indent
+        g, _pages, _found = self.calculated()
+        prof = copy.deepcopy(self.profile)
+        for form in self.profile_forms:
+            form.save(prof)
+        size = body_size(prof)
+        font = (prof.get("fonts") or {}).get("body") or fonts.book_font()
+        found = fonts.find_font(font)
+        xh = fonts.x_height(found) if found else None
+        return (font, size, leading_for(prof, size, xh, g.cpl), g.measure,
+                paragraph_indent(prof, size), bool(found))
+
+    def _draw_leading(self):
+        c = self.leading_canvas
+        c.delete("all")
+        font, size, lead, measure, indent, found = self.leading_sample()
+        ppp = self.root.winfo_fpixels("1p")            # pixels per point
+        scale = min(1.0, PREVIEW_WIDTH / (measure * ppp))
+        px = lambda pt: pt * ppp * scale  # noqa: E731
+        f = tkfont.Font(root=self.root, family=font, size=-max(1, round(px(size))))
+        ascent = f.metrics("ascent")
+        x0, y = 12, 12 + ascent
+        width = px(measure)
+        lines = 0
+        for k, para in enumerate(SAMPLE):
+            words, line, first = para.split(), "", True
+            start = px(indent) if k else 0              # the first paragraph flush left
+            for word in words + [None]:
+                trial = (line + " " + word).strip() if word else line
+                room = width - (start if first else 0)
+                if word is not None and f.measure(trial) <= room:
+                    line = trial
+                    continue
+                c.create_text(x0 + (start if first else 0), y - ascent, text=line, font=f,
+                              anchor="nw")
+                lines += 1
+                y += px(lead)
+                first, line = False, word or ""
+        c.configure(height=int(y - px(lead) + f.metrics("descent") + 14),
+                    width=int(width + 24))
+        shown = font if found else "%s isn't installed here, so another font stands in" % font
+        self.leading_caption.set(
+            "%g pt on %g pt leading, %g picas wide: %s%s. Lines are ragged here; the book "
+            "justifies them." % (size, lead, round(measure / 12, 1), shown,
+                                 "" if scale == 1 else ", shown at %d%%" % round(scale * 100)))
+        self.leading_lines = lines
 
     def pvar(self, path):
         """The variable of a profile field, whichever form it is in."""

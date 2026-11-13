@@ -20,7 +20,7 @@
 </Descriptor>
 <PageColor type="enumeration">UseMasterColor</PageColor>
 </Properties>
-<MarginPreference ColumnCount="1" ColumnGutter="12" Top="43.5" Bottom="58.5" Left="59" Right="43" ColumnDirection="Horizontal" ColumnsPositions="0 330"/>
+<MarginPreference ColumnCount="1" ColumnGutter="12" Top="51" Bottom="103" Left="36" Right="68" ColumnDirection="Horizontal" ColumnsPositions="0 328"/>
 <GridDataInformation FontStyle="Regular" PointSize="12" CharacterAki="0" LineAki="9" HorizontalScale="100" VerticalScale="100" LineAlignment="LeftOrTopLineJustify" GridAlignment="AlignEmCenter" CharacterAlignment="AlignEmCenter">
 <Properties>
 <AppliedFont type="string">Minion Pro</AppliedFont>
@@ -41,27 +41,27 @@
 </Descriptor>
 <PageColor type="enumeration">UseMasterColor</PageColor>
 </Properties>
-<MarginPreference ColumnCount="1" ColumnGutter="12" Top="43.5" Bottom="58.5" Left="59" Right="43" ColumnDirection="Horizontal" ColumnsPositions="0 330"/>
+<MarginPreference ColumnCount="1" ColumnGutter="12" Top="51" Bottom="103" Left="36" Right="68" ColumnDirection="Horizontal" ColumnsPositions="0 328"/>
 <GridDataInformation FontStyle="Regular" PointSize="12" CharacterAki="0" LineAki="9" HorizontalScale="100" VerticalScale="100" LineAlignment="LeftOrTopLineJustify" GridAlignment="AlignEmCenter" CharacterAlignment="AlignEmCenter">
 <Properties>
 <AppliedFont type="string">Minion Pro</AppliedFont>
 </Properties>
 </GridDataInformation>
 </Page>
-<TextFrame Self="u107a" ParentStory="u1061" PreviousTextFrame="n" NextTextFrame="u107c" ContentType="TextType" ParentInterfaceChangeCount="" TargetInterfaceChangeCount="" LastUpdatedInterfaceChangeCount="" OverriddenPageItemProps="" BeforeGroupingLayerPosition="-1" HorizontalLayoutConstraints="FixedDimension FlexibleDimension FixedDimension" VerticalLayoutConstraints="FixedDimension FlexibleDimension FixedDimension" FlexItemWidthMode="FlexFixed" FlexItemHeightMode="FlexFixed" StrokeWeight="1" GradientFillStart="0 0" GradientFillLength="0" GradientFillAngle="0" GradientStrokeStart="0 0" GradientStrokeLength="0" GradientStrokeAngle="0" ItemLayer="uce" Locked="false" LocalDisplaySetting="Default" GradientFillHiliteLength="0" GradientFillHiliteAngle="0" GradientStrokeHiliteLength="0" GradientStrokeHiliteAngle="0" AppliedObjectStyle="ObjectStyle/$ID/[None]" Visible="true" Name="$ID/" ItemTransform="1 0 0 1 224 -7.5">
+<TextFrame Self="u107a" ParentStory="u1061" PreviousTextFrame="n" NextTextFrame="u107c" ContentType="TextType" ParentInterfaceChangeCount="" TargetInterfaceChangeCount="" LastUpdatedInterfaceChangeCount="" OverriddenPageItemProps="" BeforeGroupingLayerPosition="-1" HorizontalLayoutConstraints="FixedDimension FlexibleDimension FixedDimension" VerticalLayoutConstraints="FixedDimension FlexibleDimension FixedDimension" FlexItemWidthMode="FlexFixed" FlexItemHeightMode="FlexFixed" StrokeWeight="1" GradientFillStart="0 0" GradientFillLength="0" GradientFillAngle="0" GradientStrokeStart="0 0" GradientStrokeLength="0" GradientStrokeAngle="0" ItemLayer="uce" Locked="false" LocalDisplaySetting="Default" GradientFillHiliteLength="0" GradientFillHiliteAngle="0" GradientStrokeHiliteLength="0" GradientStrokeHiliteAngle="0" AppliedObjectStyle="ObjectStyle/$ID/[None]" Visible="true" Name="$ID/" ItemTransform="1 0 0 1 200 -26">
 <Properties>
 <PathGeometry>
 <GeometryPathType PathOpen="false">
 <PathPointArray>
-<PathPointType Anchor="-165 -273" LeftDirection="-165 -273" RightDirection="-165 -273"/>
-<PathPointType Anchor="-165 273" LeftDirection="-165 273" RightDirection="-165 273"/>
-<PathPointType Anchor="165 273" LeftDirection="165 273" RightDirection="165 273"/>
-<PathPointType Anchor="165 -273" LeftDirection="165 -273" RightDirection="165 -273"/>
+<PathPointType Anchor="-164 -247" LeftDirection="-164 -247" RightDirection="-164 -247"/>
+<PathPointType Anchor="-164 247" LeftDirection="-164 247" RightDirection="-164 247"/>
+<PathPointType Anchor="164 247" LeftDirection="164 247" RightDirection="164 247"/>
+<PathPointType Anchor="164 -247" LeftDirection="164 -247" RightDirection="164 -247"/>
 </PathPointArray>
 </GeometryPathType>
 </PathGeometry>
 </Properties>
-<TextFramePreference TextColumnCount="1" TextColumnFixedWidth="330" TextColumnMaxWidth="0">
+<TextFramePreference TextColumnCount="1" TextColumnFixedWidth="328" TextColumnMaxWidth="0">
 <Properties>
 <InsetSpacing type="list">
 <ListItem type="unit">0</ListItem>

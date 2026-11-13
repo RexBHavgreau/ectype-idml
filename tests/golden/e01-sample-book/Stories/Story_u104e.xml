@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<idPkg:Story xmlns:idPkg="http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging" DOMVersion="21.5">
+<Story Self="u104e" AiGeneratedStory="false" AiModelName="$ID/" AiDigitalSourceType="$ID/" AiFirstParty="false" AiTextContent="$ID/" AppliedTOCStyle="n" UserText="true" IsEndnoteStory="false" TrackChanges="false" StoryTitle="$ID/" AppliedNamedGrid="n">
+<StoryPreference OpticalMarginAlignment="true" OpticalMarginSize="11" FrameType="TextFrameType" StoryOrientation="Horizontal" StoryDirection="LeftToRightDirection"/>
+<InCopyExportOption IncludeGraphicProxies="true" IncludeAllResources="false"/>
+<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Chapter Title">
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
+<Content>Covenant and Community</Content>
+<Br/>
+</CharacterStyleRange>
+</ParagraphStyleRange>
+<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Body First">
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
+<Content>Readers in the early church heard these passages through the Greek translation. That translation smooths some difficulties of the Hebrew and sharpens others. A careful edition keeps both voices audible without forcing them into agreement. The apparatus at the foot of the page records where the witnesses part ways. Some of these differences are accidents of copying; others are deliberate. Distinguishing the two requires attention to the habits of each scribe. The argument of this chapter proceeds from the clearer cases to the harder ones. Office workers, affluent patrons and fifty-five official scribes all appear in the record. The covenant formula recurs throughout the prophets with small but telling changes. Each change of wording marks a shift in the relationship the text describes. Readers in the early church heard these passages through the Greek translation. That translation smooths some difficulties of the Hebrew and sharpens others. A careful edition keeps both voices audible without forcing them into agreement. The apparatus at the foot of the page records where the witnesses part ways. Some of these differences are accidents of copying; others are deliberate. Distinguishing the two requires attention to the habits of each scribe. The argument of this chapter proceeds from the clearer cases to the harder ones. Office workers, affluent patrons and fifty-five official scribes all appear in the record. The covenant formula recurs throughout the prophets with small but telling changes. Each change of wording marks a shift in the relationship the text describes. Readers in the early church heard these passages through the Greek translation. That translation smooths some difficulties of the Hebrew and sharpens others. A careful edition keeps both voices audible without forcing them into agreement. The apparatus at the foot of the page records where the witnesses part ways. Some of these differences are accidents of copying; others are deliberate.</Content>
+</CharacterStyleRange>
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/Footnote Reference">
+<Footnote>
+<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Footnote">
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]" FontStyle="Regular" PointSize="9" FirstLineIndent="9" Justification="LeftJustified">
+<Properties>
+<AppliedFont type="string">Golden Test Font</AppliedFont>
+<Leading type="unit">11</Leading>
+</Properties>
+<Content>
+<?ACE 4?>. </Content>
+</CharacterStyleRange>
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]" FontStyle="Regular" PointSize="9" FirstLineIndent="9" Justification="LeftJustified">
+<Properties>
+<AppliedFont type="string">Golden Test Font</AppliedFont>
+<Leading type="unit">11</Leading>
+</Properties>
+<Content>Numbering restarts in each chapter.</Content>
+</CharacterStyleRange>
+</ParagraphStyleRange>
+</Footnote>
+</CharacterStyleRange>
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
+<Br/>
+</CharacterStyleRange>
+</ParagraphStyleRange>
+<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Block Quote First">
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
+<Content>A block quotation set off from the text, as a reader would expect in a book of this kind. That translation smooths some difficulties of the Hebrew and sharpens others. A careful edition keeps both voices audible without forcing them into agreement. The apparatus at the foot of the page records where the witnesses part ways. Some of these differences are accidents of copying; others are deliberate. Distinguishing the two requires attention to the habits of </Content>
+</CharacterStyleRange>
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/No Break">
+<Content>each scribe.</Content>
+<Br/>
+</CharacterStyleRange>
+</ParagraphStyleRange>
+<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Body">
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
+<Content>A careful edition keeps both voices audible without forcing them into agreement. The apparatus at the foot of the page records where the witnesses part ways. Some of these differences are accidents of copying; others are deliberate. Distinguishing the two requires attention to the habits of each scribe. The argument of this chapter proceeds from the clearer cases to the harder ones. Office workers, affluent patrons and fifty-five official scribes all appear in the record. The covenant formula recurs throughout the prophets with small but telling changes. Each change of wording marks a shift in the relationship the text describes. Readers in the early church heard these passages through the Greek translation. That translation smooths some difficulties of the Hebrew and sharpens others. A careful edition keeps both voices audible without forcing them into agreement. The apparatus at the foot of the page records where the witnesses part ways. Some of these differences are accidents of copying; others are deliberate. Distinguishing the two requires attention to the habits of each scribe. The argument of this chapter proceeds from the clearer cases to the harder ones. Office workers, affluent patrons and fifty-five official scribes all appear in the record. The covenant formula recurs throughout the prophets with small but telling changes. Each change of wording marks a shift in the relationship the text describes. Readers in the early church heard these passages through the Greek translation. That translation smooths some difficulties of the Hebrew and sharpens others. A careful edition keeps both voices audible without forcing them into agreement.</Content>
+</CharacterStyleRange>
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/Footnote Reference">
+<Footnote>
+<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Footnote">
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]" FontStyle="Regular" PointSize="9" FirstLineIndent="9" Justification="LeftJustified">
+<Properties>
+<AppliedFont type="string">Golden Test Font</AppliedFont>
+<Leading type="unit">11</Leading>
+</Properties>
+<Content>
+<?ACE 4?>. </Content>
+</CharacterStyleRange>
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]" FontStyle="Regular" PointSize="9" FirstLineIndent="9" Justification="LeftJustified">
+<Properties>
+<AppliedFont type="string">Golden Test Font</AppliedFont>
+<Leading type="unit">11</Leading>
+</Properties>
+<Content>A second note.</Content>
+</CharacterStyleRange>
+</ParagraphStyleRange>
+</Footnote>
+</CharacterStyleRange>
+</ParagraphStyleRange>
+</Story>
+</idPkg:Story>

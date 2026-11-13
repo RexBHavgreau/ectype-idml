@@ -3,7 +3,7 @@ window: each page as lines of text with their size and placement, at the book's 
 margins, so Book Details can be checked before exporting.
 
 The sizes and spacing follow the book's styles as the exporter makes them (Exporter's
-paragraph styles: Book Title 2.4 times the body size, and so on); a style template's styles
+paragraph styles: Book Title six steps up the scale from the body size, and so on); a style template's styles
 aren't applied here. Keep the table below in step with the exporter.
 """
 
@@ -11,18 +11,20 @@ from dataclasses import dataclass, field
 
 from . import frontmatter
 from .export import TRIMS, body_size, calculated_margins, leading_for
-from .layout import _half
+from .layout import _half, type_step
+from .styles import title_leading
 
-# style: (size and leading as multiples of the body size, italic, centered, space before in
-# body lines). None = the body leading. The Copyright styles are 2 pt below the body size.
+# style: (size in steps up the type scale from the body size, italic, centered, space before
+# in body lines). Display sizes take title_leading; body-size lines the body leading. The
+# Copyright styles are two steps below the body size.
 STYLES = {
-    "Half Title": (1.6, 2.0, False, True, 0),
-    "Series": (1.0, None, True, True, 2),
-    "Book Title": (2.4, 2.8, False, True, 0),
-    "Book Subtitle": (1.4, 1.8, True, True, 0),
-    "Volume": (1.4, 1.8, True, True, 1),
-    "Author": (1.3, 1.7, False, True, 2),
-    "Publisher": (1.0, None, False, True, 6),
+    "Half Title": (4, False, True, 0),
+    "Series": (0, True, True, 2),
+    "Book Title": (6, False, True, 0),
+    "Book Subtitle": (3, True, True, 0),
+    "Volume": (3, True, True, 1),
+    "Author": (2, False, True, 2),
+    "Publisher": (0, False, True, 6),
 }
 SPACE_AFTER = {"Book Title": 1, "Book Subtitle": 1, "Volume": 1, "Author": 1}   # body lines
 
@@ -55,12 +57,13 @@ def _lines(paras, size, lead):
     for p in paras:
         text = "".join(r.text for r in p.runs)
         if p.style.startswith("Copyright"):
-            cs = size - 2
+            cs = type_step(size, -2)
             style = Line(text, cs, _half(cs * 1.22), p.style == "Copyright Title",
                          space_after=_half(lead / 2))
         else:
-            k, kl, italic, centered, before = STYLES.get(p.style, (1.0, None, False, True, 0))
-            style = Line(text, _half(size * k), _half(size * kl) if kl else lead, italic,
+            step, italic, centered, before = STYLES.get(p.style, (0, False, True, 0))
+            pt = type_step(size, step)
+            style = Line(text, pt, title_leading(pt, lead) if step else lead, italic,
                          centered, before * lead, SPACE_AFTER.get(p.style, 0) * lead)
         for n, part in enumerate(text.split("\n")):
             out.append(Line(part, style.size, style.lead, style.italic, style.centered,

@@ -3,21 +3,9 @@
 <Story Self="u1048" AiGeneratedStory="false" AiModelName="$ID/" AiDigitalSourceType="$ID/" AiFirstParty="false" AiTextContent="$ID/" AppliedTOCStyle="n" UserText="true" IsEndnoteStory="false" TrackChanges="false" StoryTitle="$ID/" AppliedNamedGrid="n">
 <StoryPreference OpticalMarginAlignment="true" OpticalMarginSize="11" FrameType="TextFrameType" StoryOrientation="Horizontal" StoryDirection="LeftToRightDirection"/>
 <InCopyExportOption IncludeGraphicProxies="true" IncludeAllResources="false"/>
-<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Copyright">
+<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Half Title">
 <CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
-<Content>Copyright © 2026 by A. N. Author</Content>
-<Br/>
-</CharacterStyleRange>
-</ParagraphStyleRange>
-<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Copyright">
-<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
-<Content>All rights reserved.</Content>
-<Br/>
-</CharacterStyleRange>
-</ParagraphStyleRange>
-<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Copyright">
-<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
-<Content>ISBN [ISBN] (paperback)</Content>
+<Content>The Covenant Formula</Content>
 </CharacterStyleRange>
 </ParagraphStyleRange>
 </Story>

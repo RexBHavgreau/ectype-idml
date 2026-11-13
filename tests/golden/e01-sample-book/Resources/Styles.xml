@@ -12,7 +12,7 @@
 <BasedOn type="string">$ID/[No character style]</BasedOn>
 </Properties>
 </CharacterStyle>
-<CharacterStyle Self="CharacterStyle/Small Caps" Name="Small Caps" Imported="false" SplitDocument="false" EmitCss="true" StyleUniqueId="c146ade2-61ad-5489-bbf1-1113b3bca09e" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" KeyboardShortcut="0 0" Capitalization="SmallCaps">
+<CharacterStyle Self="CharacterStyle/Small Caps" Name="Small Caps" Imported="false" SplitDocument="false" EmitCss="true" StyleUniqueId="c146ade2-61ad-5489-bbf1-1113b3bca09e" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" KeyboardShortcut="0 0" Capitalization="SmallCaps" Tracking="50">
 <Properties>
 <BasedOn type="string">$ID/[No character style]</BasedOn>
 </Properties>
@@ -102,11 +102,11 @@
 <PreviewColor type="enumeration">Nothing</PreviewColor>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Body" Name="Body" Imported="false" NextStyle="ParagraphStyle/Body" SplitDocument="false" EmitCss="true" StyleUniqueId="842c0ced-cbab-50a8-bae7-c108e9ed7243" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FontStyle="Regular" PointSize="11" FirstLineIndent="16.5" Justification="LeftJustified" Hyphenation="true" Composer="HL Composer Optyca" AppliedLanguage="$ID/English: USA" Ligatures="true" OTFFigureStyle="ProportionalOldstyle" KeepLinesTogether="true" KeepFirstLines="2" KeepLastLines="2" HyphenateLastWord="false" HyphenateAcrossColumns="false">
+<ParagraphStyle Self="ParagraphStyle/Body" Name="Body" Imported="false" NextStyle="ParagraphStyle/Body" SplitDocument="false" EmitCss="true" StyleUniqueId="842c0ced-cbab-50a8-bae7-c108e9ed7243" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FontStyle="Regular" PointSize="11" FirstLineIndent="11" Justification="LeftJustified" Hyphenation="true" Composer="HL Composer Optyca" AppliedLanguage="$ID/English: USA" Ligatures="true" HyphenateAfterFirst="2" HyphenateBeforeLast="3" OTFFigureStyle="ProportionalOldstyle" KeepLinesTogether="true" KeepFirstLines="2" KeepLastLines="2" HyphenateLastWord="false" HyphenateAcrossColumns="false">
 <Properties>
 <BasedOn type="string">$ID/[No paragraph style]</BasedOn>
 <AppliedFont type="string">Golden Test Font</AppliedFont>
-<Leading type="unit">14</Leading>
+<Leading type="unit">13</Leading>
 </Properties>
 </ParagraphStyle>
 <ParagraphStyle Self="ParagraphStyle/Body First" Name="Body First" Imported="false" NextStyle="ParagraphStyle/Body First" SplitDocument="false" EmitCss="true" StyleUniqueId="3aed7cf9-4466-52a6-8501-b8b994b046c1" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="0">
@@ -114,51 +114,57 @@
 <BasedOn type="object">ParagraphStyle/Body</BasedOn>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Chapter Title" Name="Chapter Title" Imported="false" NextStyle="ParagraphStyle/Body First" SplitDocument="false" EmitCss="true" StyleUniqueId="73be774c-6417-5ffc-9b13-4b6b28bea494" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="0" Hyphenation="false" KeepWithNext="2" KeepLinesTogether="true" KeepAllLinesTogether="true" PointSize="20" Justification="CenterAlign" SpaceAfter="28" StartParagraph="NextOddPage" SpaceBefore="84" RuleAbove="true" RuleAboveLineWeight="0" RuleAboveTint="0" RuleAboveOffset="99" KeepRuleAboveInFrame="true">
+<ParagraphStyle Self="ParagraphStyle/Chapter Title" Name="Chapter Title" Imported="false" NextStyle="ParagraphStyle/Body First" SplitDocument="false" EmitCss="true" StyleUniqueId="73be774c-6417-5ffc-9b13-4b6b28bea494" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="0" Hyphenation="false" KeepWithNext="2" KeepLinesTogether="true" KeepAllLinesTogether="true" PointSize="18" Justification="CenterAlign" SpaceAfter="13" StartParagraph="NextOddPage" SpaceBefore="78" RuleAbove="true" RuleAboveLineWeight="0" RuleAboveTint="0" RuleAboveOffset="91.5" KeepRuleAboveInFrame="true">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Body</BasedOn>
 <AppliedFont type="string">Golden Test Font</AppliedFont>
-<Leading type="unit">24</Leading>
+<Leading type="unit">26</Leading>
 <BalanceRaggedLines type="enumeration">VeeShape</BalanceRaggedLines>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Heading A" Name="Heading A" Imported="false" NextStyle="ParagraphStyle/Body First" SplitDocument="false" EmitCss="true" StyleUniqueId="0e61f4b8-d953-54b9-8a1c-8f3bc21ada53" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="0" Hyphenation="false" KeepWithNext="2" KeepLinesTogether="true" KeepAllLinesTogether="true" PointSize="12" FontStyle="Bold" Justification="LeftAlign" SpaceBefore="14" SpaceAfter="7">
+<ParagraphStyle Self="ParagraphStyle/Heading A" Name="Heading A" Imported="false" NextStyle="ParagraphStyle/Body First" SplitDocument="false" EmitCss="true" StyleUniqueId="0e61f4b8-d953-54b9-8a1c-8f3bc21ada53" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="0" Hyphenation="false" KeepWithNext="2" KeepLinesTogether="true" KeepAllLinesTogether="true" PointSize="14" Justification="LeftAlign" SpaceBefore="13" SpaceAfter="6.5">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Body</BasedOn>
 <AppliedFont type="string">Golden Test Font</AppliedFont>
-<Leading type="unit">14</Leading>
+<Leading type="unit">19.5</Leading>
 <BalanceRaggedLines type="enumeration">VeeShape</BalanceRaggedLines>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Heading B" Name="Heading B" Imported="false" NextStyle="ParagraphStyle/Body First" SplitDocument="false" EmitCss="true" StyleUniqueId="bfc16c4e-8098-5f3d-94ff-ee343218578d" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="11" FontStyle="Bold Italic">
+<ParagraphStyle Self="ParagraphStyle/Heading B" Name="Heading B" Imported="false" NextStyle="ParagraphStyle/Body First" SplitDocument="false" EmitCss="true" StyleUniqueId="bfc16c4e-8098-5f3d-94ff-ee343218578d" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="11" Capitalization="SmallCaps" Tracking="50" SpaceAfter="0">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Heading A</BasedOn>
+<Leading type="unit">13</Leading>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Book Title" Name="Book Title" Imported="false" NextStyle="ParagraphStyle/Book Title" SplitDocument="false" EmitCss="true" StyleUniqueId="f60c8320-e18c-5c7a-9b09-6903eaa03328" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="0" Hyphenation="false" KeepWithNext="2" KeepLinesTogether="true" KeepAllLinesTogether="true" PointSize="26.5" Justification="CenterAlign" SpaceAfter="14" SpaceBefore="109" RuleAbove="true" RuleAboveLineWeight="0" RuleAboveTint="0" RuleAboveOffset="129" KeepRuleAboveInFrame="true">
+<ParagraphStyle Self="ParagraphStyle/Book Title" Name="Book Title" Imported="false" NextStyle="ParagraphStyle/Book Title" SplitDocument="false" EmitCss="true" StyleUniqueId="f60c8320-e18c-5c7a-9b09-6903eaa03328" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="0" Hyphenation="false" KeepWithNext="2" KeepLinesTogether="true" KeepAllLinesTogether="true" PointSize="24" Justification="CenterAlign" SpaceAfter="13" SpaceBefore="99" RuleAbove="true" RuleAboveLineWeight="0" RuleAboveTint="0" RuleAboveOffset="117" KeepRuleAboveInFrame="true">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Body</BasedOn>
 <AppliedFont type="string">Golden Test Font</AppliedFont>
-<Leading type="unit">31</Leading>
+<Leading type="unit">32.5</Leading>
 <BalanceRaggedLines type="enumeration">VeeShape</BalanceRaggedLines>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Book Subtitle" Name="Book Subtitle" Imported="false" NextStyle="ParagraphStyle/Book Subtitle" SplitDocument="false" EmitCss="true" StyleUniqueId="53741187-905b-5103-93bb-a845a671d2a4" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="15.5" FontStyle="Italic" SpaceBefore="0" RuleAbove="false">
+<ParagraphStyle Self="ParagraphStyle/Book Subtitle" Name="Book Subtitle" Imported="false" NextStyle="ParagraphStyle/Book Subtitle" SplitDocument="false" EmitCss="true" StyleUniqueId="53741187-905b-5103-93bb-a845a671d2a4" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="16" FontStyle="Italic" SpaceBefore="0" RuleAbove="false">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Book Title</BasedOn>
-<Leading type="unit">20</Leading>
+<Leading type="unit">19.5</Leading>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Author" Name="Author" Imported="false" NextStyle="ParagraphStyle/Author" SplitDocument="false" EmitCss="true" StyleUniqueId="4a858c9e-3339-55ec-b4d9-af4219a2465c" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="14.5" SpaceBefore="28" RuleAbove="false">
+<ParagraphStyle Self="ParagraphStyle/Author" Name="Author" Imported="false" NextStyle="ParagraphStyle/Author" SplitDocument="false" EmitCss="true" StyleUniqueId="4a858c9e-3339-55ec-b4d9-af4219a2465c" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="14" SpaceBefore="26" RuleAbove="false">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Book Title</BasedOn>
-<Leading type="unit">18.5</Leading>
+<Leading type="unit">19.5</Leading>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Block Quote" Name="Block Quote" Imported="false" NextStyle="ParagraphStyle/Block Quote" SplitDocument="false" EmitCss="true" StyleUniqueId="522b6438-d679-5867-8c04-14d1b2d68e37" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="10" FirstLineIndent="0" LeftIndent="16.5" SpaceBefore="7" SpaceAfter="7">
+<ParagraphStyle Self="ParagraphStyle/Block Quote" Name="Block Quote" Imported="false" NextStyle="ParagraphStyle/Block Quote" SplitDocument="false" EmitCss="true" StyleUniqueId="522b6438-d679-5867-8c04-14d1b2d68e37" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="10" FirstLineIndent="11" LeftIndent="16.5" SpaceBefore="0" SpaceAfter="6.5">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Body</BasedOn>
 <Leading type="unit">13</Leading>
+</Properties>
+</ParagraphStyle>
+<ParagraphStyle Self="ParagraphStyle/Block Quote First" Name="Block Quote First" Imported="false" NextStyle="ParagraphStyle/Block Quote First" SplitDocument="false" EmitCss="true" StyleUniqueId="21eb54ce-ed86-52c6-88cf-65287e2df90b" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="0" SpaceBefore="6.5">
+<Properties>
+<BasedOn type="object">ParagraphStyle/Block Quote</BasedOn>
 </Properties>
 </ParagraphStyle>
 <ParagraphStyle Self="ParagraphStyle/List" Name="List" Imported="false" NextStyle="ParagraphStyle/List" SplitDocument="false" EmitCss="true" StyleUniqueId="c29c0392-55cf-5ed5-91aa-0279b75fb7d8" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="-18" LeftIndent="18" Justification="LeftAlign">
@@ -185,33 +191,33 @@
 <BasedOn type="object">ParagraphStyle/Body</BasedOn>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Footnote" Name="Footnote" Imported="false" NextStyle="ParagraphStyle/Footnote" SplitDocument="false" EmitCss="true" StyleUniqueId="814ad582-714c-5598-8131-450cb80fba35" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FontStyle="Regular" PointSize="9" FirstLineIndent="9" Justification="LeftJustified" AppliedLanguage="$ID/English: USA" Hyphenation="true" Composer="HL Composer Optyca" HyphenateLastWord="false" KeepLinesTogether="true" KeepFirstLines="2" KeepLastLines="2">
+<ParagraphStyle Self="ParagraphStyle/Footnote" Name="Footnote" Imported="false" NextStyle="ParagraphStyle/Footnote" SplitDocument="false" EmitCss="true" StyleUniqueId="814ad582-714c-5598-8131-450cb80fba35" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FontStyle="Regular" PointSize="9" FirstLineIndent="9" Justification="LeftJustified" AppliedLanguage="$ID/English: USA" Hyphenation="true" Composer="HL Composer Optyca" HyphenateLastWord="false" KeepLinesTogether="true" KeepFirstLines="2" KeepLastLines="2" HyphenateAfterFirst="2" HyphenateBeforeLast="3">
 <Properties>
 <BasedOn type="string">$ID/[No paragraph style]</BasedOn>
 <AppliedFont type="string">Golden Test Font</AppliedFont>
 <Leading type="unit">11</Leading>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Caption" Name="Caption" Imported="false" NextStyle="ParagraphStyle/Caption" SplitDocument="false" EmitCss="true" StyleUniqueId="bbb63a9f-26ba-5a2b-8c33-b2b77c90aa05" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="9" FirstLineIndent="0" FontStyle="Italic" Justification="CenterAlign" SpaceAfter="7">
+<ParagraphStyle Self="ParagraphStyle/Caption" Name="Caption" Imported="false" NextStyle="ParagraphStyle/Caption" SplitDocument="false" EmitCss="true" StyleUniqueId="bbb63a9f-26ba-5a2b-8c33-b2b77c90aa05" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="9" FirstLineIndent="0" FontStyle="Italic" Justification="CenterAlign" SpaceAfter="6.5">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Body</BasedOn>
 <Leading type="unit">11</Leading>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Figure" Name="Figure" Imported="false" NextStyle="ParagraphStyle/Figure" SplitDocument="false" EmitCss="true" StyleUniqueId="6db2089e-b092-5fcf-906a-f4a0a6e9464a" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="0" Justification="CenterAlign" SpaceBefore="7" SpaceAfter="4">
+<ParagraphStyle Self="ParagraphStyle/Figure" Name="Figure" Imported="false" NextStyle="ParagraphStyle/Figure" SplitDocument="false" EmitCss="true" StyleUniqueId="6db2089e-b092-5fcf-906a-f4a0a6e9464a" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="0" Justification="CenterAlign" SpaceBefore="6.5" SpaceAfter="4">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Body</BasedOn>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Table" Name="Table" Imported="false" NextStyle="ParagraphStyle/Table" SplitDocument="false" EmitCss="true" StyleUniqueId="a6b9a9ef-a3ca-5149-8261-9feacb24dcf0" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="0" SpaceBefore="7" SpaceAfter="7">
+<ParagraphStyle Self="ParagraphStyle/Table" Name="Table" Imported="false" NextStyle="ParagraphStyle/Table" SplitDocument="false" EmitCss="true" StyleUniqueId="a6b9a9ef-a3ca-5149-8261-9feacb24dcf0" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="0" SpaceBefore="6.5" SpaceAfter="6.5">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Body</BasedOn>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Table Body" Name="Table Body" Imported="false" NextStyle="ParagraphStyle/Table Body" SplitDocument="false" EmitCss="true" StyleUniqueId="b90fdb85-93ff-528c-8437-5ebb68b24965" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="0" PointSize="9.5" Justification="LeftAlign" Hyphenation="false">
+<ParagraphStyle Self="ParagraphStyle/Table Body" Name="Table Body" Imported="false" NextStyle="ParagraphStyle/Table Body" SplitDocument="false" EmitCss="true" StyleUniqueId="b90fdb85-93ff-528c-8437-5ebb68b24965" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FirstLineIndent="0" PointSize="9" Justification="LeftAlign" Hyphenation="false" OTFFigureStyle="TabularLining">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Body</BasedOn>
-<Leading type="unit">12</Leading>
+<Leading type="unit">11.5</Leading>
 </Properties>
 </ParagraphStyle>
 <ParagraphStyle Self="ParagraphStyle/Table Head" Name="Table Head" Imported="false" NextStyle="ParagraphStyle/Table Head" SplitDocument="false" EmitCss="true" StyleUniqueId="4f92ba7e-ecbd-5c8e-ab1c-d32a960f0232" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" FontStyle="Bold">
@@ -219,33 +225,33 @@
 <BasedOn type="object">ParagraphStyle/Table Body</BasedOn>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Folio" Name="Folio" Imported="false" NextStyle="ParagraphStyle/Folio" SplitDocument="false" EmitCss="true" StyleUniqueId="0f945b41-b0d3-55a9-8bd3-1272e8dcd107" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="9" Justification="CenterAlign">
+<ParagraphStyle Self="ParagraphStyle/Folio" Name="Folio" Imported="false" NextStyle="ParagraphStyle/Folio" SplitDocument="false" EmitCss="true" StyleUniqueId="0f945b41-b0d3-55a9-8bd3-1272e8dcd107" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="11" Justification="CenterAlign">
 <Properties>
 <BasedOn type="string">$ID/[No paragraph style]</BasedOn>
 <AppliedFont type="string">Golden Test Font</AppliedFont>
-<Leading type="unit">14</Leading>
+<Leading type="unit">13</Leading>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Running Head" Name="Running Head" Imported="false" NextStyle="ParagraphStyle/Running Head" SplitDocument="false" EmitCss="true" StyleUniqueId="e63ecfa5-35a8-5f80-8b9a-3b591588fdba" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="9" Justification="CenterAlign" Tracking="20" Hyphenation="false" Capitalization="SmallCaps">
+<ParagraphStyle Self="ParagraphStyle/Running Head" Name="Running Head" Imported="false" NextStyle="ParagraphStyle/Running Head" SplitDocument="false" EmitCss="true" StyleUniqueId="e63ecfa5-35a8-5f80-8b9a-3b591588fdba" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="11" Justification="CenterAlign" Tracking="75" Hyphenation="false" Capitalization="SmallCaps">
 <Properties>
 <BasedOn type="string">$ID/[No paragraph style]</BasedOn>
 <AppliedFont type="string">Golden Test Font</AppliedFont>
-<Leading type="unit">14</Leading>
+<Leading type="unit">13</Leading>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Half Title" Name="Half Title" Imported="false" NextStyle="ParagraphStyle/Half Title" SplitDocument="false" EmitCss="true" StyleUniqueId="34167d46-2f8d-59d5-babb-5ddf50951c49" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="17.5" SpaceBefore="136.5" RuleAbove="true" RuleAboveLineWeight="0" RuleAboveTint="0" RuleAboveOffset="149.5" KeepRuleAboveInFrame="true">
+<ParagraphStyle Self="ParagraphStyle/Half Title" Name="Half Title" Imported="false" NextStyle="ParagraphStyle/Half Title" SplitDocument="false" EmitCss="true" StyleUniqueId="34167d46-2f8d-59d5-babb-5ddf50951c49" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="18" SpaceBefore="123.5" RuleAbove="true" RuleAboveLineWeight="0" RuleAboveTint="0" RuleAboveOffset="137" KeepRuleAboveInFrame="true">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Book Title</BasedOn>
-<Leading type="unit">22</Leading>
+<Leading type="unit">26</Leading>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Copyright" Name="Copyright" Imported="false" NextStyle="ParagraphStyle/Copyright" SplitDocument="false" EmitCss="true" StyleUniqueId="fffd6d04-a7ca-56bb-806b-c236af1bae4f" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="9" FirstLineIndent="0" Justification="LeftAlign" Hyphenation="false" SpaceAfter="7">
+<ParagraphStyle Self="ParagraphStyle/Copyright" Name="Copyright" Imported="false" NextStyle="ParagraphStyle/Copyright" SplitDocument="false" EmitCss="true" StyleUniqueId="fffd6d04-a7ca-56bb-806b-c236af1bae4f" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" PointSize="9" FirstLineIndent="0" Justification="LeftAlign" Hyphenation="false" SpaceAfter="6.5">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Body</BasedOn>
 <Leading type="unit">11</Leading>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Contents Title" Name="Contents Title" Imported="false" NextStyle="ParagraphStyle/Contents 1" SplitDocument="false" EmitCss="true" StyleUniqueId="537c89c9-db8b-5ba0-bfec-2d05144b25d6" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" SpaceBefore="84" RuleAbove="true" RuleAboveLineWeight="0" RuleAboveTint="0" RuleAboveOffset="99" KeepRuleAboveInFrame="true">
+<ParagraphStyle Self="ParagraphStyle/Contents Title" Name="Contents Title" Imported="false" NextStyle="ParagraphStyle/Contents 1" SplitDocument="false" EmitCss="true" StyleUniqueId="537c89c9-db8b-5ba0-bfec-2d05144b25d6" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" SpaceBefore="78" RuleAbove="true" RuleAboveLineWeight="0" RuleAboveTint="0" RuleAboveOffset="91.5" KeepRuleAboveInFrame="true">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Chapter Title</BasedOn>
 </Properties>
@@ -258,7 +264,7 @@
 <Alignment type="enumeration">RightAlign</Alignment>
 <AlignmentCharacter type="string">.</AlignmentCharacter>
 <Leader type="string">. </Leader>
-<Position type="unit">330</Position>
+<Position type="unit">328</Position>
 </ListItem>
 </TabList>
 </Properties>
@@ -268,10 +274,10 @@
 <BasedOn type="object">ParagraphStyle/Contents 1</BasedOn>
 </Properties>
 </ParagraphStyle>
-<ParagraphStyle Self="ParagraphStyle/Epigraph" Name="Epigraph" Imported="false" NextStyle="ParagraphStyle/Epigraph" SplitDocument="false" EmitCss="true" StyleUniqueId="1be67173-5a7c-5b1a-beb2-c43debe7ddcc" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" Justification="CenterAlign" FirstLineIndent="0" LeftIndent="51" RightIndent="51" FontStyle="Italic" PointSize="9">
+<ParagraphStyle Self="ParagraphStyle/Epigraph" Name="Epigraph" Imported="false" NextStyle="ParagraphStyle/Epigraph" SplitDocument="false" EmitCss="true" StyleUniqueId="1be67173-5a7c-5b1a-beb2-c43debe7ddcc" IncludeClass="true" ExtendedKeyboardShortcut="0 0 0" EpubAriaRole="" EmptyNestedStyles="true" EmptyLineStyles="true" EmptyGrepStyles="true" KeyboardShortcut="0 0" Justification="CenterAlign" FirstLineIndent="0" LeftIndent="50.5" RightIndent="50.5" FontStyle="Italic" PointSize="9">
 <Properties>
 <BasedOn type="object">ParagraphStyle/Body</BasedOn>
-<Leading type="unit">11.5</Leading>
+<Leading type="unit">11</Leading>
 </Properties>
 </ParagraphStyle>
 </RootParagraphStyleGroup>

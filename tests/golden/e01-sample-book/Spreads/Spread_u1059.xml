@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<idPkg:Spread xmlns:idPkg="http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging" DOMVersion="21.5">
+<Spread Self="u1059" FlattenerOverride="Default" SpreadHidden="false" AllowPageShuffle="true" ItemTransform="1 0 0 1 0 3312" ShowMasterItems="true" PageCount="2" BindingLocation="1" PageTransitionType="None" PageTransitionDirection="NotApplicable" PageTransitionDuration="Medium">
+<FlattenerPreference LineArtAndTextResolution="300" GradientAndMeshResolution="150" ClipComplexRegions="false" ConvertAllStrokesToOutlines="false" ConvertAllTextToOutlines="false">
+<Properties>
+<RasterVectorBalance type="double">50</RasterVectorBalance>
+</Properties>
+</FlattenerPreference>
+<Page Self="u103e" AppliedAlternateLayout="u1003" LayoutRule="UseMaster" SnapshotBlendingMode="IgnoreLayoutSnapshots" OptionalPage="false" GeometricBounds="0 0 648 432" ItemTransform="1 0 0 1 -432 -324" Name="viii" AppliedTrapPreset="TrapPreset/$ID/kDefaultTrapStyleName" OverrideList="u1029 u105a" AppliedMaster="u100d" MasterPageTransform="1 0 0 1 0 0" TabOrder="" GridStartingPoint="TopOutside" UseMasterGrid="true">
+<Properties>
+<Descriptor type="list">
+<ListItem type="string">
+</ListItem>
+<ListItem type="enumeration">LowerRoman</ListItem>
+<ListItem type="boolean">true</ListItem>
+<ListItem type="boolean">false</ListItem>
+<ListItem type="long">8</ListItem>
+<ListItem type="long">8</ListItem>
+<ListItem type="string">Preface</ListItem>
+</Descriptor>
+<PageColor type="enumeration">UseMasterColor</PageColor>
+</Properties>
+<MarginPreference ColumnCount="1" ColumnGutter="12" Top="51" Bottom="103" Left="36" Right="68" ColumnDirection="Horizontal" ColumnsPositions="0 328"/>
+<GridDataInformation FontStyle="Regular" PointSize="12" CharacterAki="0" LineAki="9" HorizontalScale="100" VerticalScale="100" LineAlignment="LeftOrTopLineJustify" GridAlignment="AlignEmCenter" CharacterAlignment="AlignEmCenter">
+<Properties>
+<AppliedFont type="string">Minion Pro</AppliedFont>
+</Properties>
+</GridDataInformation>
+</Page>
+<Page Self="u103f" AppliedAlternateLayout="u1003" LayoutRule="UseMaster" SnapshotBlendingMode="IgnoreLayoutSnapshots" OptionalPage="false" GeometricBounds="0 0 648 432" ItemTransform="1 0 0 1 0 -324" Name="1" AppliedTrapPreset="TrapPreset/$ID/kDefaultTrapStyleName" OverrideList="u1023 u105b" AppliedMaster="u100c" MasterPageTransform="1 0 0 1 0 0" TabOrder="" GridStartingPoint="TopOutside" UseMasterGrid="true">
+<Properties>
+<Descriptor type="list">
+<ListItem type="string">
+</ListItem>
+<ListItem type="enumeration">Arabic</ListItem>
+<ListItem type="boolean">false</ListItem>
+<ListItem type="boolean">false</ListItem>
+<ListItem type="long">1</ListItem>
+<ListItem type="long">1</ListItem>
+<ListItem type="string">The Formula in the Prophets</ListItem>
+</Descriptor>
+<PageColor type="enumeration">UseMasterColor</PageColor>
+</Properties>
+<MarginPreference ColumnCount="1" ColumnGutter="12" Top="51" Bottom="103" Left="36" Right="68" ColumnDirection="Horizontal" ColumnsPositions="0 328"/>
+<GridDataInformation FontStyle="Regular" PointSize="12" CharacterAki="0" LineAki="9" HorizontalScale="100" VerticalScale="100" LineAlignment="LeftOrTopLineJustify" GridAlignment="AlignEmCenter" CharacterAlignment="AlignEmCenter">
+<Properties>
+<AppliedFont type="string">Minion Pro</AppliedFont>
+</Properties>
+</GridDataInformation>
+</Page>
+<TextFrame Self="u105a" ParentStory="u104c" PreviousTextFrame="u1058" NextTextFrame="n" ContentType="TextType" ParentInterfaceChangeCount="" TargetInterfaceChangeCount="" LastUpdatedInterfaceChangeCount="" OverriddenPageItemProps="" BeforeGroupingLayerPosition="-1" HorizontalLayoutConstraints="FixedDimension FlexibleDimension FixedDimension" VerticalLayoutConstraints="FixedDimension FlexibleDimension FixedDimension" FlexItemWidthMode="FlexFixed" FlexItemHeightMode="FlexFixed" StrokeWeight="1" GradientFillStart="0 0" GradientFillLength="0" GradientFillAngle="0" GradientStrokeStart="0 0" GradientStrokeLength="0" GradientStrokeAngle="0" ItemLayer="uce" Locked="false" LocalDisplaySetting="Default" GradientFillHiliteLength="0" GradientFillHiliteAngle="0" GradientStrokeHiliteLength="0" GradientStrokeHiliteAngle="0" AppliedObjectStyle="ObjectStyle/$ID/[None]" Visible="true" Name="$ID/" ItemTransform="1 0 0 1 -200 -26">
+<Properties>
+<PathGeometry>
+<GeometryPathType PathOpen="false">
+<PathPointArray>
+<PathPointType Anchor="-164 -247" LeftDirection="-164 -247" RightDirection="-164 -247"/>
+<PathPointType Anchor="-164 247" LeftDirection="-164 247" RightDirection="-164 247"/>
+<PathPointType Anchor="164 247" LeftDirection="164 247" RightDirection="164 247"/>
+<PathPointType Anchor="164 -247" LeftDirection="164 -247" RightDirection="164 -247"/>
+</PathPointArray>
+</GeometryPathType>
+</PathGeometry>
+</Properties>
+<TextFramePreference TextColumnCount="1" TextColumnFixedWidth="328" TextColumnMaxWidth="0">
+<Properties>
+<InsetSpacing type="list">
+<ListItem type="unit">0</ListItem>
+<ListItem type="unit">0</ListItem>
+<ListItem type="unit">0</ListItem>
+<ListItem type="unit">0</ListItem>
+</InsetSpacing>
+</Properties>
+</TextFramePreference>
+<TextWrapPreference Inverse="false" ApplyToMasterPageOnly="false" TextWrapSide="BothSides" TextWrapMode="None">
+<Properties>
+<TextWrapOffset Top="0" Left="0" Bottom="0" Right="0"/>
+</Properties>
+</TextWrapPreference>
+<ObjectExportOption EpubType="$ID/" SizeType="DefaultSize" CustomSize="$ID/" PreserveAppearanceFromLayout="PreserveAppearanceDefault" EpubAriaRole="$ID/" EpubAriaLabel="$ID/" EpubAriaLabelSourceType="AutomaticARIALabel" AltTextGenerationError="false" AltTextCropSyncRect="" AIGeneratedAltText="false" AltTextSourceType="SourceXMLStructure" ActualTextSourceType="SourceXMLStructure" CustomAltText="$ID/" CustomActualText="$ID/" ApplyTagType="TagFromStructure" ImageConversionType="JPEG" ImageExportResolution="Ppi300" GIFOptionsPalette="AdaptivePalette" GIFOptionsInterlaced="true" JPEGOptionsQuality="High" JPEGOptionsFormat="BaselineEncoding" ImageAlignment="AlignLeft" ImageSpaceBefore="0" ImageSpaceAfter="0" UseImagePageBreak="false" ImagePageBreak="PageBreakBefore" CustomImageAlignment="false" SpaceUnit="CssPixel" CustomLayout="false" CustomLayoutType="AlignmentAndSpacing">
+<Properties>
+<AltMetadataProperty NamespacePrefix="$ID/" PropertyPath="$ID/"/>
+<ActualMetadataProperty NamespacePrefix="$ID/" PropertyPath="$ID/"/>
+</Properties>
+</ObjectExportOption>
+</TextFrame>
+<TextFrame Self="u105b" ParentStory="u104d" PreviousTextFrame="n" NextTextFrame="u105d" ContentType="TextType" ParentInterfaceChangeCount="" TargetInterfaceChangeCount="" LastUpdatedInterfaceChangeCount="" OverriddenPageItemProps="" BeforeGroupingLayerPosition="-1" HorizontalLayoutConstraints="FixedDimension FlexibleDimension FixedDimension" VerticalLayoutConstraints="FixedDimension FlexibleDimension FixedDimension" FlexItemWidthMode="FlexFixed" FlexItemHeightMode="FlexFixed" StrokeWeight="1" GradientFillStart="0 0" GradientFillLength="0" GradientFillAngle="0" GradientStrokeStart="0 0" GradientStrokeLength="0" GradientStrokeAngle="0" ItemLayer="uce" Locked="false" LocalDisplaySetting="Default" GradientFillHiliteLength="0" GradientFillHiliteAngle="0" GradientStrokeHiliteLength="0" GradientStrokeHiliteAngle="0" AppliedObjectStyle="ObjectStyle/$ID/[None]" Visible="true" Name="$ID/" ItemTransform="1 0 0 1 200 -26">
+<Properties>
+<PathGeometry>
+<GeometryPathType PathOpen="false">
+<PathPointArray>
+<PathPointType Anchor="-164 -247" LeftDirection="-164 -247" RightDirection="-164 -247"/>
+<PathPointType Anchor="-164 247" LeftDirection="-164 247" RightDirection="-164 247"/>
+<PathPointType Anchor="164 247" LeftDirection="164 247" RightDirection="164 247"/>
+<PathPointType Anchor="164 -247" LeftDirection="164 -247" RightDirection="164 -247"/>
+</PathPointArray>
+</GeometryPathType>
+</PathGeometry>
+</Properties>
+<TextFramePreference TextColumnCount="1" TextColumnFixedWidth="328" TextColumnMaxWidth="0">
+<Properties>
+<InsetSpacing type="list">
+<ListItem type="unit">0</ListItem>
+<ListItem type="unit">0</ListItem>
+<ListItem type="unit">0</ListItem>
+<ListItem type="unit">0</ListItem>
+</InsetSpacing>
+</Properties>
+</TextFramePreference>
+<TextWrapPreference Inverse="false" ApplyToMasterPageOnly="false" TextWrapSide="BothSides" TextWrapMode="None">
+<Properties>
+<TextWrapOffset Top="0" Left="0" Bottom="0" Right="0"/>
+</Properties>
+</TextWrapPreference>
+<ObjectExportOption EpubType="$ID/" SizeType="DefaultSize" CustomSize="$ID/" PreserveAppearanceFromLayout="PreserveAppearanceDefault" EpubAriaRole="$ID/" EpubAriaLabel="$ID/" EpubAriaLabelSourceType="AutomaticARIALabel" AltTextGenerationError="false" AltTextCropSyncRect="" AIGeneratedAltText="false" AltTextSourceType="SourceXMLStructure" ActualTextSourceType="SourceXMLStructure" CustomAltText="$ID/" CustomActualText="$ID/" ApplyTagType="TagFromStructure" ImageConversionType="JPEG" ImageExportResolution="Ppi300" GIFOptionsPalette="AdaptivePalette" GIFOptionsInterlaced="true" JPEGOptionsQuality="High" JPEGOptionsFormat="BaselineEncoding" ImageAlignment="AlignLeft" ImageSpaceBefore="0" ImageSpaceAfter="0" UseImagePageBreak="false" ImagePageBreak="PageBreakBefore" CustomImageAlignment="false" SpaceUnit="CssPixel" CustomLayout="false" CustomLayoutType="AlignmentAndSpacing">
+<Properties>
+<AltMetadataProperty NamespacePrefix="$ID/" PropertyPath="$ID/"/>
+<ActualMetadataProperty NamespacePrefix="$ID/" PropertyPath="$ID/"/>
+</Properties>
+</ObjectExportOption>
+</TextFrame>
+</Spread>
+</idPkg:Spread>

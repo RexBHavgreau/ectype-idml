@@ -10,9 +10,9 @@ from .outline import KIND_LABELS, KINDS
 
 HEAD_FIELDS = [
     (("running_heads", "verso"), "Verso head", "choice",
-     ["book_title", "part", "chapter", "author", "custom"]),
+     ["book_title", "part", "chapter", "author", "custom", "none"]),
     (("running_heads", "verso_custom"), "Verso text (custom)", "text", None),
-    (("running_heads", "recto"), "Recto head", "choice", ["chapter_title", "custom"]),
+    (("running_heads", "recto"), "Recto head", "choice", ["chapter_title", "custom", "none"]),
     (("running_heads", "recto_custom"), "Recto text (custom)", "text", None),
     (("running_heads", "suppress_on_openers"), "No heads on chapter openers", "bool", None),
     (("running_heads", "suppress_on_display"), "No heads on display pages", "bool", None),
@@ -26,6 +26,7 @@ FOLIO_FIELDS = [
       ("head_outside", "At the head, outside (beside the running head)")]),
     (("running_heads", "opener_folio"), "On chapter openers", "radio",
      [("drop", "At the foot"), ("none", "None")]),
+    (("running_heads", "folio_size"), "Size (pt; blank = the body size)", "number", None),
 ]
 HEAD_CASE_FIELDS = [
     (("running_heads", "style", "case"), "", "radio",
@@ -37,7 +38,7 @@ HEAD_FONT_FIELDS = [
     (("running_heads", "style", "underline"), "Underlined", "bool", None),
     (("running_heads", "style", "caps"), "", "one_of",
      [("all_caps", "All Caps"), ("small_caps", "Small Caps")]),
-    (("running_heads", "style", "size"), "Size (pt; blank = 2 pt below the body)", "number",
+    (("running_heads", "style", "size"), "Size (pt; blank = the body size)", "number",
      None),
     (("running_heads", "style", "tracking"), "Letter-spacing (thousandths of an em)", "int",
      None),
@@ -60,7 +61,7 @@ class HeadsTabMixin:
         ttk.Label(folios, foreground="#555", text=(
             "Display and blank pages have no page number. With page numbers at the head, "
             "an opener's goes at the foot, centered.")).grid(
-            row=2, column=0, columnspan=2, sticky="w", padx=6)
+            row=len(FOLIO_FIELDS), column=0, columnspan=2, sticky="w", padx=6)
         box = ttk.LabelFrame(tab, text="Running Head Style", padding=6)
         box.pack(fill="x", pady=(8, 0))
         case = ttk.LabelFrame(box, text="Case", padding=4)
@@ -107,7 +108,8 @@ class HeadsTabMixin:
         page = self.profile["page"]
         w, h = TRIMS.get(page.get("trim"), TRIMS["6x9"]) if page.get("trim") != "custom" else \
             (page.get("custom_width") or 6, page.get("custom_height") or 9)
-        g = layout.geometry(w * 72, h * 72, 11, 14, 0.42, 200, page.get("margins"))
+        g = layout.geometry(w * 72, h * 72, 11, 13, 0.42, 200, page.get("margins"),
+                            scheme=layout.margin_scheme(page))
         return int(g.measure * 0.8 / (9 * 0.42 * 1.1))
 
     def _edit_head(self, event):

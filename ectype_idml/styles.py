@@ -3,6 +3,7 @@ paragraph and character styles (the book set, Word styles kept by name with thei
 book terms, a style template's), and the helpers they share with the exporter.
 """
 
+import math
 import os
 
 from . import fonts, layout
@@ -16,11 +17,16 @@ FONT_STYLES = {(False, False): "Regular", (False, True): "Italic", (True, False)
 # Character styles the exporter makes from Word's formatting.
 CHAR_STYLES = {
     "Italic": {"FontStyle": "Italic"}, "Bold": {"FontStyle": "Bold"},
-    "Bold Italic": {"FontStyle": "Bold Italic"}, "Small Caps": {"Capitalization": "SmallCaps"},
-    "All Caps": {"Capitalization": "AllCaps"}, "Superscript": {"Position": "Superscript"},
+    "Bold Italic": {"FontStyle": "Bold Italic"},
+    # Capitals and small caps letterspaced 5% (Bringhurst 2.1.6); capitals with lining figures.
+    "Small Caps": {"Capitalization": "SmallCaps", "Tracking": 50},
+    "All Caps": {"Capitalization": "AllCaps", "Tracking": 50,
+                 "OTFFigureStyle": "ProportionalLining"}, "Superscript": {"Position": "Superscript"},
     "Subscript": {"Position": "Subscript"}, "Underline": {"Underline": True},
     "Strikethrough": {"StrikeThru": True}, "Footnote Reference": {"Position": "Superscript"},
     "Hyperlink": {}, "No Break": {"NoBreak": True},
+    # A heading below Heading C, run into the start of its paragraph (1.1.0).
+    "Run-in Head": {"FontStyle": "Italic"},
 }
 RESET = {"FontStyle": None, "Capitalization": "Normal", "Position": "Normal",
          "Underline": False, "StrikeThru": False}
@@ -56,6 +62,29 @@ def leading_for(profile, size=None, x_height=None, cpl=layout.TARGET_CPL):
     if unit == "percent":
         return _half(size * v / 100)
     return v
+
+
+def is_script_style(name):
+    """Hebrew, Greek, or a sized Greek ("Greek 9 pt")."""
+    return bool(name) and (name in ("Hebrew", "Greek") or
+                           (name.startswith("Greek ") and name.endswith(" pt")))
+
+
+def title_leading(size, lead):
+    """A display line's leading: the least number of half body lines that gives it 1.1 times
+    its size, so titles and headings keep to the page's lines (Bringhurst 2.2.2)."""
+    return lead / 2 * math.ceil(size * 1.1 / (lead / 2) - 1e-9)
+
+
+def paragraph_indent(profile, size=None):
+    """The first-line indent in points: typography.paragraph_indent ems (default 1, one em,
+    Bringhurst 2.3.2) of the body size."""
+    size = size or body_size(profile)
+    try:
+        ems = float((profile.get("typography") or {}).get("paragraph_indent") or 1)
+    except (TypeError, ValueError):
+        ems = 1
+    return _half(size * min(max(ems, 0), 4))
 
 
 def _half(v):
@@ -114,13 +143,17 @@ class StylesMixin:
         size = body_size(self.profile)
         lead = self._leading(size)
         self.body_size, self.body_lead = size, lead
-        indent = _half(size * 1.5)
+        indent = paragraph_indent(self.profile, size)
+        quotes = self.profile.get("block_quotes") or {}
         lang = LANGUAGES.get(self.profile["front_matter"].get("language"), LANGUAGES["en"])
+        up = lambda n: layout.type_step(size, n)  # noqa: E731  (steps on the scale)
         body = {"FontStyle": fonts.regular_face(f["body"]), "PointSize": size,
                 "FirstLineIndent": indent,
                 "Justification": "LeftJustified", "Hyphenation": bool(typo["hyphenation"]),
                 "Composer": self._composer(typo),
-                "AppliedLanguage": lang, "Ligatures": bool(typo["ligatures"])}
+                "AppliedLanguage": lang, "Ligatures": bool(typo["ligatures"]),
+                # At least two letters before a line-end hyphen, three taken down (B 2.4.1).
+                "HyphenateAfterFirst": 2, "HyphenateBeforeLast": 3}
         if typo["oldstyle_figures"]:
             body["OTFFigureStyle"] = "ProportionalOldstyle"
         # Widows and orphans: InDesign applies KeepFirstLines/KeepLastLines only with
@@ -135,85 +168,121 @@ class StylesMixin:
             if typo["balance_ragged_headings"] else {}
         head = {"FirstLineIndent": 0, "Hyphenation": False, "KeepWithNext": 2,
                 "KeepLinesTogether": True, "KeepAllLinesTogether": True}
-        note_size, note_lead = size - 2, _half((size - 2) * 1.22)
+        note_size = up(-2)
+        note_lead = _half(note_size * 1.22)
+
+        # Vertical rhythm (Bringhurst 2.2.2): display lines take leading in half body lines,
+        # and a one-line heading, title or quotation with its space above and below takes a
+        # whole number of body lines, so the text after it keeps to the lines of the page.
+        def display_lead(pt):
+            return title_leading(pt, lead)
+
+        def to_lines(own, lines):
+            return round(max(0, lines * lead - own), 2)
         # Chapter titles start a page: the next odd page when chapters open on a recto. Each
         # chapter is a story of its own on its recto already; this keeps the rule if chapters
         # are joined into one story in InDesign.
         start = "NextOddPage" if self.profile.get("chapters_open", "recto") == "recto" \
             else "NextPage"
         hang = [("LeftAlign", 18, "")]
+        ct_size, ct_lead = up(4), display_lead(up(4))
+        pt_lead = display_lead(up(5))
+        sub_lead, au_lead = display_lead(up(2)), display_lead(up(1))
+        ha_lead = display_lead(up(2))
         S = Style
         self.doc.paragraph_styles = [
             S("Body", font=f["body"], leading=lead, attrs=body),
             S("Body First", "Body", {"FirstLineIndent": 0}),
-            S("Chapter Title", "Body", dict(head, PointSize=_half(size * 1.8),
-                                             Justification="CenterAlign", SpaceAfter=lead * 2,
+            S("Chapter Title", "Body", dict(head, PointSize=ct_size,
+                                             Justification="CenterAlign",
+                                             SpaceAfter=to_lines(ct_lead, 3),
                                              StartParagraph=start),
-              font=f["headings"], leading=_half(size * 2.2), next_style="Body First", props=balance),
-            S("Part Title", "Chapter Title", {"PointSize": _half(size * 2.2)},
-              leading=_half(size * 2.6), next_style="Body First"),
-            S("Heading A", "Body", dict(head, PointSize=size + 1, FontStyle="Bold",
-                                         Justification="LeftAlign", SpaceBefore=lead,
-                                         SpaceAfter=_half(lead / 2)),
-              font=f["headings"], leading=lead, next_style="Body First", props=balance),
-            S("Heading B", "Heading A", {"PointSize": size, "FontStyle": "Bold Italic"},
-              next_style="Body First"),
-            S("Heading C", "Heading A", {"PointSize": size, "FontStyle": "Italic"},
-              next_style="Body First"),
-            S("Book Title", "Body", dict(head, PointSize=_half(size * 2.4),
+              font=f["headings"], leading=ct_lead, next_style="Body First", props=balance),
+            S("Part Title", "Chapter Title", {"PointSize": up(5),
+                                              "SpaceAfter": to_lines(pt_lead, 3)},
+              leading=pt_lead, next_style="Body First"),
+            # Headings change one thing at a time and get lighter as they grow (Bringhurst
+            # 3.5.1, 4.1.2): A a larger size at text weight, B letterspaced small caps, C
+            # italic, all at the left. Below C a heading is run into its paragraph.
+            S("Heading A", "Body", dict(head, PointSize=up(2), Justification="LeftAlign",
+                                         SpaceBefore=lead, SpaceAfter=to_lines(ha_lead, 2)),
+              font=f["headings"], leading=ha_lead, next_style="Body First", props=balance),
+            S("Heading B", "Heading A", {"PointSize": size, "Capitalization": "SmallCaps",
+                                         "Tracking": 50, "SpaceAfter": 0},
+              leading=lead, next_style="Body First"),
+            S("Heading C", "Heading A", {"PointSize": size, "FontStyle": "Italic",
+                                         "SpaceAfter": 0},
+              leading=lead, next_style="Body First"),
+            S("Book Title", "Body", dict(head, PointSize=up(6),
                                           Justification="CenterAlign", SpaceAfter=lead),
-              font=f["display"], leading=_half(size * 2.8), props=balance),
-            S("Chapter Subtitle", "Chapter Title", {"PointSize": _half(size * 1.3),
+              font=f["display"], leading=display_lead(up(6)), props=balance),
+            S("Chapter Subtitle", "Chapter Title", {"PointSize": up(2),
                                                     "FontStyle": "Italic",
                                                     "StartParagraph": "Anywhere",
-                                                    "SpaceAfter": lead * 2},
-              leading=_half(size * 1.7), next_style="Body First"),
+                                                    "SpaceAfter": to_lines(sub_lead, 3)},
+              leading=sub_lead, next_style="Body First"),
             S("Chapter Author", "Chapter Subtitle", {"FontStyle": "Regular",
-                                                     "PointSize": size + 1},
-              leading=_half(size * 1.5), next_style="Body First"),
-            S("Book Subtitle", "Book Title", {"PointSize": _half(size * 1.4),
-                                              "FontStyle": "Italic"}, leading=_half(size * 1.8)),
-            S("Author", "Book Title", {"PointSize": _half(size * 1.3), "SpaceBefore": lead * 2},
-              leading=_half(size * 1.7)),
-            S("Block Quote", "Body", {"PointSize": size - 1, "FirstLineIndent": 0,
-                                      "LeftIndent": indent, "SpaceBefore": _half(lead / 2),
-                                      "SpaceAfter": _half(lead / 2)}, leading=lead - 1),
-            S("Verse", "Block Quote", {"Justification": "LeftAlign", "Hyphenation": False}),
+                                                     "PointSize": up(1),
+                                                     "SpaceAfter": to_lines(au_lead, 3)},
+              leading=au_lead, next_style="Body First"),
+            S("Book Subtitle", "Book Title", {"PointSize": up(3),
+                                              "FontStyle": "Italic"},
+              leading=display_lead(up(3))),
+            S("Author", "Book Title", {"PointSize": up(2), "SpaceBefore": lead * 2},
+              leading=display_lead(up(2))),
+            # Block quotations: a size smaller on the body's leading, half a line above and
+            # below (Bringhurst 2.3.3). The first paragraph is "Block Quote First"; the others'
+            # indent and the first's are the profile's (block_quotes).
+            S("Block Quote", "Body", {"PointSize": up(-1),
+                                      "FirstLineIndent": indent if quotes.get(
+                                          "indent_next", True) else 0,
+                                      "LeftIndent": _half(size * 1.5), "SpaceBefore": 0,
+                                      "SpaceAfter": _half(lead / 2)}, leading=lead),
+            S("Block Quote First", "Block Quote",
+              {"FirstLineIndent": indent if quotes.get("indent_first") else 0,
+               "SpaceBefore": _half(lead / 2)}),
+            S("Verse", "Block Quote", {"FirstLineIndent": 0, "SpaceBefore": _half(lead / 2),
+                                       "Justification": "LeftAlign", "Hyphenation": False}),
             S("List", "Body", {"FirstLineIndent": -18, "LeftIndent": 18,
                                "Justification": "LeftAlign"}, tabs=hang),
             S("List Bullet", "List"),
             S("List Number", "List"),
-            S("Bibliography", "Body", {"FirstLineIndent": -indent, "LeftIndent": indent,
+            S("Bibliography", "Body", {"FirstLineIndent": -_half(size * 1.5),
+                                       "LeftIndent": _half(size * 1.5),
                                        "Justification": "LeftAlign"}),
             S("Footnote", font=f["notes"], leading=note_lead,
-              attrs={"FontStyle": fonts.regular_face(f["notes"]), "PointSize": note_size, "FirstLineIndent": size - 2,
+              attrs={"FontStyle": fonts.regular_face(f["notes"]), "PointSize": note_size,
+                     "FirstLineIndent": note_size,
                      "Justification": "LeftJustified", "AppliedLanguage": lang,
                      "Hyphenation": bool(typo["hyphenation"]),
                      "Composer": body["Composer"], "HyphenateLastWord": False,
                      **{k: body[k] for k in ("KeepLinesTogether", "KeepFirstLines",
-                                             "KeepLastLines")}}),
-            S("Caption", "Body", {"PointSize": size - 2, "FirstLineIndent": 0,
+                                             "KeepLastLines", "HyphenateAfterFirst",
+                                             "HyphenateBeforeLast")}}),
+            S("Caption", "Body", {"PointSize": note_size, "FirstLineIndent": 0,
                                   "FontStyle": "Italic", "Justification": "CenterAlign",
                                   "SpaceAfter": _half(lead / 2)}, leading=note_lead),
             S("Figure", "Body", {"FirstLineIndent": 0, "Justification": "CenterAlign",
                                  "SpaceBefore": _half(lead / 2), "SpaceAfter": 4}),
             S("Table", "Body", {"FirstLineIndent": 0, "SpaceBefore": _half(lead / 2),
                                 "SpaceAfter": _half(lead / 2)}),
-            S("Table Body", "Body", {"FirstLineIndent": 0, "PointSize": size - 1.5,
-                                     "Justification": "LeftAlign", "Hyphenation": False},
-              leading=_half((size - 1.5) * 1.26)),
+            # Tables: lining figures of one width, so numbers line up (Bringhurst 3.2.1).
+            S("Table Body", "Body", {"FirstLineIndent": 0, "PointSize": note_size,
+                                     "Justification": "LeftAlign", "Hyphenation": False,
+                                     "OTFFigureStyle": "TabularLining"},
+              leading=_half(note_size * 1.26)),
             S("Table Head", "Table Body", {"FontStyle": "Bold"}),
             S("Folio", font=f["body"], leading=lead,
-              attrs={"PointSize": size - 2, "Justification": "CenterAlign"}),
+              attrs={"PointSize": self._folio_size(size), "Justification": "CenterAlign"}),
             self._running_head_style(size, lead),
-            S("Half Title", "Book Title", {"PointSize": _half(size * 1.6)},
-              leading=_half(size * 2)),
+            S("Half Title", "Book Title", {"PointSize": up(4)},
+              leading=display_lead(up(4))),
             S("Publisher", "Book Title", {"PointSize": size, "SpaceBefore": lead * 6},
               leading=lead),
             S("Series", "Half Title", {"PointSize": size, "SpaceBefore": lead * 2,
                                        "FontStyle": "Italic"}, leading=lead),
             S("Volume", "Book Subtitle", {"SpaceBefore": lead}),
-            S("Copyright", "Body", {"PointSize": size - 2, "FirstLineIndent": 0,
+            S("Copyright", "Body", {"PointSize": note_size, "FirstLineIndent": 0,
                                     "Justification": "LeftAlign", "Hyphenation": False,
                                     "SpaceAfter": _half(lead / 2)}, leading=note_lead),
             S("Copyright Title", "Copyright", {"FontStyle": "Italic"}),
@@ -353,8 +422,15 @@ class StylesMixin:
             st = Style(name, font=self.fonts["hebrew"],
                        attrs={"AppliedLanguage": "$ID/Hebrew",
                               "CharacterDirection": "RightToLeftDirection"})
-        elif name == "Greek":
-            st = Style(name, font=self.fonts["greek"], attrs={"AppliedLanguage": "$ID/Greek"})
+        elif is_script_style(name) and name.startswith("Greek"):
+            # Greek sized to the Latin around it (greek_ratio); "Greek 9 pt" for Greek in text
+            # of another size than the body's (notes, headings).
+            attrs = {"AppliedLanguage": "$ID/Greek"}
+            ratio = self.greek_ratio()
+            if ratio:
+                around = float(name.split()[1]) if name != "Greek" else self.body_size
+                attrs["PointSize"] = round(around * ratio, 1)
+            st = Style(name, font=self.fonts["greek"], attrs=attrs)
         else:
             attrs, font = {}, None
             if docx is not None and style_id in docx.styles:
@@ -446,6 +522,29 @@ class StylesMixin:
             if attrs.get("GridAlignment") == "AlignBaseline" and lead != self.body_lead:
                 s.attrs["GridAlignment"] = "None"
 
+    def greek_ratio(self):
+        """The Greek font's size as a share of the text's, so its lowercase stands as high as
+        the Latin's (Bringhurst 6.6.3, balanced by eye; usually a little smaller): the height
+        of omicron against o, kept within 85-105%. None when the fonts aren't both installed
+        here, or already match within 2%."""
+        if not hasattr(self, "_greek_ratio"):
+            self._greek_ratio = None
+            body, greek = fonts.find_font(self.fonts["body"]), \
+                fonts.find_font(self.fonts["greek"])
+            if body and greek and self.fonts["greek"] != self.fonts["body"]:
+                lat, gr = fonts.glyph_top(body, "o"), fonts.glyph_top(greek, "\u03bf")
+                if lat and gr:
+                    r = min(max(lat / gr, 0.85), 1.05)
+                    self._greek_ratio = r if abs(r - 1) >= 0.02 else None
+        return self._greek_ratio
+
+    def _greek_style(self, para_style):
+        """The Greek character style for Greek in a paragraph of this style."""
+        if not self.greek_ratio() or not para_style:
+            return "Greek"
+        size = self.doc.resolved(para_style)[0].get("PointSize", self.body_size)
+        return "Greek" if size == self.body_size else "Greek %g pt" % size
+
     def _finish_styles(self):
         self._char_style("Footnote Reference")
         order = list(CHAR_STYLES) + ["Hebrew", "Greek"]
@@ -482,15 +581,26 @@ class StylesMixin:
 
     # ---- text ----
 
+    def _folio_size(self, size):
+        """The page numbers' size: the profile's, else the text size (Bringhurst 8.5.3)."""
+        try:
+            v = float((self.profile.get("running_heads") or {}).get("folio_size") or 0)
+        except (TypeError, ValueError):
+            v = 0
+        return v if 4 <= v <= 72 else size
+
     def _running_head_style(self, size, lead):
         """The Running Head style as the profile sets it (capitals, italic, bold, underline,
         size, letter-spacing, font). Title and sentence case change the text instead
         (`_head_text`)."""
         rs = (self.profile.get("running_heads") or {}).get("style") or {}
-        attrs = {"PointSize": rs.get("size") or size - 2, "Justification": "CenterAlign",
-                 "Tracking": rs.get("tracking") if rs.get("tracking") is not None else 20,
-                 "Hyphenation": False}
         caps = rs.get("caps")
+        # Blank size: the text size (spaced small caps at text size, Bringhurst 8.5.4), a
+        # step down in full capitals.
+        auto = layout.type_step(size, -1) if caps == "all_caps" else size
+        attrs = {"PointSize": rs.get("size") or auto, "Justification": "CenterAlign",
+                 "Tracking": rs.get("tracking") if rs.get("tracking") is not None else 75,
+                 "Hyphenation": False}
         if caps in ("small_caps", "all_caps"):
             attrs["Capitalization"] = "SmallCaps" if caps == "small_caps" else "AllCaps"
         face = FONT_STYLES[(bool(rs.get("bold")), bool(rs.get("italic")))]

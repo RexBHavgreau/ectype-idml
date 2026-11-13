@@ -58,10 +58,51 @@ class Geometry:
     notes: list = field(default_factory=list)
 
 
-def geometry(width, height, size, lead, avg_width, pages, overrides=None, measure_ems=None):
+# Margin schemes (1.1.0): inside : top : outside : bottom. The measure (above) fixes the inside
+# and outside together; they are divided in the scheme's proportion, and the same unit gives the
+# top and bottom. The inside is never less than KDP's gutter for the page count, nor any margin
+# less than FLOOR. "economical" is the tool's calculation before 1.1.0 (inside at least the
+# outside, top and bottom 15% of the page height).
+MARGIN_SCHEMES = {
+    "canon": {"name": "Classical canon (2:3:4:6)", "inside": 2, "top": 3, "outside": 4,
+              "bottom": 6},
+    "gress": {"name": "Gress (1:1:1.5:2)", "inside": 1, "top": 1, "outside": 1.5,
+              "bottom": 2},
+    "economical": {"name": "Economical (as before 1.1.0)", "economical": True},
+}
+DEFAULT_SCHEME = "canon"
+MAX_VERTICAL = 0.30         # of the page height at most for top and bottom together
+SCHEME_SIDES = ("inside", "top", "outside", "bottom")
+
+
+def margin_scheme(page):
+    """The profile's margin scheme (its "page" section) as a dict: a preset's, or one of the
+    user's own (page.margin_schemes, by name); the default when it names neither."""
+    key = (page or {}).get("margin_scheme") or DEFAULT_SCHEME
+    if key in MARGIN_SCHEMES:
+        return MARGIN_SCHEMES[key]
+    for own in (page or {}).get("margin_schemes") or []:
+        if own.get("name") == key and valid_scheme(own):
+            return own
+    return MARGIN_SCHEMES[DEFAULT_SCHEME]
+
+
+def valid_scheme(scheme):
+    """Whether a user's scheme has four positive proportions."""
+    try:
+        return all(float(scheme.get(k)) > 0 for k in SCHEME_SIDES)
+    except (TypeError, ValueError):
+        return False
+
+
+def geometry(width, height, size, lead, avg_width, pages, overrides=None, measure_ems=None,
+             scheme=None):
     """Margins (points) for a trim, body size and leading, the body font's average character
     width (ems) and the estimated page count. overrides: the user's margins in inches.
-    measure_ems: the line length in times the type size (default 30)."""
+    measure_ems: the line length in times the type size (default 30). scheme: a margin scheme
+    (MARGIN_SCHEMES, margin_scheme); None = the default."""
+    if scheme is None:
+        scheme = MARGIN_SCHEMES[DEFAULT_SCHEME]
     overrides = {k: v for k, v in (overrides or {}).items() if v}
     notes = []
     char = size * avg_width
@@ -69,8 +110,20 @@ def geometry(width, height, size, lead, avg_width, pages, overrides=None, measur
     measure = (measure_ems or MEASURE_EMS) * size
     measure = min(max(measure, MIN_CPL * char), MAX_CPL * char)
     left_over = width - measure
-    outside = max(FLOOR, left_over * OUTSIDE_SHARE)
-    inside = max(gutter, outside, left_over - outside)
+    if scheme.get("economical"):
+        outside = max(FLOOR, left_over * OUTSIDE_SHARE)
+        inside = max(gutter, outside, left_over - outside)
+        vertical = height * VERTICAL_SHARE
+        top = max(FLOOR, _half(vertical * TOP_SHARE))
+        bottom = max(FLOOR, vertical - top)
+    else:
+        r = {k: float(scheme[k]) for k in SCHEME_SIDES}
+        unit = max(left_over, 0) / (r["inside"] + r["outside"])
+        outside = max(FLOOR, r["outside"] * unit)
+        inside = max(gutter, r["inside"] * unit)
+        vunit = min(unit, height * MAX_VERTICAL / (r["top"] + r["bottom"]))
+        top = max(FLOOR, _half(r["top"] * vunit))
+        bottom = max(FLOOR, r["bottom"] * vunit)
     if inside + outside > left_over:
         # The floors win: the measure gives way.
         measure = width - inside - outside
@@ -89,9 +142,6 @@ def geometry(width, height, size, lead, avg_width, pages, overrides=None, measur
         notes.append("The margins are wide (%.2g in outside) for %g pt type on this trim. A "
                      "larger type size, or two columns, would fill the page better."
                      % (outside / 72, size))
-    vertical = height * VERTICAL_SHARE
-    top = max(FLOOR, _half(vertical * TOP_SHARE))
-    bottom = max(FLOOR, vertical - top)
     if "top" in overrides:
         top = _half(overrides["top"] * 72)
     if "bottom" in overrides:
@@ -173,9 +223,48 @@ def page_count_notes(pages):
     return notes
 
 
-# Leading as a share of the body size, for tight, standard and open setting (at 11 pt about
-# 12.5-13, 13.5-14 and 14.5-15), before the shifts for x-height and measure.
-LEADING_RATIOS = {"tight": (1.14, 1.18), "standard": (1.23, 1.27), "open": (1.32, 1.36)}
+LINES_PER_PAGE = (30, 45)     # most books (Bringhurst 2.2.3)
+SIGNATURE = 16                # pages printed and folded together in offset printing
+
+
+def page_checks(lines, pages):
+    """Report lines on the page's density and, for offset printing, the signatures."""
+    notes = []
+    lo, hi = LINES_PER_PAGE
+    if lines < lo:
+        notes.append("The pages have %d lines of text, fewer than most books (%d\u2013%d). A "
+                     "smaller type size, less leading or smaller margins would fit more."
+                     % (lines, lo, hi))
+    elif lines > hi:
+        notes.append("The pages have %d lines of text, more than most books (%d\u2013%d). More "
+                     "leading or larger margins would open the page; with over about 500 words "
+                     "a page, consider two columns." % (lines, lo, hi))
+    spare = -pages % SIGNATURE
+    notes.append("For offset printing: %d pages fill %d signatures of %d%s. (Print on demand "
+                 "needs only an even count.)" % (
+                     pages, -(-pages // SIGNATURE), SIGNATURE,
+                     " with %d blank page%s at the end" % (spare, "" if spare == 1 else "s")
+                     if spare else " exactly"))
+    return notes
+
+
+# Leading as times the type size for tight, standard and open setting (1.1.0, Bringhurst
+# 2.2.1: 9/11, 10/12, 11/13 routine; at 11 pt about 12-12.5, 13-13.5 and 14-14.5), before the
+# shifts for x-height and measure.
+LEADING_RATIOS = {"tight": (1.10, 1.14), "standard": (1.17, 1.21), "open": (1.25, 1.30)}
+# The traditional scale of type sizes (Bringhurst 3.1.1): display and note sizes are steps on it.
+SCALE = (6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 21, 24, 30, 36, 48, 60, 72)
+
+
+def type_step(size, n):
+    """The size n steps up (n > 0) or down (n < 0) the scale from a body size; a size between
+    two of the scale's counts its neighbours as the first step either way."""
+    if n == 0:
+        return size
+    side = [v for v in SCALE if v > size] if n > 0 else [v for v in SCALE if v < size][::-1]
+    if not side:
+        return size
+    return side[min(abs(n), len(side)) - 1]
 TYPICAL_X_HEIGHT = 0.46     # ems: a book serif's
 
 

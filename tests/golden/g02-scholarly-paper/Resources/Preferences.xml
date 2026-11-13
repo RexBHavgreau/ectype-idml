@@ -180,7 +180,7 @@
 <RulerGuidesColor type="enumeration">Cyan</RulerGuidesColor>
 </Properties>
 </GuidePreference>
-<MarginPreference ColumnCount="1" ColumnGutter="12" Top="43.5" Bottom="58.5" Left="59" Right="43" ColumnDirection="Horizontal" ColumnsPositions="0 330"/>
+<MarginPreference ColumnCount="1" ColumnGutter="12" Top="51" Bottom="103" Left="36" Right="68" ColumnDirection="Horizontal" ColumnsPositions="0 328"/>
 <PasteboardPreference PasteboardMargins="-1 72" MinimumSpaceAboveAndBelow="72" MatchPreviewBackgroundToThemeColor="false">
 <Properties>
 <PreviewBackgroundColor type="enumeration">LightGray</PreviewBackgroundColor>

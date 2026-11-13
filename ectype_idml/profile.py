@@ -29,6 +29,11 @@ DEFAULT_PROFILE = {
         "facing": True,
         "bleed": False,
         "margins": {},                 # user overrides, inches: top, bottom, inside, outside
+        # Margin proportions (layout.MARGIN_SCHEMES: canon, gress, economical) or the name of
+        # one of the user's own schemes, kept here: {"name", "inside", "top", "outside",
+        # "bottom"} (proportions).
+        "margin_scheme": "canon",
+        "margin_schemes": [],
         "measure": 30,                 # line length in times the type size (Bringhurst: 20-40)
         "spare_pages": 0,              # spare pages after each chapter: 0, 1 or 2 (a pair)
         "opener_drop": None,           # points the chapter titles are lowered; None = 6 lines
@@ -41,8 +46,8 @@ DEFAULT_PROFILE = {
     "leading": {"unit": "pt", "value": None, "feel": "standard"},
     "baseline_grid": False,
     "running_heads": {
-        "verso": "book_title",         # book_title, part, chapter, author, custom
-        "recto": "chapter_title",      # chapter_title, custom
+        "verso": "book_title",         # book_title, part, chapter, author, custom, none
+        "recto": "chapter_title",      # chapter_title, custom, none
         "verso_custom": "",
         "recto_custom": "",
         "suppress_on_openers": True,
@@ -53,6 +58,7 @@ DEFAULT_PROFILE = {
         # or "none".
         "folio": "foot_center",
         "opener_folio": "drop",
+        "folio_size": None,            # points; None = the body size
         # A head with Hebrew or Greek the head font lacks: on a master of its own, as text
         # in their fonts (a section marker takes one font); off: the report only warns.
         "script_masters": True,
@@ -63,12 +69,14 @@ DEFAULT_PROFILE = {
             "italic": False,
             "bold": False,
             "underline": False,
-            "size": None,              # points; None = 2 pt below the body size
-            "tracking": 20,            # letter-spacing, thousandths of an em
+            "size": None,              # points; None = the body size (a step down in all caps)
+            "tracking": 75,            # letter-spacing, thousandths of an em
             "font": None,              # None = the body font
         },
     },
     "chapters_open": "recto",          # recto or next_page
+    # Block quotations: indent the first paragraph's first line, and the following ones'.
+    "block_quotes": {"indent_first": False, "indent_next": True},
     "footnotes": {
         "numbering": "per_chapter",    # per_chapter or continuous
         "rule": False,                 # rule above the notes on each page
@@ -87,6 +95,7 @@ DEFAULT_PROFILE = {
         "ligatures": True,
         "oldstyle_figures": True,
         "balance_ragged_headings": True,
+        "paragraph_indent": 1,         # first-line indent, ems of the body size
         "widow_orphan_control": True,  # at least 2 lines of a paragraph at a page's foot or head
         "last_line_min_chars": 10,     # last line of a paragraph at least this long (0 = off):
                                        # the last words are kept together (No Break)
@@ -239,11 +248,22 @@ def _from_9(data):
 
 
 def _from_10(data):
-    """Version 10: page numbers were always centered at the foot, openers included (1.1.0
-    adds running_heads.folio and opener_folio)."""
+    """Version 10 (1.1.0, from Bringhurst's principles): page numbers were always centered
+    at the foot, 2 pt below the body (now running_heads.folio, opener_folio, folio_size: the
+    body size); margins had one calculation (now page.margin_scheme, the classical canon by
+    default, the old one "economical"); running heads were tracked 20 by default (now 75);
+    block quotations had no indents (block_quotes); the indent was 1.5 em (typography.
+    paragraph_indent, 1). New defaults apply to saved profiles too, where they held the old
+    defaults: none of these could be set before."""
     rh = data.setdefault("running_heads", {})
     rh.setdefault("folio", "foot_center")
     rh.setdefault("opener_folio", "drop")
+    style = rh.setdefault("style", {})
+    if style.get("tracking") == 20:
+        style["tracking"] = 75
+    page = data.setdefault("page", {})
+    page.setdefault("margin_scheme", "canon")
+    page.setdefault("margin_schemes", [])
     return data
 
 

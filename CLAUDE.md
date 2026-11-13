@@ -31,9 +31,13 @@ release is published by Beaux from the tag. Earlier releases: 0.2.0 (Oct 21, fir
 | Use by other programs (`convert`, program.json, daily update) | Done | The .exe's convert on GitHub's Windows runner; not yet called by Ectype OCR; the silent update not yet with a real release |
 | Golden files (tests/golden) | Done | Windows and Linux CI |
 
-**In progress (1.1.0, branch):** page-number placing (Running Heads > Page Numbers: foot
-centered / foot outside / head outside; openers at the foot or none; profile version 11).
-Tests and schema check here; not yet opened in InDesign, Affinity or DesignCraft.
+**In progress (1.1.0, branch):** defaults from Bringhurst (Beaux's digest, November 13): margin
+schemes (canon default, Gress, economical = before 1.1.0, the user's own), 11/13 leading with a
+pop-up preview, the type scale, headings A larger roman / B spaced small caps / C italic and
+run-in below C, whole-line spacing, 1 em indent, block-quote indents, folio size and placing,
+tracked caps, lining figures in tables, hyphen 2/3, Greek sized by height, "none" heads, report
+checks (lines per page, signatures); profile version 11. Tests, schema check and the window
+under Xvfb here; not yet opened in InDesign, Affinity or DesignCraft, nor seen on Windows.
 
 **Next / open:**
 - Convert The Broken Heart again with 1.0.0 (its export failed in 0.8.0 on the long title).
@@ -301,8 +305,28 @@ Tests and schema check here; not yet opened in InDesign, Affinity or DesignCraft
   `folio_form` (Running Heads tab, "Page Numbers" box); like `heads_form`, not in `pvar`.
 - The main window packs the status line and export row first (side bottom) and sizes itself
   to its requested height within the screen (`App._fit_window`).
-- Margins (0.5.0): measure = `page.measure` (30) x type size within 45-80 characters;
-  outside 42% of the rest, inside never less than the outside (`layout.geometry`).
+- Margins (0.5.0; schemes 1.1.0): measure = `page.measure` (30) x type size within 45-80
+  characters; the rest split by the scheme (`layout.MARGIN_SCHEMES`, `margin_scheme(page)`,
+  profile `page.margin_scheme` key or a name in `page.margin_schemes` [{"name", "inside",
+  "top", "outside", "bottom"}]); "economical" is the old split (outside 42%, inside never less).
+  Window: `LayoutTabMixin` scheme box, `save_scheme`, `_scheme_dialog`.
+- Bringhurst defaults (1.1.0, Beaux): `layout.LEADING_RATIOS` (standard 1.17-1.21, 11/13),
+  `layout.SCALE`/`type_step` (display and note sizes as steps from the body size; preview.py's
+  STYLES too), `styles.title_leading` (display leading in half body lines) and `to_lines` in
+  `_book_styles` (one-line heading/title/quote plus its space = whole body lines). Headings: A
+  +2 steps regular, B small caps tracked 50, C italic; Word heading 5+ (or outline level 5+) =
+  role "runin", `Exporter._run_in` merges it into the next Body/Body First/Bibliography
+  paragraph in the "Run-in Head" character style (Italic in it -> roman), period added; alone =
+  a line, reported. Block quotes: `_block_quotes` makes the first "Block Quote First", local
+  SpaceAfter 0 between paragraphs of one quotation; profile `block_quotes.indent_first/next`.
+  `typography.paragraph_indent` (ems, 1; `styles.paragraph_indent`). Small Caps / All Caps
+  tracked 50, All Caps lining figures, Table Body TabularLining, HyphenateBeforeLast 3. Folio
+  size `running_heads.folio_size` (None = body), running head blank size = body (all caps a
+  step down), tracking 75. Greek: `greek_ratio` (omicron vs o, `fonts.glyph_top`, 85-105%),
+  "Greek" at body size, "Greek N pt" in other sizes (`_greek_style`, `is_script_style`).
+  Heads "none" per side. Report: `layout.page_checks` (30-45 lines, 16-page signatures).
+  Leading preview: `LayoutTabMixin.preview_leading` (overrideredirect Toplevel with a grab;
+  a click outside closes it), `SAMPLE` text, `_try_feel`.
 - Headings by formatting (Beaux, 0.6.0; `formatheads.py`): the reader records each body
   paragraph's dominant look (`Paragraph.look`, align, space_before, page_break_before).
   Candidates: body-role paragraphs of at most 15 words, no closing period unless numbered,

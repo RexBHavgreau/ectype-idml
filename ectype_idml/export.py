@@ -39,7 +39,7 @@ from .idml.images import image_info
 from .idml.model import Document, Image, Paragraph, Run, Table
 from .pagination import PaginationMixin
 from .styles import (CHAR_STYLES, FONT_STYLES, RESET, StylesMixin, _half,  # noqa: F401
-                     _toggle, body_size, leading_for)
+                     _toggle, body_size, is_script_style, leading_for)
 from .outline import _BACK, _FRONT, Unit, apply_kinds, build_outline, title_key
 from .stylemap import StyleMap
 from .template import TemplateError, read_template
@@ -59,6 +59,7 @@ BOOK_STYLE_ROLES = {
     "Body": ("body", 0), "Body First": ("body", 0), "Chapter Title": ("chapter", 0),
     "Chapter Subtitle": ("body", 0), "Chapter Author": ("body", 0), "Part Title": ("part", 0),
     "Heading A": ("heading", 1), "Heading B": ("heading", 2), "Heading C": ("heading", 3),
+    "Run-in Head": ("runin", 4),
     "Book Title": ("book_title", 0), "Book Subtitle": ("subtitle", 0), "Author": ("author", 0),
     "Block Quote": ("quote", 0), "Verse": ("verse", 0), "List": ("list", 0),
     "List Bullet": ("list", 0), "List Number": ("list", 0), "Bibliography": ("body", 0),
@@ -109,7 +110,8 @@ def calculated_margins(profile, pages=200, text=None):
     size = body_size(profile)
     return layout.geometry(_half(w * 72), _half(h * 72), size,
                            leading_for(profile, size, xh), avg, pages,
-                           measure_ems=page.get("measure")), bool(found)
+                           measure_ems=page.get("measure"),
+                           scheme=layout.margin_scheme(page)), bool(found)
 
 
 class ExportError(Exception):
@@ -212,7 +214,8 @@ class Exporter(StylesMixin, PaginationMixin):
                 "Choose a Hebrew font with that face in Layout Profile > Type if it should "
                 "match." % (self.fonts["hebrew"], " or ".join(m.lower() for m in missing),
                             " or ".join(m.lower() for m in missing)))
-        self.report += self.geo.notes + layout.page_count_notes(self.doc.page_count)
+        self.report += self.geo.notes + layout.page_count_notes(self.doc.page_count) + \
+            layout.page_checks(self.geo.lines, self.doc.page_count)
         self._finish_styles()
         return self.doc
 
@@ -267,7 +270,8 @@ class Exporter(StylesMixin, PaginationMixin):
         notes = sum(len(p.text) for d in self.docs for p in d.note_paragraphs)
         g = layout.geometry(self.doc.width, self.doc.height, self.body_size, self.body_lead,
                             self.avg_width, 100,
-                            measure_ems=self.profile["page"].get("measure"))
+                            measure_ems=self.profile["page"].get("measure"),
+                            scheme=layout.margin_scheme(self.profile["page"]))
         per_page = g.cpl * g.lines
         return int((chars + notes * 0.8) / per_page) + 2 * len(self.outline.units) + 4
 
@@ -275,7 +279,8 @@ class Exporter(StylesMixin, PaginationMixin):
         doc = self.doc
         g = layout.geometry(doc.width, doc.height, self.body_size, self.body_lead,
                             self.avg_width, pages, self.profile["page"].get("margins"),
-                            self.profile["page"].get("measure"))
+                            self.profile["page"].get("measure"),
+                            layout.margin_scheme(self.profile["page"]))
         self.geo = g
         doc.margins = g.margins
         self.measure, self.text_height = g.measure, g.text_height
@@ -405,9 +410,11 @@ class Exporter(StylesMixin, PaginationMixin):
         out = []
         for script, part in segments(text):
             if script:
-                name = "Hebrew" if script == "hebrew" else "Greek"
+                name = "Hebrew" if script == "hebrew" else self._greek_style(para_style)
                 sattrs = self._char_style(name)
                 want = dict(local)
+                if "PointSize" in sattrs:
+                    want.pop("PointSize", None)     # the style sizes the Greek
                 if style and style in self.used_char:
                     for k, v in self.used_char[style].attrs.items():
                         want.setdefault(k, v)
@@ -442,12 +449,12 @@ class Exporter(StylesMixin, PaginationMixin):
         paras = [p for st in self.doc.stories for p in st.paragraphs]
         paras += [p for m in self.doc.masters for f in m.frames for p in f.paragraphs]
         for p in paras:
-            if not any(r.text and r.style not in ("Hebrew", "Greek") and
+            if not any(r.text and not is_script_style(r.style) and
                        any(is_hebrew(c) or is_greek(c) for c in r.text) for r in p.runs):
                 continue
             runs = []
             for r in p.runs:
-                if r.text and r.style not in ("Hebrew", "Greek") and r.footnote is None:
+                if r.text and not is_script_style(r.style) and r.footnote is None:
                     runs += self._script_runs(r.text, r.style, r.attrs, p.style)
                 else:
                     runs.append(r)
@@ -566,7 +573,7 @@ class Exporter(StylesMixin, PaginationMixin):
         m = self._mapping(docx, cp.style_id, cp.index)
         if m.role in ("chapter", "part", "book_title"):
             level = 0
-        elif m.role == "heading":
+        elif m.role in ("heading", "runin"):
             level = max(1, m.level)
         else:
             return bib
@@ -601,12 +608,15 @@ class Exporter(StylesMixin, PaginationMixin):
             style = {"book_title": "Chapter Title", "subtitle": "Chapter Subtitle",
                      "author": "Chapter Author"}[m.role]
         if cp.label:
-            if m.role in ("chapter", "part", "heading"):
+            if m.role in ("chapter", "part", "heading", "runin"):
                 runs.insert(0, _label_run(cp.label + " "))
             else:
                 if style in ("Body", "List"):
                     style = "List Bullet" if cp.list_format == "bullet" else "List Number"
                 runs.insert(0, _label_run(cp.label + (cp.label_suffix or "\t")))
+        if m.role == "runin":
+            # Its text runs into the next paragraph (_run_in); "Body" for now.
+            style = "Body"
         if style == "Body" and bib:
             style = "Bibliography"
         if style == "Body" and (first or prev_role in HEAD_ROLES or not body_seen):
@@ -632,6 +642,8 @@ class Exporter(StylesMixin, PaginationMixin):
                 chunk.append(r)
         if any(x.text.strip() or x.footnote is not None for x in chunk) or not out:
             out.append(Paragraph(style, self._runs(chunk, style, docx), attrs))
+        if role == "runin" and out:
+            out[-1].run_in = True
         return out, role
 
     def _figure(self, img, docx):
@@ -713,6 +725,8 @@ class Exporter(StylesMixin, PaginationMixin):
                 if paras:
                     current[1].extend(paras)
                     prev_role, first = role, False
+        for story in stories:
+            story[1] = self._block_quotes(self._run_in(story[1]))
         min_chars = self.profile["typography"].get("last_line_min_chars") or 0
         for _unit, paras in stories:
             for p in paras:
@@ -727,6 +741,61 @@ class Exporter(StylesMixin, PaginationMixin):
             self.report.append("%d endnote%s converted to footnotes." %
                                (n_end, "" if n_end == 1 else "s"))
         return [(u, p) for u, p in stories if p]
+
+    RUN_INTO = {"Body", "Body First", "Bibliography"}
+
+    def _run_in(self, paras):
+        """Headings below Heading C run into the paragraph after them (Chicago 1.56): the
+        heading's text in the Run-in Head character style (italic; italic in it set roman),
+        a period unless it ends in punctuation, then the paragraph's text. A run-in heading
+        with no text paragraph after it stays a line of its own, and is reported."""
+        out = []
+        for p in paras:
+            if getattr(out[-1] if out else None, "run_in", False):
+                head = out.pop()
+                if p.style in self.RUN_INTO:
+                    self._char_style("Run-in Head")
+                    runs = [replace(r, style={None: "Run-in Head", "Italic": None}.get(
+                        r.style, r.style)) for r in head.runs]
+                    text = "".join(r.text for r in head.runs).rstrip()
+                    if runs:
+                        runs[-1] = replace(runs[-1], text=runs[-1].text.rstrip())
+                    if text and text[-1] not in ".:?!—":
+                        runs.append(Run(".", "Run-in Head"))
+                    runs.append(Run(" "))
+                    p = Paragraph(p.style, runs + p.runs, p.attrs)
+                else:
+                    self._run_in_alone(head)
+                    out.append(head)
+            out.append(p)
+        if getattr(out[-1] if out else None, "run_in", False):
+            self._run_in_alone(out[-1])
+        return out
+
+    def _run_in_alone(self, head):
+        self._char_style("Run-in Head")
+        head.style = "Body First"
+        head.runs = [replace(r, style={None: "Run-in Head", "Italic": None}.get(
+            r.style, r.style)) for r in head.runs]
+        head.run_in = False
+        self.report.append(
+            "A heading below Heading C (\u201c%s\u201d) has no paragraph of text after it to "
+            "run into, so it was set as a line of its own in italic. Move it into the "
+            "paragraph it belongs to, or map its Word style to Heading C (Style Map)."
+            % "".join(r.text for r in head.runs).strip()[:60])
+
+    @staticmethod
+    def _block_quotes(paras):
+        """A block quotation's first paragraph is Block Quote First (space above, its own
+        indent); a quotation of several paragraphs has no space between them."""
+        for k, p in enumerate(paras):
+            if p.style != "Block Quote":
+                continue
+            if k == 0 or paras[k - 1].style not in ("Block Quote", "Block Quote First"):
+                p.style = "Block Quote First"
+            if k + 1 < len(paras) and paras[k + 1].style == "Block Quote":
+                p.attrs = dict(p.attrs, SpaceAfter=0)
+        return paras
 
     def _estimate(self, paras, sink, raw=False):
         """Pages a story needs: lines of text at the styles' sizes, notes, tables, images.
@@ -886,6 +955,7 @@ class Exporter(StylesMixin, PaginationMixin):
                     self.body_size, self.body_lead, source, self.body_size,
                     sug["tight"][0], sug["tight"][1], sug["standard"][0], sug["standard"][1],
                     sug["open"][0], sug["open"][1], (" (%s)" % why) if why else ""))
+
 
 _URL = re.compile(r"(?:https?://|www\.|doi\.org/)[^\s<>\"\u201c\u201d]+", re.I)
 ZWSP = "\u200b"

@@ -2,10 +2,46 @@
 
 ## 1.1.0 (not yet released)
 
-- Page numbers can be placed (Running Heads > Page Numbers): at the foot, centered (as
-  before, the default); at the foot, outside; or at the head, outside, on the running heads'
-  line. On chapter openers: at the foot (a drop folio, centered when the others are at the
-  head) or none. Profile version 11; saved profiles keep the old placing.
+The book's defaults now follow Bringhurst's *Elements of Typographic Style* (Beaux, from his
+digest of book-layout principles). The output changes; saved profiles are upgraded (profile
+version 11) and take the new defaults where they held the old ones.
+
+- **Margins:** a choice of proportions (Layout Profile > Page Margins): the classical canon
+  2:3:4:6 (inside : top : outside : bottom, the new default), Gress's 1:1:1.5:2, the margins
+  as before ("Economical": inside at least the outside), or schemes of your own (New...,
+  Edit..., Delete; kept in the profile). The line length still sets the inside and outside
+  together; the inside is never less than KDP's gutter for the page count.
+- **Leading:** Bringhurst's routine settings: standard 11 on 13 (was about 11 on 13.75);
+  tight and open move with it. **Preview the leading** (Layout Profile > Type) shows two
+  paragraphs in the body font at the size, leading and line length set, with buttons for
+  tight, standard and open; it closes when you click elsewhere.
+- **Type sizes** come from the traditional scale (9, 10, 11, 12, 14, 18, 21, 24...): chapter
+  titles 18 pt, part titles 21, the book title 24, notes 9 (for 11 pt text).
+- **Headings** change one thing at a time and are never bold: Heading A a larger size at text
+  weight, B spaced small caps, C italic. A heading below C (Word's heading 5 and below) is
+  run into the start of its paragraph in italic (the Run-in Head character style), with a
+  period.
+- **Vertical rhythm:** a one-line heading, title or block quotation with its space above and
+  below takes a whole number of body lines, so the text after it stays on the page's lines.
+  Block quotations are a size smaller on the body's leading.
+- **Block quotations:** the first paragraph flush left, the later ones indented, no space
+  between them (both indents can be set in Layout Profile > Type).
+- **Paragraph indent** one em (was 1.5), settable (Layout Profile > Type).
+- **Page numbers** at the text size (settable), and placed as you choose (Running Heads > Page
+  Numbers): at the foot, centered (the default); at the foot, outside; or at the head,
+  outside, on the running heads' line. On chapter openers: at the foot (centered when the
+  others are at the head) or none.
+- **Running heads:** small caps at the text size (was 2 pt smaller), letterspaced 7.5% (was
+  2%); either head can be "none".
+- Capitals and small caps in the text letterspaced 5%; capitals and tables use lining figures
+  (tables of one width, so columns of numbers line up); a hyphen takes at least three letters
+  to the next line.
+- Greek is sized to match the Latin around it (by the height of its lowercase), when both
+  fonts are installed.
+- The report says when pages have fewer than 30 or more than 45 lines, and how the page count
+  fills 16-page signatures for offset printing.
+- Inside the program: the book's styles moved to styles.py, and the Running Heads and Layout
+  Profile tabs to modules of their own.
 
 ## 1.0.0 (November 13, 2026)
 

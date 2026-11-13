@@ -20,17 +20,39 @@ def test_kdp_gutter():
 
 
 def test_geometry_6x9():
-    g = layout.geometry(432, 648, 11, 14, 0.42, 200)
+    # The default scheme, the classical canon (2:3:4:6): inner < head < outer < foot, the
+    # inner at least KDP's gutter (0.5 in at 200 pages), the measure near 30 times the type.
+    g = layout.geometry(432, 648, 11, 13, 0.42, 200)
     m = g.margins
-    # The measure about 30 times the type size (Bringhurst): 4.6 in, about 71 characters.
+    assert abs(g.measure - 330) <= 3 and 70 <= round(g.cpl) <= 71
+    assert m["inside"] < m["top"] < m["outside"] < m["bottom"]
+    assert m["inside"] == 36 and abs(m["outside"] / m["top"] - 4 / 3) < 0.05
+    assert min(m.values()) >= 36
+    assert m["top"] + m["bottom"] + g.lines * 13 == 648      # whole lines
+    assert g.measure == 432 - m["inside"] - m["outside"]
+    assert not g.notes
+    # Gress's 1:1:1.5:2, and a scheme of the user's own.
+    g = layout.geometry(432, 648, 11, 13, 0.42, 200, scheme=layout.MARGIN_SCHEMES["gress"])
+    m = g.margins
+    assert m["inside"] < m["outside"] and abs(m["top"] - m["inside"]) <= 1
+    own = {"name": "Mine", "inside": 1, "top": 1, "outside": 1, "bottom": 1}
+    page = {"margin_scheme": "Mine", "margin_schemes": [own]}
+    assert layout.margin_scheme(page) is own
+    assert layout.margin_scheme({"margin_scheme": "Gone"})["name"].startswith("Classical")
+    assert not layout.valid_scheme({"name": "Bad", "inside": 0, "top": 1, "outside": 1,
+                                    "bottom": 1})
+
+
+def test_geometry_economical():
+    # The calculation before 1.1.0: never the outside wider than the inside; margins near a
+    # trade 6x9's (Beaux: about 0.6 in outside and top, 0.75 in bottom).
+    g = layout.geometry(432, 648, 11, 14, 0.42, 200,
+                        scheme=layout.MARGIN_SCHEMES["economical"])
+    m = g.margins
     assert abs(g.measure - 330) <= 1 and round(g.cpl) == 71
-    # Never the outside wider than the inside by default; margins near a trade 6x9's
-    # (Beaux: about 0.6 in outside and top, 0.75 in bottom).
     assert m["inside"] >= m["outside"] and m["top"] < m["bottom"]
     assert 0.55 <= m["outside"] / 72 <= 0.65 and 0.55 <= m["top"] / 72 <= 0.65
-    assert min(m.values()) >= 36
     assert m["top"] + m["bottom"] + g.lines * 14 == 648      # whole lines
-    assert g.measure == 432 - m["inside"] - m["outside"]
     assert not g.notes
 
 
@@ -57,7 +79,7 @@ def test_measure_setting_and_limits():
     assert abs(g.measure - 275) <= 1
     assert round(layout.geometry(432, 648, 11, 14, 0.3, 200).cpl) == 80
     g = layout.geometry(504, 720, 11, 14, 0.8, 200)          # 7 x 10
-    assert round(g.cpl) == 45 and g.margins["inside"] >= g.margins["outside"]
+    assert round(g.cpl) == 45 and g.margins["inside"] < g.margins["outside"]
 
 
 def test_plan_pages_recto_rules():
@@ -106,17 +128,24 @@ def test_book_and_script_fonts():
 
 
 def test_leading_suggestions():
+    # Bringhurst's routine settings: 11/13 standard, 10/12.
     sug, why = layout.leading_suggestions(11)
-    assert sug["tight"][:2] == (12.5, 13) and sug["standard"][:2] == (13.5, 14)
-    assert sug["open"][:2] == (14.5, 15) and not why
-    assert sug["standard"][2] == 14
+    assert sug["tight"][:2] == (12, 12.5) and sug["standard"][:2] == (13, 13.5)
+    assert sug["open"][:2] == (14, 14.5) and not why
+    assert sug["standard"][2] == 13
     big, why = layout.leading_suggestions(11, x_height=0.53, font="Big Font")
     assert big["standard"][2] > sug["standard"][2] and "Big Font has a large x-height" in why
     small, why = layout.leading_suggestions(11, x_height=0.40)
     assert small["standard"][2] < sug["standard"][2] and "small x-height" in why
     long, why = layout.leading_suggestions(11, cpl=80)
     assert long["open"][1] >= sug["open"][1] and "long lines" in why
-    assert layout.leading_suggestions(10)[0]["standard"][:2] == (12.5, 12.5)
+    assert layout.leading_suggestions(10)[0]["standard"][2] == 12
+
+
+def test_type_scale():
+    assert [layout.type_step(11, n) for n in (-2, -1, 1, 2, 4, 6)] == [9, 10, 12, 14, 18, 24]
+    assert layout.type_step(10.5, 1) == 11 and layout.type_step(10.5, -1) == 10
+    assert layout.type_step(72, 3) == 72
 
 
 if __name__ == "__main__":

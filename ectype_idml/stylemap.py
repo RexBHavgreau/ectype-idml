@@ -13,7 +13,7 @@ from dataclasses import dataclass
 
 # Roles. The outline uses part/chapter/book_title/subtitle/author; "toc" paragraphs are
 # replaced by the layout program's own contents; "skip" never reaches the book.
-ROLES = ("body", "part", "chapter", "heading", "book_title", "subtitle", "author", "quote",
+ROLES = ("body", "part", "chapter", "heading", "runin", "book_title", "subtitle", "author", "quote",
          "verse", "list", "note", "caption", "toc", "toc_title", "skip")
 
 # Word's built-in paragraph styles (normalized name -> IDML style, role, heading level).
@@ -37,11 +37,13 @@ PARAGRAPH_DEFAULTS = {
     "heading 2": ("Heading A", "heading", 1),
     "heading 3": ("Heading B", "heading", 2),
     "heading 4": ("Heading C", "heading", 3),
-    "heading 5": ("Heading C", "heading", 3),
-    "heading 6": ("Heading C", "heading", 3),
-    "heading 7": ("Heading C", "heading", 3),
-    "heading 8": ("Heading C", "heading", 3),
-    "heading 9": ("Heading C", "heading", 3),
+    # Below Heading C a heading is run into its paragraph (1.1.0): "Run-in Head" is a
+    # character style, not a paragraph style.
+    "heading 5": ("Run-in Head", "runin", 4),
+    "heading 6": ("Run-in Head", "runin", 4),
+    "heading 7": ("Run-in Head", "runin", 4),
+    "heading 8": ("Run-in Head", "runin", 4),
+    "heading 9": ("Run-in Head", "runin", 4),
     "quote": ("Block Quote", "quote"),
     "intense quote": ("Block Quote", "quote"),
     "block text": ("Block Quote", "quote"),
@@ -209,7 +211,10 @@ class StyleMap:
         if lvl is not None:
             if lvl == 0:
                 return Mapping(word, "Chapter Title", "chapter", 0, "outline level 1", True)
-            return Mapping(word, "Heading " + "ABC"[min(lvl, 3) - 1], "heading", min(lvl, 3),
+            if lvl >= 4:
+                return Mapping(word, "Run-in Head", "runin", 4,
+                               "outline level %d" % (lvl + 1), True)
+            return Mapping(word, "Heading " + "ABC"[lvl - 1], "heading", lvl,
                            "outline level %d" % (lvl + 1), True)
         return Mapping(word, "Body", "body", 0, "fallback", True)
 

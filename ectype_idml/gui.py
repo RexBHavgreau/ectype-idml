@@ -402,6 +402,7 @@ class App(BookTabMixin, HeadsTabMixin, LayoutTabMixin):
         self.folio_form.load(self.profile)
         self.head_case_form.load(self.profile)
         self.head_style_form.load(self.profile)
+        self._refresh_schemes()
         self._margins_later()
         self.notice_list.delete(0, "end")
         chosen = set((self.book.settings.get("front") or {}).get("notices") or [])

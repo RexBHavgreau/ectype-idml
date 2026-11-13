@@ -494,8 +494,11 @@ def test_running_head_style_from_profile():
     prof = default_profile()
     ex = Exporter(_files(), prof)
     try:
-        attrs = ex.build().style("Running Head").attrs
-        assert attrs["Capitalization"] == "SmallCaps" and attrs["Tracking"] == 20
+        doc = ex.build()
+        attrs = doc.style("Running Head").attrs
+        # Spaced small caps at the text size (Bringhurst 8.5.4); page numbers at text size.
+        assert attrs["Capitalization"] == "SmallCaps" and attrs["Tracking"] == 75
+        assert attrs["PointSize"] == 11 and doc.style("Folio").attrs["PointSize"] == 11
     finally:
         ex.cleanup()
     prof["running_heads"]["style"].update({"caps": None, "italic": True, "size": 8,
@@ -930,12 +933,12 @@ def test_body_size_leading_and_baseline_grid():
     try:
         doc = ex.build()
         body = doc.style("Body")
-        # Open at 10 pt: 13.5 for a typical x-height; the body font installed here (a book
+        # Open at 10 pt: 13 for a typical x-height; the body font installed here (a book
         # font on Windows) may shift it, so the expectation uses the font measured.
         open_ = layout.leading_suggestions(10, ex.x_height, ex.geo.cpl)[0]["open"][2]
         assert body.attrs["PointSize"] == 10 and body.leading == open_
         if ex.x_height is None:
-            assert open_ == 13.5
+            assert open_ == 13
         assert doc.baseline_grid["division"] == open_
         assert doc.baseline_grid["start"] == doc.margins["top"]
         assert body.attrs["GridAlignment"] == "AlignBaseline"
@@ -1006,7 +1009,8 @@ def test_book_style_roles_are_book_styles():
         ex.build()
         ex._book_styles()
         made = {s.name for s in ex.doc.paragraph_styles}
-        assert set(BOOK_STYLE_ROLES) <= made, set(BOOK_STYLE_ROLES) - made
+        para = set(BOOK_STYLE_ROLES) - {"Run-in Head"}    # a character style
+        assert para <= made, para - made
     finally:
         ex.cleanup()
 
@@ -1081,6 +1085,123 @@ def test_folio_places():
             assert not check(path)
         finally:
             ex.cleanup()
+
+
+H5 = ('<w:style w:type="paragraph" w:styleId="Heading5"><w:name w:val="heading 5"/>'
+      '<w:basedOn w:val="Normal"/><w:pPr><w:outlineLvl w:val="4"/></w:pPr></w:style>')
+LONG = ("This paragraph is long enough to count as running text in the chapter, with more "
+        "than twenty words in it so the outline treats it as body text.")
+
+
+def test_bringhurst_styles():
+    """1.1.0: sizes on the type scale, headings that change one thing (A larger roman, B
+    spaced small caps, C italic), whole body lines for headings and quotations, a 1 em
+    indent, lining figures in tables, three letters taken down at a hyphen, capitals and
+    small caps letterspaced."""
+    from idml_check import check
+    from ectype_idml.idml.writer import write_idml
+    ex = Exporter(_files(), default_profile())
+    try:
+        doc = ex.build()
+        assert not check(write_idml(doc, os.path.join(TMP, "bringhurst.idml")))
+        ex._book_styles()                    # all of them, not only those the book uses
+        lead = ex.body_lead
+        r = lambda n: doc.resolved(n)  # noqa: E731
+        assert lead == 13                                  # 11/13, Bringhurst's routine
+        assert r("Body")[0]["FirstLineIndent"] == 11 and r("Body")[0]["HyphenateBeforeLast"] == 3
+        assert [r(n)[0]["PointSize"] for n in ("Chapter Title", "Heading A", "Footnote")] == \
+            [18, 14, 9]
+        a, b, c = r("Heading A")[0], r("Heading B")[0], r("Heading C")[0]
+        assert "FontStyle" not in doc.style("Heading A").attrs          # text weight
+        assert b["Capitalization"] == "SmallCaps" and b["Tracking"] == 50 and b["PointSize"] == 11
+        assert c["FontStyle"] == "Italic" and c.get("Capitalization", "Normal") != "SmallCaps"
+        for name in ("Chapter Title", "Heading A", "Heading B", "Heading C",
+                     "Chapter Subtitle", "Block Quote First"):
+            attrs, _f, own = r(name)
+            total = attrs.get("SpaceBefore", 0) + own + attrs.get("SpaceAfter", 0)
+            assert abs(total / lead - round(total / lead)) < 1e-6, (name, total)
+        assert r("Block Quote")[2] == lead and r("Block Quote")[0]["PointSize"] == 10
+        assert r("Table Body")[0]["OTFFigureStyle"] == "TabularLining"
+        assert ex._char_style("Small Caps")["Tracking"] == 50
+        assert any(line.startswith("For offset printing:") for line in ex.report)
+    finally:
+        ex.cleanup()
+
+
+def test_block_quotes_and_run_in_heads():
+    """A quotation of three paragraphs: the first in Block Quote First (flush), the others
+    indented, no space between them. A heading 5 runs into the paragraph after it, in the
+    Run-in Head style with a period; one with nothing after it stays a line and is reported."""
+    path = make_docx(os.path.join(TMP, "quotes.docx"), [
+        para("Chapter One", "Heading1"), para(LONG),
+        para("First quoted paragraph.", "Quote"), para("Second quoted paragraph.", "Quote"),
+        para("Third quoted paragraph.", "Quote"), para(LONG),
+        para("A Minor Point", "Heading5"), para(LONG),
+        para("Last Word", "Heading5")], extra_styles=[H5])
+    for first, nxt in ((False, True), (True, False)):
+        prof = default_profile()
+        prof["block_quotes"] = {"indent_first": first, "indent_next": nxt}
+        ex = Exporter([path], prof)
+        try:
+            doc = ex.build()
+            paras = [p for st in doc.stories for p in st.paragraphs]
+            quotes = [p for p in paras if p.style.startswith("Block Quote")]
+            assert [p.style for p in quotes] == ["Block Quote First", "Block Quote",
+                                                  "Block Quote"]
+            assert [p.attrs.get("SpaceAfter") for p in quotes] == [0, 0, None]
+            fi = lambda n: doc.resolved(n)[0]["FirstLineIndent"]  # noqa: E731
+            assert (fi("Block Quote First") > 0) == first and (fi("Block Quote") > 0) == nxt
+            run_in = [p for p in paras if p.runs and p.runs[0].style == "Run-in Head"]
+            assert len(run_in) == 2
+            text = "".join(x.text for x in run_in[0].runs)
+            assert text.startswith("A Minor Point. This paragraph") and \
+                run_in[0].style == "Body"
+            assert "".join(x.text for x in run_in[1].runs).strip() == "Last Word"
+            assert any("Last Word" in line and "run into" in line for line in ex.report)
+            assert "Run-in Head" in {c.name for c in doc.character_styles}
+            assert "Run-in Head" not in {s.name for s in doc.paragraph_styles}
+        finally:
+            ex.cleanup()
+
+
+def test_no_running_heads_and_greek_size():
+    """Running heads "none" on a side leave that side without a head frame. Greek is sized
+    by the fonts' heights (as measured, here made up): its own style per size of text."""
+    prof = default_profile()
+    prof["running_heads"].update(verso="none", recto="none")
+    ex = Exporter(_files(), prof)
+    try:
+        doc = ex.build()
+        for m in doc.masters:
+            assert not [f for f in m.frames if f.key in ("vhead", "rhead")], m.name
+    finally:
+        ex.cleanup()
+    path = make_docx(os.path.join(TMP, "greek.docx"), [
+        para("Chapter One", "Heading1"), para(LONG + " " + GRK),
+        para("Note " + GRK, "Quote")])
+    ex = Exporter([path], default_profile())
+    ex._greek_ratio = 0.9
+    try:
+        doc = ex.build()
+        styles = {c.name: c for c in doc.character_styles}
+        assert styles["Greek"].attrs["PointSize"] == 9.9
+        assert styles["Greek 10 pt"].attrs["PointSize"] == 9.0
+        runs = [x for st in doc.stories for p in st.paragraphs for x in p.runs]
+        assert all("PointSize" not in x.attrs for x in runs if x.style and
+                   x.style.startswith("Greek"))
+    finally:
+        ex.cleanup()
+
+
+def test_profile_upgrade_to_11():
+    from ectype_idml import profile as profiles
+    old = {"profile_version": 10, "running_heads": {"style": {"tracking": 20}},
+           "page": {"trim": "6x9"}}
+    up = profiles.upgrade(old) if hasattr(profiles, "upgrade") else profiles.migrate(old)
+    assert up["running_heads"]["style"]["tracking"] == 75
+    assert up["page"]["margin_scheme"] == "canon" and up["block_quotes"]["indent_next"]
+    assert up["typography"]["paragraph_indent"] == 1 and up["running_heads"]["folio"] == \
+        "foot_center"
 
 
 if __name__ == "__main__":
