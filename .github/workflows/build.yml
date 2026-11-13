@@ -1,4 +1,4 @@
-# Builds the Windows program ("docx-to-idml-X.Y.Z.exe").
+# Builds the Windows program ("Ectype-IDML-X.Y.Z.exe").
 # Runs on every pushed tag like v0.1.0 (and publishes a GitHub Release with the .exe),
 # or by hand from the Actions tab ("Run workflow") on any branch, to check a build.
 name: Build
@@ -56,7 +56,7 @@ jobs:
       - name: Build the .exe
         run: >
           pyinstaller --noconfirm --clean --onefile --windowed
-          --name "docx-to-idml-${{ env.VERSION }}"
+          --name "Ectype-IDML-${{ env.VERSION }}"
           --add-data "ectype_idml/idml/base;ectype_idml/idml/base"
           --collect-submodules fontTools.ttLib.tables
           --collect-all tkinterdnd2
@@ -68,7 +68,7 @@ jobs:
         run: |
           python - <<'PY'
           from PyInstaller.archive.readers import CArchiveReader
-          names = " ".join(str(k) for k in CArchiveReader("dist/docx-to-idml-${{ env.VERSION }}.exe").toc)
+          names = " ".join(str(k) for k in CArchiveReader("dist/Ectype-IDML-${{ env.VERSION }}.exe").toc)
           for need in ("designmap.xml", "snippets.xml", "Styles.xml", "Preferences.xml"):
               assert need in names, need + " missing from the .exe"
           print("base files present")
@@ -79,7 +79,7 @@ jobs:
         run: |
           # No update check here: it would download the latest release into dist.
           python -c "from ectype_idml import appsettings; d = appsettings.load(); d['check_updates'] = False; appsettings.save(d)"
-          $exe = "dist/docx-to-idml-${{ env.VERSION }}.exe"
+          $exe = "dist/Ectype-IDML-${{ env.VERSION }}.exe"
           $p = Start-Process -FilePath $exe -Wait -PassThru -ArgumentList @(
             "convert", "--result", "$env:RUNNER_TEMP/result.json", "--out", "$env:RUNNER_TEMP/out",
             "--name", "e01", "reference/manuscript")
@@ -95,13 +95,19 @@ jobs:
           assert r["ok"] and os.path.exists(r["idml"]), r
           from ectype_idml import service
           loc = json.load(open(service.locator_path(), encoding="utf-8"))
-          assert loc["exe"].endswith("docx-to-idml-${{ env.VERSION }}.exe"), loc
+          assert loc["exe"].endswith("Ectype-IDML-${{ env.VERSION }}.exe"), loc
           print("convert ok:", r["idml"], "; program.json:", loc)
           PY
 
+      # Installed copies before 1.0.0 look only for "docx-to-idml-X.Y.Z.exe" in a release:
+      # the same program under that name lets them update to this one.
+      - name: Add the program under its name before 1.0.0
+        shell: bash
+        run: cp "dist/Ectype-IDML-${{ env.VERSION }}.exe" "dist/docx-to-idml-${{ env.VERSION }}.exe"
+
       - uses: actions/upload-artifact@v4
         with:
-          name: docx-to-idml
+          name: Ectype-IDML
           path: dist/*
 
       - name: Publish the release

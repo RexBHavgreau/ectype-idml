@@ -1,7 +1,16 @@
 # Changelog
 
-## 0.8.1 (not yet released)
+## 1.0.0 (not yet released)
 
+- The tool is named **Ectype IDML** (Beaux), in the family of Ectype OCR. The program is
+  `Ectype-IDML-X.Y.Z.exe`, the window's title Ectype IDML, the settings folder
+  `%APPDATA%\Ectype IDML`. At its first start, 1.0.0 copies the old `docx-to-idml` settings
+  folder (profiles, settings) to the new one. Copies of docx-to-idml (0.8.0 and earlier) update
+  to it as usual: each release also carries the program under its old name, which is all they
+  look for; from 1.0.0 the updater recognizes both names, and older copies under either name
+  are offered for deletion. `program.json`, which other programs read to find the converter,
+  is written in both settings folders while the old one exists.
+- 1.0.0: Beaux's call that the tool is ready for real books (see CLAUDE.md, Progress).
 - Fixed: an export could fail with "No such file or directory" when the book's title was
   long. The export folder's name was the title cut at 80 characters, and when the cut fell
   after a space, Windows made the folder without it, so the IDML's path didn't exist (Beaux,

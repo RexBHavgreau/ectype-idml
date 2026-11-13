@@ -1,6 +1,6 @@
-# DOCX → IDML book tool — project brief
+# Ectype IDML (DOCX → IDML book tool) — project brief
 
-*Status: step 0 (reader and preflight) under way in this repository (October 21, 2026); see "Build order". Working name: undecided ("IDML Wizard" is a candidate). This brief replaces the October 2026 version, which planned the exporter as a stage of a separate manuscript-prep tool. The earlier contents of this repository (a React/TypeScript concept test made with Qwen Code) were replaced; they remain in git history.*
+*Status: step 0 (reader and preflight) under way in this repository (October 21, 2026); see "Build order". Name: Ectype IDML (decided November 13, 2026; docx-to-idml until 0.8.0). This brief replaces the October 2026 version, which planned the exporter as a stage of a separate manuscript-prep tool. The earlier contents of this repository (a React/TypeScript concept test made with Qwen Code) were replaced; they remain in git history.*
 
 ## Goal
 
@@ -336,7 +336,9 @@ A hand-built IDML was generated for a bilingual Latin/Spanish edition (Augustine
 ## Still open
 
 - Results of the compatibility tests (decides the running-head mechanism, the TOC approach, and parent masters).
-- The tool's name (also sets the EXE filename and the GitHub repository name).
+- ~~The tool's name~~: **Ectype IDML** (decided November 13, released as 1.0.0). The GitHub
+  repository can be renamed to match (GitHub redirects the old address, so installed copies keep
+  finding updates).
 
 ## Use by other programs (decided October 24)
 

@@ -61,7 +61,7 @@ def test_location_record():
     try:
         updates.running_exe = lambda: None          # from source: nothing recorded
         assert service.record_location() is None
-        exe = os.path.join(TMP, "prog", "docx-to-idml-%s.exe" % __version__)
+        exe = os.path.join(TMP, "prog", "Ectype-IDML-%s.exe" % __version__)
         _frozen(exe)
         service.record_location()
         data = json.load(open(service.locator_path(), encoding="utf-8"))
@@ -74,7 +74,7 @@ def test_update_check_once_a_day():
     saved = (updates.running_exe, updates.can_install, updates.launch)
     started = []
     try:
-        _frozen(os.path.join(TMP, "prog", "docx-to-idml-%s.exe" % __version__))
+        _frozen(os.path.join(TMP, "prog", "Ectype-IDML-%s.exe" % __version__))
         launch = lambda exe, args: started.append((str(exe), list(args)))  # noqa: E731
         day = datetime.date(2026, 10, 24)
         assert service.daily_check(day, launch) is True
@@ -97,8 +97,8 @@ def test_update_check_once_a_day():
 def test_quiet_update_points_program_json_at_the_new_copy():
     saved = (updates.running_exe, updates.can_install, updates.launch)
     try:
-        _frozen(os.path.join(TMP, "prog", "docx-to-idml-%s.exe" % __version__))
-        new = os.path.join(TMP, "prog", "docx-to-idml-99.0.0.exe")
+        _frozen(os.path.join(TMP, "prog", "Ectype-IDML-%s.exe" % __version__))
+        new = os.path.join(TMP, "prog", "Ectype-IDML-99.0.0.exe")
         newer = {"status": "newer", "latest": "99.0.0", "asset": {"name": "x"}}
         got = service.quiet_update(check=lambda timeout: newer,
                                    install=lambda asset, version: (Path(new), False))
@@ -116,6 +116,36 @@ def test_quiet_update_points_program_json_at_the_new_copy():
         assert json.load(open(service.locator_path(), encoding="utf-8"))["exe"] == new
     finally:
         _restore(saved)
+
+
+def test_old_settings_carried_over():
+    """At the first start as Ectype IDML, the docx-to-idml settings folder (profiles, settings)
+    is copied to the new one, and the old one stays; nothing is copied once the new one
+    exists. program.json is written in both folders while the old one exists."""
+    import shutil
+    from ectype_idml import profile as profiles
+    saved = (updates.running_exe, updates.can_install, updates.launch)
+    old, new = profiles.old_settings_dir(), profiles.settings_dir()
+    try:
+        shutil.rmtree(new, ignore_errors=True)
+        (old / "profiles").mkdir(parents=True, exist_ok=True)
+        (old / "profiles" / "Series A.json").write_text('{"name": "Series A"}', "utf-8")
+        (old / "settings.json").write_text('{"check_updates": false}', "utf-8")
+        assert profiles.carry_over_old_settings() is True
+        assert (new / "profiles" / "Series A.json").exists() and (old / "settings.json").exists()
+        assert appsettings.load()["check_updates"] is False
+        assert profiles.carry_over_old_settings() is False            # once
+        _frozen(os.path.join(TMP, "prog", "Ectype-IDML-%s.exe" % __version__))
+        service.record_location()
+        for folder in (new, old):
+            data = json.load(open(folder / "program.json", encoding="utf-8"))
+            assert data["exe"].endswith("Ectype-IDML-%s.exe" % __version__)
+    finally:
+        _restore(saved)
+        shutil.rmtree(old, ignore_errors=True)
+        s = appsettings.load()
+        s["check_updates"] = True
+        appsettings.save(s)
 
 
 if __name__ == "__main__":

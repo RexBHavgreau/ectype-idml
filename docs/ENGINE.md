@@ -1,6 +1,6 @@
 # Using the converter from another program
 
-Other programs (Ectype OCR first) use docx-to-idml as a separate, installed tool: they run its
+Other programs (Ectype OCR first) use Ectype IDML as a separate, installed tool: they run its
 .exe with a command, wait for it to finish, and read the result from a JSON file. The converter
 keeps updating itself, so callers always get the latest version without being rebuilt, and the
 two programs share only files, so neither's license binds the other.
@@ -10,17 +10,18 @@ change would break a caller).
 
 ## 1. Find the program
 
-The .exe's name carries its version (`docx-to-idml-0.8.0.exe`) and the updater deletes older
+The .exe's name carries its version (`Ectype-IDML-1.0.0.exe`) and the updater deletes older
 copies, so don't store its path. Read it from `program.json` in the settings folder:
 
-- Windows: `%APPDATA%\docx-to-idml\program.json`
+- Windows: `%APPDATA%\Ectype IDML\program.json` (before 1.0.0 the tool was called
+  docx-to-idml; the file is also written to `%APPDATA%\docx-to-idml` while that folder exists)
 
 ```json
-{"exe": "C:\\Users\\Beaux\\Apps\\docx-to-idml-0.8.0.exe", "version": "0.8.0", "api": 1}
+{"exe": "C:\\Users\\Beaux\\Apps\\Ectype-IDML-1.0.0.exe", "version": "1.0.0", "api": 1}
 ```
 
 Every start of the program (window or command) rewrites it with its own location. If the file
-is missing, or `exe` no longer exists, docx-to-idml isn't installed (or hasn't been started
+is missing, or `exe` no longer exists, Ectype IDML isn't installed (or hasn't been started
 since it was installed or moved): ask the user to install it from
 <https://github.com/RexBHavgreau/docx-to-idml/releases> and open it once. If `api` is higher
 than the version you were written for, the result may hold fields you don't know; ignore them.
@@ -28,7 +29,7 @@ than the version you were written for, the result may hold fields you don't know
 ## 2. Run the conversion
 
 ```
-docx-to-idml-0.8.0.exe convert --result C:\temp\result.json --out C:\Books\Out --name "My Book" C:\temp\book.docx
+Ectype-IDML-1.0.0.exe convert --result C:\temp\result.json --out C:\Books\Out --name "My Book" C:\temp\book.docx
 ```
 
 | Argument | Meaning |
@@ -50,7 +51,7 @@ done, 2 = not done (the reason is in the result). If the result file wasn't writ
 ```json
 {
   "api": 1,
-  "version": "0.8.0",
+  "version": "1.0.0",
   "ok": true,
   "idml": "C:\\Books\\Out\\My Book\\My Book.idml",
   "folder": "C:\\Books\\Out\\My Book",
@@ -75,7 +76,7 @@ The first `convert` of each day starts a silent update check in a separate copy 
 program, after the conversion, so the call isn't slowed down. A newer release is downloaded
 beside the running copy (checked against its digest) and `program.json` is pointed at it, so
 the next call uses it. Turning off "Check for updates at startup" (Help menu in the window)
-turns this off too. To check yourself: `docx-to-idml-X.Y.Z.exe update` (prints "current",
+turns this off too. To check yourself: `Ectype-IDML-X.Y.Z.exe update` (prints "current",
 "installed <path>" or "error: ...").
 
 ## 5. Preparing the .docx

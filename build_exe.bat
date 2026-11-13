@@ -2,7 +2,7 @@
 setlocal
 cd /d "%~dp0"
 echo ==============================================
-echo  docx-to-idml - build the .exe
+echo  Ectype IDML - build the .exe
 echo ==============================================
 
 rem Prefer the Python launcher (py) if it is installed.
@@ -22,14 +22,14 @@ echo Installing requirements ...
 "%VPY%" -m pip install --upgrade pip >nul
 "%VPY%" -m pip install -r requirements.txt pyinstaller tkinterdnd2 || goto :fail
 
-rem The program carries its version in its name: "docx-to-idml-0.1.0.exe"
+rem The program carries its version in its name: "Ectype-IDML-1.0.0.exe"
 "%VPY%" -c "import ectype_idml; print(ectype_idml.__version__)" > "%TEMP%\d2i_version.txt" || goto :fail
 set /p VER=<"%TEMP%\d2i_version.txt"
 del "%TEMP%\d2i_version.txt"
 
-echo Building docx-to-idml %VER% ...
+echo Building Ectype IDML %VER% ...
 "%VPY%" -m PyInstaller --noconfirm --clean --onefile --windowed ^
-    --name "docx-to-idml-%VER%" ^
+    --name "Ectype-IDML-%VER%" ^
     --add-data "ectype_idml\idml\base;ectype_idml\idml\base" ^
     --collect-submodules fontTools.ttLib.tables ^
     --collect-all tkinterdnd2 ^
@@ -38,7 +38,7 @@ echo Building docx-to-idml %VER% ...
     run_app.py || goto :fail
 
 echo.
-echo Done:  "dist\docx-to-idml-%VER%.exe"
+echo Done:  "dist\Ectype-IDML-%VER%.exe"
 echo.
 pause
 exit /b 0

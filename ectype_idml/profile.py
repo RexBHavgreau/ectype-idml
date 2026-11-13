@@ -1,6 +1,6 @@
 """Profiles: everything the user sets for a book, saved so the next book in a series is one click.
 
-Profiles live in the tool's settings folder (%APPDATA%\\docx-to-idml\\profiles on Windows), not
+Profiles live in the tool's settings folder (%APPDATA%\\Ectype IDML\\profiles on Windows), not
 beside the program, so they survive updates. Each file carries PROFILE_VERSION; when the layout
 changes, bump it and add a step to MIGRATIONS so saved profiles are upgraded rather than lost.
 Defaults are neutral, not tied to any publisher.
@@ -13,7 +13,7 @@ import re
 import sys
 from pathlib import Path
 
-from . import APP_NAME
+from . import APP_NAME, OLD_APP_NAME
 
 PROFILE_VERSION = 10
 
@@ -93,12 +93,34 @@ class ProfileError(Exception):
     """A profile that can't be used. The message is shown to the user."""
 
 
-def settings_dir():
+def _config_base():
     if sys.platform == "win32":
-        base = os.environ.get("APPDATA") or str(Path.home() / "AppData" / "Roaming")
-    else:
-        base = os.environ.get("XDG_CONFIG_HOME") or str(Path.home() / ".config")
-    return Path(base) / APP_NAME
+        return Path(os.environ.get("APPDATA") or str(Path.home() / "AppData" / "Roaming"))
+    return Path(os.environ.get("XDG_CONFIG_HOME") or str(Path.home() / ".config"))
+
+
+def settings_dir():
+    return _config_base() / APP_NAME
+
+
+def old_settings_dir():
+    """The settings folder under the tool's name before 1.0.0 (docx-to-idml)."""
+    return _config_base() / OLD_APP_NAME
+
+
+def carry_over_old_settings():
+    """At the first start under the new name: copy the old settings folder (profiles, the
+    program's settings, saved books kept there) to the new one, leaving the old one in place.
+    Returns True if it copied."""
+    import shutil
+    new, old = settings_dir(), old_settings_dir()
+    if new.exists() or not old.is_dir():
+        return False
+    try:
+        shutil.copytree(old, new)
+    except OSError:
+        return False
+    return True
 
 
 def profiles_dir():
