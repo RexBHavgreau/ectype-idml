@@ -289,7 +289,8 @@ class PaginationMixin:
         doc.masters = [
             Master("A", "Body", frames=frames(True, verso or marker, recto)),
             Master("B", "Opener", frames=frames(not rh.get("suppress_on_openers", True),
-                                                verso or marker, recto)),
+                                                verso or marker, recto,
+                                                folio=self._opener_folio())),
             Master("C", "Front", frames=frames(True, marker, marker)),
             Master("D", "Display", frames=[] if rh.get("suppress_on_display", True)
                    else self._head_frames(verso or marker, recto)),
@@ -300,19 +301,44 @@ class PaginationMixin:
                 doc.masters.append(Master("P%d" % k, "Body",
                                           frames=frames(True, [Run(title)], recto)))
 
-    def _master_frames(self, heads=True, verso_runs=None, recto_runs=None):
-        """A text master's frames: primary text frames and folios on both sides, and the
-        running heads if wanted."""
+    FOLIO_PLACES = ("foot_center", "foot_outside", "head_outside")
+
+    def _folio_place(self):
+        place = self.profile["running_heads"].get("folio", "foot_center")
+        return place if place in self.FOLIO_PLACES else "foot_center"
+
+    def _opener_folio(self):
+        """Where an opener's page number goes: None for none; otherwise at the foot (a drop
+        folio), centered when the other pages have theirs at the head."""
+        if self.profile["running_heads"].get("opener_folio", "drop") == "none":
+            return None
+        place = self._folio_place()
+        return "foot_center" if place.startswith("head") else place
+
+    def _master_frames(self, heads=True, verso_runs=None, recto_runs=None, folio="book"):
+        """A text master's frames: primary text frames and page numbers on both sides, and
+        the running heads if wanted. folio: "book" (the profile's place), a place
+        (FOLIO_PLACES) or None for no page numbers."""
         doc, m = self.doc, self.doc.margins
         top, bottom = m["top"], doc.height - m["bottom"]
+        if folio == "book":
+            folio = self._folio_place()
         out = []
         for side in ("verso", "recto"):
             left = m["outside"] if side == "verso" else m["inside"]
             right = doc.width - (m["inside"] if side == "verso" else m["outside"])
             out.append(Frame(side, (top, left, bottom, right), [], primary=True))
-            out.append(Frame(side, (bottom + 14, left, bottom + 28, right),
-                             [Paragraph("Folio", [Run(special="page_number")])],
-                             key="folio"))
+            if folio is None:
+                continue
+            para = Paragraph("Folio", [Run(special="page_number")])
+            if folio.endswith("outside"):
+                para.attrs["Justification"] = "LeftAlign" if side == "verso" else "RightAlign"
+            if folio.startswith("head"):      # on the running heads' line
+                out.append(Frame(side, (top - 27, left, top - 13, right), [para],
+                                 key="folio", valign="BottomAlign"))
+            else:
+                out.append(Frame(side, (bottom + 14, left, bottom + 28, right), [para],
+                                 key="folio"))
         if heads:
             out += self._head_frames(verso_runs, recto_runs)
         return out

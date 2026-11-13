@@ -1043,5 +1043,45 @@ def test_two_papers_with_bibliographies():
         ex.cleanup()
 
 
+def test_folio_places():
+    """Page numbers at the foot centered (default), at the foot outside, or at the head
+    outside on the running heads' line with a centered drop folio on openers; none on
+    openers when asked. Each export validates."""
+    from idml_check import check
+    from ectype_idml.idml.writer import write_idml
+
+    def folios(doc, name):
+        m = [m for m in doc.masters if m.name == name][0]
+        return {f.side: (f.bounds[0], f.paragraphs[0].attrs.get("Justification"))
+                for f in m.frames if f.key == "folio"}
+    for place, opener in (("foot_center", "drop"), ("foot_outside", "drop"),
+                          ("head_outside", "drop"), ("foot_center", "none")):
+        prof = default_profile()
+        prof["running_heads"].update(folio=place, opener_folio=opener)
+        ex = Exporter(_files(), prof)
+        try:
+            doc = ex.build()
+            top, foot = doc.margins["top"], doc.height - doc.margins["bottom"]
+            a, b = folios(doc, "A-Body"), folios(doc, "B-Opener")
+            assert folios(doc, "C-Front") == a
+            if place == "foot_center":
+                assert a == {"verso": (foot + 14, None), "recto": (foot + 14, None)}
+            elif place == "foot_outside":
+                assert a == {"verso": (foot + 14, "LeftAlign"), "recto": (foot + 14, "RightAlign")}
+            else:
+                assert a == {"verso": (top - 27, "LeftAlign"), "recto": (top - 27, "RightAlign")}
+            if opener == "none":
+                assert b == {}
+            elif place == "head_outside":
+                assert b == {"verso": (foot + 14, None), "recto": (foot + 14, None)}
+            else:
+                assert b == a
+            assert not folios(doc, "D-Display") and not folios(doc, "E-Blank")
+            path = write_idml(doc, os.path.join(TMP, "folio-%s-%s.idml" % (place, opener)))
+            assert not check(path)
+        finally:
+            ex.cleanup()
+
+
 if __name__ == "__main__":
     run_tests(globals())

@@ -113,6 +113,13 @@ HEAD_FIELDS = [
     (("running_heads", "script_masters"),
      "Separate masters for heads with Hebrew or Greek the head font lacks", "bool", None),
 ]
+FOLIO_FIELDS = [
+    (("running_heads", "folio"), "Page numbers", "radio",
+     [("foot_center", "At the foot, centered"), ("foot_outside", "At the foot, outside"),
+      ("head_outside", "At the head, outside (beside the running head)")]),
+    (("running_heads", "opener_folio"), "On chapter openers", "radio",
+     [("drop", "At the foot"), ("none", "None")]),
+]
 HEAD_CASE_FIELDS = [
     (("running_heads", "style", "case"), "", "radio",
      [("as_typed", "As typed"), ("title", "Title Case"), ("sentence", "Sentence case")]),
@@ -653,6 +660,13 @@ class App(BookTabMixin):
         form = ttk.Frame(tab)
         form.pack(fill="x")
         self.heads_form = Form(form, HEAD_FIELDS, columns=2)
+        folios = ttk.LabelFrame(tab, text="Page Numbers", padding=4)
+        folios.pack(fill="x", pady=(8, 0))
+        self.folio_form = Form(folios, FOLIO_FIELDS)
+        ttk.Label(folios, foreground="#555", text=(
+            "Display and blank pages have no page number. With page numbers at the head, "
+            "an opener's goes at the foot, centered.")).grid(
+            row=2, column=0, columnspan=2, sticky="w", padx=6)
         box = ttk.LabelFrame(tab, text="Running Head Style", padding=6)
         box.pack(fill="x", pady=(8, 0))
         case = ttk.LabelFrame(box, text="Case", padding=4)
@@ -767,6 +781,7 @@ class App(BookTabMixin):
         for form in self.profile_forms:
             form.load(self.profile)
         self.heads_form.load(self.profile)
+        self.folio_form.load(self.profile)
         self.head_case_form.load(self.profile)
         self.head_style_form.load(self.profile)
         self._margins_later()
@@ -891,6 +906,7 @@ class App(BookTabMixin):
         if getattr(self, "mapping", None) is not None:
             self.mapping.save()          # mapping changes not yet applied
         self.heads_form.save(self.profile)
+        self.folio_form.save(self.profile)
         self.head_case_form.save(self.profile)
         self.head_style_form.save(self.profile)
 

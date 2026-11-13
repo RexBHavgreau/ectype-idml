@@ -15,7 +15,7 @@ from pathlib import Path
 
 from . import APP_NAME, OLD_APP_NAME
 
-PROFILE_VERSION = 10
+PROFILE_VERSION = 11
 
 DEFAULT_PROFILE = {
     "profile_version": PROFILE_VERSION,
@@ -48,6 +48,11 @@ DEFAULT_PROFILE = {
         "suppress_on_openers": True,
         "suppress_on_display": True,
         "suppress_on_blanks": True,
+        # Page numbers: foot_center, foot_outside or head_outside (beside the running head);
+        # on chapter openers: "drop" (at the foot; centered when the others are at the head)
+        # or "none".
+        "folio": "foot_center",
+        "opener_folio": "drop",
         # A head with Hebrew or Greek the head font lacks: on a master of its own, as text
         # in their fonts (a section marker takes one font); off: the report only warns.
         "script_masters": True,
@@ -233,8 +238,18 @@ def _from_9(data):
     return data
 
 
+def _from_10(data):
+    """Version 10: page numbers were always centered at the foot, openers included (1.1.0
+    adds running_heads.folio and opener_folio)."""
+    rh = data.setdefault("running_heads", {})
+    rh.setdefault("folio", "foot_center")
+    rh.setdefault("opener_folio", "drop")
+    return data
+
+
 MIGRATIONS = {0: _from_0, 1: _from_1, 2: _from_2, 3: _from_3, 4: _from_4, 5: _from_5,
-              6: _from_6, 7: _from_7, 8: _from_8, 9: _from_9}   # version n -> function that upgrades it to n + 1
+              6: _from_6, 7: _from_7, 8: _from_8, 9: _from_9,
+              10: _from_10}   # version n -> function that upgrades it to n + 1
 
 
 def migrate(data):

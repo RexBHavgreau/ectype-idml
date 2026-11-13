@@ -31,6 +31,10 @@ release is published by Beaux from the tag. Earlier releases: 0.2.0 (Oct 21, fir
 | Use by other programs (`convert`, program.json, daily update) | Done | The .exe's convert on GitHub's Windows runner; not yet called by Ectype OCR; the silent update not yet with a real release |
 | Golden files (tests/golden) | Done | Windows and Linux CI |
 
+**In progress (1.1.0, branch):** page-number placing (Running Heads > Page Numbers: foot
+centered / foot outside / head outside; openers at the foot or none; profile version 11).
+Tests and schema check here; not yet opened in InDesign, Affinity or DesignCraft.
+
 **Next / open:**
 - Convert The Broken Heart again with 1.0.0 (its export failed in 0.8.0 on the long title).
 - After 1.0.0 is released: check that a 0.8.0 copy updates to it (under the old name), that the
@@ -287,6 +291,12 @@ release is published by Beaux from the tag. Earlier releases: 0.2.0 (Oct 21, fir
   `format_points`: 72 pt (1"); choices (arrow step, unit saved "pt"/"in"); blank arrows
   start at `Form.points_start[path]`, `App._auto_drop` or the calculated margin). Margins
   (saved in inches) and the footnote spacing use it too.
+- Page numbers (1.1.0): profile `running_heads.folio` (foot_center, foot_outside,
+  head_outside) and `opener_folio` (drop, none), version 11; `PaginationMixin._master_frames`
+  (folio "book" = the profile's place, a place, or None) writes the folio frame with a local
+  Justification for outside; at the head it is a frame of its own on the running heads' line;
+  `_opener_folio` gives B-Opener's (foot, centered after a head place). The window's
+  `folio_form` (Running Heads tab, "Page Numbers" box); like `heads_form`, not in `pvar`.
 - The main window packs the status line and export row first (side bottom) and sizes itself
   to its requested height within the screen (`App._fit_window`).
 - Margins (0.5.0): measure = `page.measure` (30) x type size within 45-80 characters;

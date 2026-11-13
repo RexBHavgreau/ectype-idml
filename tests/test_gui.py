@@ -152,6 +152,13 @@ def test_profile_save_and_settings():
         app.profile_name = "Series A"
         app.save_profile()
         assert profiles.load("Series A")["fonts"]["body"] == "Arno Pro"
+        place = app.folio_form.vars[("running_heads", "folio")][0]    # the Page Numbers box
+        assert place.get() == "foot_center"
+        place.set("head_outside")
+        app.folio_form.vars[("running_heads", "opener_folio")][0].set("none")
+        app.save_profile()
+        saved = profiles.load("Series A")["running_heads"]
+        assert (saved["folio"], saved["opener_folio"]) == ("head_outside", "none")
         app._refresh_profile_list()
         assert "Series A" in app.profile_box["values"]
     finally:

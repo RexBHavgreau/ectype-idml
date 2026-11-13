@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0 (not yet released)
+
+- Page numbers can be placed (Running Heads > Page Numbers): at the foot, centered (as
+  before, the default); at the foot, outside; or at the head, outside, on the running heads'
+  line. On chapter openers: at the foot (a drop folio, centered when the others are at the
+  head) or none. Profile version 11; saved profiles keep the old placing.
+
 ## 1.0.0 (November 13, 2026)
 
 - The tool is named **Ectype IDML** (Beaux), in the family of Ectype OCR. The program is
