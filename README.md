@@ -10,7 +10,7 @@ Download the program (`Ectype-IDML-X.Y.Z.exe`; before 1.0.0 it was `docx-to-idml
 [Releases](https://github.com/RexBHavgreau/ectype-idml/releases); once installed, it offers
 new versions itself. The full list of changes is in [CHANGELOG.md](CHANGELOG.md).
 
-- **1.0.0** (in progress): the tool's name is now Ectype IDML (the program, its window and its
+- **1.0.0** (November 13, 2026, latest release): the tool's name is now Ectype IDML (the program, its window and its
   settings folder; saved profiles and settings carry over, and copies of docx-to-idml update
   to it as usual); exports of books with long titles no longer fail, and the export is named
   after the short title, or the title before a colon.

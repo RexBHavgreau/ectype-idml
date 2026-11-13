@@ -12,9 +12,9 @@ scripts and other programs. The plan is in `PLAN.md`; keep it up to date when de
 Keep this section current: update it with every batch of work (what was done, what was
 checked and where, what's next), so a new session knows where the tool stands.
 
-**Version:** 1.0.0 in preparation (the rename and the long-title fix); latest release 0.8.0
-(October 24). Releases: 0.2.0 (Oct 21, first .exe), 0.3.0, 0.4.0 (Oct 22), 0.5.0, 0.6.0,
-0.7.0 (Oct 23), 0.8.0 (Oct 24). Details in CHANGELOG.md.
+**Version:** 1.0.0 (November 13: the name Ectype IDML, the long-title fix), merged; its
+release is published by Beaux from the tag. Earlier releases: 0.2.0 (Oct 21, first .exe),
+0.3.0, 0.4.0 (Oct 22), 0.5.0, 0.6.0, 0.7.0 (Oct 23), 0.8.0 (Oct 24). Details in CHANGELOG.md.
 
 | Area | State | Checked in |
 |---|---|---|

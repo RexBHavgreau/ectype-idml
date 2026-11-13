@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0 (not yet released)
+## 1.0.0 (November 13, 2026)
 
 - The tool is named **Ectype IDML** (Beaux), in the family of Ectype OCR. The program is
   `Ectype-IDML-X.Y.Z.exe`, the window's title Ectype IDML, the settings folder
