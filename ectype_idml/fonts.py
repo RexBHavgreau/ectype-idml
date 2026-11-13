@@ -259,6 +259,24 @@ def x_height(found):
         return None
 
 
+def glyph_top(found, char):
+    """The top of a character's glyph in ems (its height above the baseline), or None."""
+    try:
+        from fontTools.pens.boundsPen import BoundsPen
+        from fontTools.ttLib import TTFont
+        path, number = found
+        font = TTFont(path, fontNumber=number, lazy=True)
+        name = (font.getBestCmap() or {}).get(ord(char))
+        if not name:
+            return None
+        gs = font.getGlyphSet()
+        pen = BoundsPen(gs)
+        gs[name].draw(pen)
+        return pen.bounds[3] / font["head"].unitsPerEm if pen.bounds else None
+    except Exception:
+        return None
+
+
 # Book fonts, in order of preference: the first installed is the body font when the profile
 # sets none. Windows always has Palatino Linotype, Book Antiqua, Georgia and Cambria.
 BOOK_FONTS = ["Minion Pro", "Arno Pro", "Adobe Garamond Pro", "Garamond Premier Pro",

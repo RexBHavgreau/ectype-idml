@@ -12,9 +12,10 @@ scripts and other programs. The plan is in `PLAN.md`; keep it up to date when de
 Keep this section current: update it with every batch of work (what was done, what was
 checked and where, what's next), so a new session knows where the tool stands.
 
-**Version:** 1.0.0 (November 13: the name Ectype IDML, the long-title fix), merged; its
-release is published by Beaux from the tag. Earlier releases: 0.2.0 (Oct 21, first .exe),
-0.3.0, 0.4.0 (Oct 22), 0.5.0, 0.6.0, 0.7.0 (Oct 23), 0.8.0 (Oct 24). Details in CHANGELOG.md.
+**Version:** 1.1.0 (November 13: defaults from Bringhurst, margin schemes, page-number
+placing), merged; its release is published by Beaux from the tag. Earlier releases: 0.2.0
+(Oct 21, first .exe), 0.3.0, 0.4.0 (Oct 22), 0.5.0, 0.6.0, 0.7.0 (Oct 23), 0.8.0 (Oct 24),
+1.0.0 (Nov 13, the name Ectype IDML). Details in CHANGELOG.md.
 
 | Area | State | Checked in |
 |---|---|---|
@@ -30,6 +31,17 @@ release is published by Beaux from the tag. Earlier releases: 0.2.0 (Oct 21, fir
 | Updater (check, download, digest, old copies, shortcuts, pins) | Done | Real updates 0.2.0 -> 0.3.0, 0.4.0 -> 0.5.0 (Start pin); the rename's transition not yet |
 | Use by other programs (`convert`, program.json, daily update) | Done | The .exe's convert on GitHub's Windows runner; not yet called by Ectype OCR; the silent update not yet with a real release |
 | Golden files (tests/golden) | Done | Windows and Linux CI |
+
+**1.1.0 (merged):** defaults from Bringhurst (Beaux's digest, November 13): margin
+schemes (canon default, Gress, economical = before 1.1.0, the user's own), 11/13 leading with a
+pop-up preview, the type scale, headings A larger roman / B spaced small caps / C italic and
+run-in below C, whole-line spacing, 1 em indent, block-quote indents, folio size and placing,
+tracked caps, lining figures in tables, hyphen 2/3, Greek sized by height, "none" heads, report
+checks (lines per page, signatures); profile version 11. Tests, schema check and the window
+under Xvfb here, CI on Windows and Linux; not yet opened in InDesign, Affinity or
+DesignCraft, nor the window seen on Windows (Beaux, before or after tagging). CI fixed in
+1.1.0: jing runs with `-Djdk.xml.elementAttributeLimit=0` (newer JDKs refuse InDesign's
+200+-attribute elements).
 
 **Next / open:**
 - Convert The Broken Heart again with 1.0.0 (its export failed in 0.8.0 on the long title).
@@ -87,6 +99,7 @@ release is published by Beaux from the tag. Earlier releases: 0.2.0 (Oct 21, fir
 | `ectype_idml/book.py` | Input files: drop/folder collection, natural order, saved order |
 | `ectype_idml/content.py` | The text of a .docx for the exporter: runs with formatting features, notes, tables, images, list numbers; paragraph indexes match `docx_reader`'s |
 | `ectype_idml/export.py` | Step 4, the exporter core: book styles, Word styles kept by name, runs to character styles, Hebrew/Greek, one story and section per outline unit, page estimate; `export()` writes the export folder |
+| `ectype_idml/styles.py` | `StylesMixin` of the Exporter (moved out of export.py, 1.1.0): the book's paragraph and character styles, Word styles kept by name, a style template's; `body_size`, `leading_for` |
 | `ectype_idml/pagination.py` | `PaginationMixin` of the Exporter (moved out of export.py, 0.6.0): pages, stories, sections and markers, masters and running-head frames |
 | `ectype_idml/layout.py` | Step 5: margins and measure (30 times the type size within 45-80 characters, floors, KDP gutter by page count), pagination (roman front matter, recto rules, masters per page) |
 | `ectype_idml/frontmatter.py` | Step 6: book details (settings, then detected, else bracketed placeholders), half-title, title, copyright (English/Spanish, notices from the profile's library), contents entries and reserved pages |
@@ -94,6 +107,7 @@ release is published by Beaux from the tag. Earlier releases: 0.2.0 (Oct 21, fir
 | `ectype_idml/fonts.py` | Installed fonts (system and user folders) and a font's average character width (fontTools), for the measure |
 | `ectype_idml/cli.py` | `python -m ectype_idml preflight / export / profile / convert / update` (the .exe takes the same; no arguments opens the window) |
 | `ectype_idml/gui.py` | Step 7, the window (ttk): Files, Book Details, Running Heads, Layout Profile, Style Map, Report tabs; forms declared as field tables bound to the profile and book settings; work in threads, results through a queue polled by the window |
+| `ectype_idml/gui_forms.py`, `gui_heads.py`, `gui_layout.py` | Moved out of gui.py (1.1.0): `Form` and the points helpers; `HeadsTabMixin` (Running Heads tab); `LayoutTabMixin` (Layout Profile tab, calculated margins, leading note) |
 | `ectype_idml/gui_book.py` | `BookTabMixin` of the window (moved out of gui.py, 0.6.0): the Book Details tab, filling from the manuscript, the notice library |
 | `ectype_idml/service.py`, `docs/ENGINE.md` | The converter as a tool for other programs (0.8.0): `convert` (JSON result), `program.json` (the .exe's location, rewritten at every start by `cli.main`), the silent daily update (`daily_check` starts a detached `update --quiet`); the contract for callers, API version 1 |
 | `ectype_idml/updates.py`, `appsettings.py` | Update check and install (as Indicat's: versioned .exe beside the running one, SHA-256 digest, Downloads fallback, older copies offered for deletion); the program's own settings.json |
@@ -287,10 +301,36 @@ release is published by Beaux from the tag. Earlier releases: 0.2.0 (Oct 21, fir
   `format_points`: 72 pt (1"); choices (arrow step, unit saved "pt"/"in"); blank arrows
   start at `Form.points_start[path]`, `App._auto_drop` or the calculated margin). Margins
   (saved in inches) and the footnote spacing use it too.
+- Page numbers (1.1.0): profile `running_heads.folio` (foot_center, foot_outside,
+  head_outside) and `opener_folio` (drop, none), version 11; `PaginationMixin._master_frames`
+  (folio "book" = the profile's place, a place, or None) writes the folio frame with a local
+  Justification for outside; at the head it is a frame of its own on the running heads' line;
+  `_opener_folio` gives B-Opener's (foot, centered after a head place). The window's
+  `folio_form` (Running Heads tab, "Page Numbers" box); like `heads_form`, not in `pvar`.
 - The main window packs the status line and export row first (side bottom) and sizes itself
   to its requested height within the screen (`App._fit_window`).
-- Margins (0.5.0): measure = `page.measure` (30) x type size within 45-80 characters;
-  outside 42% of the rest, inside never less than the outside (`layout.geometry`).
+- Margins (0.5.0; schemes 1.1.0): measure = `page.measure` (30) x type size within 45-80
+  characters; the rest split by the scheme (`layout.MARGIN_SCHEMES`, `margin_scheme(page)`,
+  profile `page.margin_scheme` key or a name in `page.margin_schemes` [{"name", "inside",
+  "top", "outside", "bottom"}]); "economical" is the old split (outside 42%, inside never less).
+  Window: `LayoutTabMixin` scheme box, `save_scheme`, `_scheme_dialog`.
+- Bringhurst defaults (1.1.0, Beaux): `layout.LEADING_RATIOS` (standard 1.17-1.21, 11/13),
+  `layout.SCALE`/`type_step` (display and note sizes as steps from the body size; preview.py's
+  STYLES too), `styles.title_leading` (display leading in half body lines) and `to_lines` in
+  `_book_styles` (one-line heading/title/quote plus its space = whole body lines). Headings: A
+  +2 steps regular, B small caps tracked 50, C italic; Word heading 5+ (or outline level 5+) =
+  role "runin", `Exporter._run_in` merges it into the next Body/Body First/Bibliography
+  paragraph in the "Run-in Head" character style (Italic in it -> roman), period added; alone =
+  a line, reported. Block quotes: `_block_quotes` makes the first "Block Quote First", local
+  SpaceAfter 0 between paragraphs of one quotation; profile `block_quotes.indent_first/next`.
+  `typography.paragraph_indent` (ems, 1; `styles.paragraph_indent`). Small Caps / All Caps
+  tracked 50, All Caps lining figures, Table Body TabularLining, HyphenateBeforeLast 3. Folio
+  size `running_heads.folio_size` (None = body), running head blank size = body (all caps a
+  step down), tracking 75. Greek: `greek_ratio` (omicron vs o, `fonts.glyph_top`, 85-105%),
+  "Greek" at body size, "Greek N pt" in other sizes (`_greek_style`, `is_script_style`).
+  Heads "none" per side. Report: `layout.page_checks` (30-45 lines, 16-page signatures).
+  Leading preview: `LayoutTabMixin.preview_leading` (overrideredirect Toplevel with a grab;
+  a click outside closes it), `SAMPLE` text, `_try_feel`.
 - Headings by formatting (Beaux, 0.6.0; `formatheads.py`): the reader records each body
   paragraph's dominant look (`Paragraph.look`, align, space_before, page_break_before).
   Candidates: body-role paragraphs of at most 15 words, no closing period unless numbered,

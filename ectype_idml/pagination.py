@@ -274,7 +274,8 @@ class PaginationMixin:
         the profile: the recto head is the section marker (the chapter's short title), the
         verso head the book title, author, chapter, part or custom text; C-Front shows the
         unit's title on both sides. Parts with part verso heads get a master each (P1-Body...),
-        a copy of A-Body with the part's title."""
+        a copy of A-Body with the part's title. A side whose head is "none" has none, on
+        any master."""
         doc = self.doc
         rh = self.profile["running_heads"]
         info = self.info
@@ -282,37 +283,67 @@ class PaginationMixin:
         verso_kind = rh.get("verso", "book_title")
         verso = self._verso_heads(rh, info, marker).get(verso_kind) if verso_kind != "part" \
             else None
-        recto = [Run(self._head_text(rh.get("recto_custom") or ""))] \
+        verso = None if verso_kind == "none" else (verso or marker)
+        recto = None if rh.get("recto") == "none" else \
+            [Run(self._head_text(rh.get("recto_custom") or ""))] \
             if rh.get("recto") == "custom" else marker
+        front_verso = None if verso_kind == "none" else marker
+        front_recto = None if rh.get("recto") == "none" else marker
 
         frames = self._master_frames
         doc.masters = [
-            Master("A", "Body", frames=frames(True, verso or marker, recto)),
+            Master("A", "Body", frames=frames(True, verso, recto)),
             Master("B", "Opener", frames=frames(not rh.get("suppress_on_openers", True),
-                                                verso or marker, recto)),
-            Master("C", "Front", frames=frames(True, marker, marker)),
+                                                verso, recto,
+                                                folio=self._opener_folio())),
+            Master("C", "Front", frames=frames(True, front_verso, front_recto)),
             Master("D", "Display", frames=[] if rh.get("suppress_on_display", True)
-                   else self._head_frames(verso or marker, recto)),
+                   else self._head_frames(verso, recto)),
             Master("E", "Blank", frames=[] if rh.get("suppress_on_blanks", True)
-                   else self._head_frames(verso or marker, recto))]
+                   else self._head_frames(verso, recto))]
         if verso_kind == "part":
             for k, title in enumerate(parts, 1):
                 doc.masters.append(Master("P%d" % k, "Body",
                                           frames=frames(True, [Run(title)], recto)))
 
-    def _master_frames(self, heads=True, verso_runs=None, recto_runs=None):
-        """A text master's frames: primary text frames and folios on both sides, and the
-        running heads if wanted."""
+    FOLIO_PLACES = ("foot_center", "foot_outside", "head_outside")
+
+    def _folio_place(self):
+        place = self.profile["running_heads"].get("folio", "foot_center")
+        return place if place in self.FOLIO_PLACES else "foot_center"
+
+    def _opener_folio(self):
+        """Where an opener's page number goes: None for none; otherwise at the foot (a drop
+        folio), centered when the other pages have theirs at the head."""
+        if self.profile["running_heads"].get("opener_folio", "drop") == "none":
+            return None
+        place = self._folio_place()
+        return "foot_center" if place.startswith("head") else place
+
+    def _master_frames(self, heads=True, verso_runs=None, recto_runs=None, folio="book"):
+        """A text master's frames: primary text frames and page numbers on both sides, and
+        the running heads if wanted. folio: "book" (the profile's place), a place
+        (FOLIO_PLACES) or None for no page numbers."""
         doc, m = self.doc, self.doc.margins
         top, bottom = m["top"], doc.height - m["bottom"]
+        if folio == "book":
+            folio = self._folio_place()
         out = []
         for side in ("verso", "recto"):
             left = m["outside"] if side == "verso" else m["inside"]
             right = doc.width - (m["inside"] if side == "verso" else m["outside"])
             out.append(Frame(side, (top, left, bottom, right), [], primary=True))
-            out.append(Frame(side, (bottom + 14, left, bottom + 28, right),
-                             [Paragraph("Folio", [Run(special="page_number")])],
-                             key="folio"))
+            if folio is None:
+                continue
+            para = Paragraph("Folio", [Run(special="page_number")])
+            if folio.endswith("outside"):
+                para.attrs["Justification"] = "LeftAlign" if side == "verso" else "RightAlign"
+            if folio.startswith("head"):      # on the running heads' line
+                out.append(Frame(side, (top - 27, left, top - 13, right), [para],
+                                 key="folio", valign="BottomAlign"))
+            else:
+                out.append(Frame(side, (bottom + 14, left, bottom + 28, right), [para],
+                                 key="folio"))
         if heads:
             out += self._head_frames(verso_runs, recto_runs)
         return out
@@ -360,16 +391,18 @@ class PaginationMixin:
         names = []
         for k, (marker, part, pages) in enumerate(units, 1):
             head = [Run(marker)]
-            recto = [Run(self._head_text(rh.get("recto_custom") or ""))] if custom_recto \
-                else head
-            verso = self._verso_heads(rh, info, head, part).get(verso_kind, head)
+            recto = None if rh.get("recto") == "none" else \
+                [Run(self._head_text(rh.get("recto_custom") or ""))] if custom_recto else head
+            verso = None if verso_kind == "none" else \
+                self._verso_heads(rh, info, head, part).get(verso_kind, head)
             made = {}
             for i in pages:
                 base = masters.get(i)
                 if base in ("A-Body",) or (base or "").startswith("P"):
                     kind, frames = "Body", (verso, recto)
                 elif base == "C-Front":
-                    kind, frames = "Front", (head, head)
+                    kind, frames = "Front", (None if verso_kind == "none" else head,
+                                             None if rh.get("recto") == "none" else head)
                 else:
                     continue                  # openers, display and blank pages: no heads
                 if kind not in made:

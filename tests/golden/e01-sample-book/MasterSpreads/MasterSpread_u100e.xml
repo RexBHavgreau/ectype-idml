@@ -5,7 +5,7 @@
 <Properties>
 <PageColor type="enumeration">UseMasterColor</PageColor>
 </Properties>
-<MarginPreference ColumnCount="1" ColumnGutter="12" Top="43.5" Bottom="58.5" Left="59" Right="43" ColumnDirection="Horizontal" ColumnsPositions="0 330"/>
+<MarginPreference ColumnCount="1" ColumnGutter="12" Top="51" Bottom="103" Left="36" Right="68" ColumnDirection="Horizontal" ColumnsPositions="0 328"/>
 <GridDataInformation FontStyle="Regular" PointSize="12" CharacterAki="0" LineAki="9" HorizontalScale="100" VerticalScale="100" LineAlignment="LeftOrTopLineJustify" GridAlignment="AlignEmCenter" CharacterAlignment="AlignEmCenter">
 <Properties>
 <AppliedFont type="string">Minion Pro</AppliedFont>
@@ -16,7 +16,7 @@
 <Properties>
 <PageColor type="enumeration">UseMasterColor</PageColor>
 </Properties>
-<MarginPreference ColumnCount="1" ColumnGutter="12" Top="43.5" Bottom="58.5" Left="59" Right="43" ColumnDirection="Horizontal" ColumnsPositions="0 330"/>
+<MarginPreference ColumnCount="1" ColumnGutter="12" Top="51" Bottom="103" Left="36" Right="68" ColumnDirection="Horizontal" ColumnsPositions="0 328"/>
 <GridDataInformation FontStyle="Regular" PointSize="12" CharacterAki="0" LineAki="9" HorizontalScale="100" VerticalScale="100" LineAlignment="LeftOrTopLineJustify" GridAlignment="AlignEmCenter" CharacterAlignment="AlignEmCenter">
 <Properties>
 <AppliedFont type="string">Minion Pro</AppliedFont>

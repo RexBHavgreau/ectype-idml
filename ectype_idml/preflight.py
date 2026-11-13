@@ -200,7 +200,7 @@ def _fonts(rep, docs, sm):
             key = (font, doc.resolve_size(sid))
             if m.role == "body":
                 body[key] += n
-            elif m.role in ("chapter", "part", "heading", "book_title"):
+            elif m.role in ("chapter", "part", "heading", "runin", "book_title"):
                 heads[font] += n
         direct.update(doc.run_fonts)
     rep.fonts = {"body": None, "body_size": None, "template_default": False,
@@ -524,6 +524,8 @@ def _src(value, source):
 def _role(u):
     if u.role == "heading":
         return "heading level %d" % u.level
+    if u.role == "runin":
+        return "heading run into its paragraph"
     return u.role
 
 

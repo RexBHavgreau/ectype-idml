@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <?aid style="50" type="document" readerVersion="6.0" featureSet="257" product="21.6(57)" ?>
-<Document xmlns:idPkg="http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging" DOMVersion="21.5" Self="d" StoryList="ub3 u1012 u1014 u1017 u1019 u101b u101f u1021 u1024 u1028 u102a u102d u102f u1031 u1046 u1047 u1048 u1049 u104a u104b u104c u104d" AppliedMathMLFontSize="10" AppliedMathMLRgbColor="0 0 0" TintValue="100" PreferMathMLInEpubExport="false" Name="The Covenant Formula.indd" ZeroPoint="0 0" ActiveLayer="uce" CMYKProfile="U.S. Web Coated (SWOP) v2" RGBProfile="sRGB IEC61966-2.1" SolidColorIntent="UseColorSettings" AfterBlendingIntent="UseColorSettings" DefaultImageIntent="UseColorSettings" RGBPolicy="PreserveEmbeddedProfiles" CMYKPolicy="CombinationOfPreserveAndSafeCmyk" AccurateLABSpots="false">
+<Document xmlns:idPkg="http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging" DOMVersion="21.5" Self="d" StoryList="ub3 u1012 u1014 u1017 u1019 u101b u101f u1021 u1024 u1028 u102a u102d u102f u1031 u1048 u1049 u104a u104b u104c u104d u104e u104f" AppliedMathMLFontSize="10" AppliedMathMLRgbColor="0 0 0" TintValue="100" PreferMathMLInEpubExport="false" Name="The Covenant Formula.indd" ZeroPoint="0 0" ActiveLayer="uce" CMYKProfile="U.S. Web Coated (SWOP) v2" RGBProfile="sRGB IEC61966-2.1" SolidColorIntent="UseColorSettings" AfterBlendingIntent="UseColorSettings" DefaultImageIntent="UseColorSettings" RGBPolicy="PreserveEmbeddedProfiles" CMYKPolicy="CombinationOfPreserveAndSafeCmyk" AccurateLABSpots="false">
 <Properties>
 <AppliedMathMLSwatch type="enumeration">Nothing</AppliedMathMLSwatch>
 <Label>
@@ -141,50 +141,51 @@
 <idPkg:MasterSpread src="MasterSpreads/MasterSpread_u100d.xml"/>
 <idPkg:MasterSpread src="MasterSpreads/MasterSpread_u100e.xml"/>
 <idPkg:MasterSpread src="MasterSpreads/MasterSpread_u100f.xml"/>
-<idPkg:Spread src="Spreads/Spread_u104e.xml"/>
 <idPkg:Spread src="Spreads/Spread_u1050.xml"/>
 <idPkg:Spread src="Spreads/Spread_u1052.xml"/>
-<idPkg:Spread src="Spreads/Spread_u1055.xml"/>
+<idPkg:Spread src="Spreads/Spread_u1054.xml"/>
 <idPkg:Spread src="Spreads/Spread_u1057.xml"/>
-<idPkg:Spread src="Spreads/Spread_u105a.xml"/>
-<idPkg:Spread src="Spreads/Spread_u105d.xml"/>
-<idPkg:Spread src="Spreads/Spread_u1060.xml"/>
-<Section Self="u1003" Length="2" AlternateLayoutLength="15" AlternateLayout="Custom V" Name="" ContinueNumbering="false" IncludeSectionPrefix="false" Marker="" PageStart="u1037" SectionPrefix="" PageNumberStart="1">
+<idPkg:Spread src="Spreads/Spread_u1059.xml"/>
+<idPkg:Spread src="Spreads/Spread_u105c.xml"/>
+<idPkg:Spread src="Spreads/Spread_u105f.xml"/>
+<idPkg:Spread src="Spreads/Spread_u1062.xml"/>
+<idPkg:Spread src="Spreads/Spread_u1064.xml"/>
+<Section Self="u1003" Length="2" AlternateLayoutLength="17" AlternateLayout="Custom V" Name="" ContinueNumbering="false" IncludeSectionPrefix="false" Marker="" PageStart="u1037" SectionPrefix="" PageNumberStart="1">
 <Properties>
 <PageNumberStyle type="enumeration">LowerRoman</PageNumberStyle>
 </Properties>
 </Section>
-<Section Self="u1004" Length="1" AlternateLayoutLength="13" AlternateLayout="" Name="" ContinueNumbering="true" IncludeSectionPrefix="false" Marker="" PageStart="u1039" SectionPrefix="">
+<Section Self="u1004" Length="1" AlternateLayoutLength="15" AlternateLayout="" Name="" ContinueNumbering="true" IncludeSectionPrefix="false" Marker="" PageStart="u1039" SectionPrefix="">
 <Properties>
 <PageNumberStyle type="enumeration">LowerRoman</PageNumberStyle>
 </Properties>
 </Section>
-<Section Self="u1005" Length="1" AlternateLayoutLength="12" AlternateLayout="" Name="" ContinueNumbering="true" IncludeSectionPrefix="false" Marker="" PageStart="u103a" SectionPrefix="">
+<Section Self="u1005" Length="1" AlternateLayoutLength="14" AlternateLayout="" Name="" ContinueNumbering="true" IncludeSectionPrefix="false" Marker="" PageStart="u103a" SectionPrefix="">
 <Properties>
 <PageNumberStyle type="enumeration">LowerRoman</PageNumberStyle>
 </Properties>
 </Section>
-<Section Self="u1006" Length="2" AlternateLayoutLength="11" AlternateLayout="" Name="" ContinueNumbering="true" IncludeSectionPrefix="false" Marker="Contents" PageStart="u103b" SectionPrefix="">
+<Section Self="u1006" Length="2" AlternateLayoutLength="13" AlternateLayout="" Name="" ContinueNumbering="true" IncludeSectionPrefix="false" Marker="Contents" PageStart="u103b" SectionPrefix="">
 <Properties>
 <PageNumberStyle type="enumeration">LowerRoman</PageNumberStyle>
 </Properties>
 </Section>
-<Section Self="u1007" Length="2" AlternateLayoutLength="9" AlternateLayout="" Name="" ContinueNumbering="true" IncludeSectionPrefix="false" Marker="Preface" PageStart="u103d" SectionPrefix="">
+<Section Self="u1007" Length="2" AlternateLayoutLength="11" AlternateLayout="" Name="" ContinueNumbering="true" IncludeSectionPrefix="false" Marker="Preface" PageStart="u103d" SectionPrefix="">
 <Properties>
 <PageNumberStyle type="enumeration">LowerRoman</PageNumberStyle>
 </Properties>
 </Section>
-<Section Self="u1008" Length="4" AlternateLayoutLength="7" AlternateLayout="" Name="" ContinueNumbering="false" IncludeSectionPrefix="false" Marker="The Formula in the Prophets" PageStart="u103f" SectionPrefix="" PageNumberStart="1">
+<Section Self="u1008" Length="6" AlternateLayoutLength="9" AlternateLayout="" Name="" ContinueNumbering="false" IncludeSectionPrefix="false" Marker="The Formula in the Prophets" PageStart="u103f" SectionPrefix="" PageNumberStart="1">
 <Properties>
 <PageNumberStyle type="enumeration">Arabic</PageNumberStyle>
 </Properties>
 </Section>
-<Section Self="u1009" Length="2" AlternateLayoutLength="3" AlternateLayout="" Name="" ContinueNumbering="true" IncludeSectionPrefix="false" Marker="Covenant and Community" PageStart="u1043" SectionPrefix="">
+<Section Self="u1009" Length="2" AlternateLayoutLength="3" AlternateLayout="" Name="" ContinueNumbering="true" IncludeSectionPrefix="false" Marker="Covenant and Community" PageStart="u1045" SectionPrefix="">
 <Properties>
 <PageNumberStyle type="enumeration">Arabic</PageNumberStyle>
 </Properties>
 </Section>
-<Section Self="u100a" Length="1" AlternateLayoutLength="1" AlternateLayout="" Name="" ContinueNumbering="true" IncludeSectionPrefix="false" Marker="Bibliography" PageStart="u1045" SectionPrefix="">
+<Section Self="u100a" Length="1" AlternateLayoutLength="1" AlternateLayout="" Name="" ContinueNumbering="true" IncludeSectionPrefix="false" Marker="Bibliography" PageStart="u1047" SectionPrefix="">
 <Properties>
 <PageNumberStyle type="enumeration">Arabic</PageNumberStyle>
 </Properties>
@@ -253,14 +254,14 @@
 <idPkg:Story src="Stories/Story_u102d.xml"/>
 <idPkg:Story src="Stories/Story_u102f.xml"/>
 <idPkg:Story src="Stories/Story_u1031.xml"/>
-<idPkg:Story src="Stories/Story_u1046.xml"/>
-<idPkg:Story src="Stories/Story_u1047.xml"/>
 <idPkg:Story src="Stories/Story_u1048.xml"/>
 <idPkg:Story src="Stories/Story_u1049.xml"/>
 <idPkg:Story src="Stories/Story_u104a.xml"/>
 <idPkg:Story src="Stories/Story_u104b.xml"/>
 <idPkg:Story src="Stories/Story_u104c.xml"/>
 <idPkg:Story src="Stories/Story_u104d.xml"/>
+<idPkg:Story src="Stories/Story_u104e.xml"/>
+<idPkg:Story src="Stories/Story_u104f.xml"/>
 <IndexingSortOption Self="dIndexingSortOptionnkIndexGroup_Symbol" Name="$ID/kIndexGroup_Symbol" Include="true" Priority="0" HeaderType="Nothing"/>
 <IndexingSortOption Self="dIndexingSortOptionnkIndexGroup_Alphabet" Name="$ID/kIndexGroup_Alphabet" Include="true" Priority="1" HeaderType="BasicLatin"/>
 <IndexingSortOption Self="dIndexingSortOptionnkIndexGroup_Numeric" Name="$ID/kIndexGroup_Numeric" Include="false" Priority="2" HeaderType="Nothing"/>

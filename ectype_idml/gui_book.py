@@ -65,7 +65,7 @@ class BookTabMixin:
         self.front_sources = tk.StringVar()
         ttk.Label(tab, textvariable=self.front_sources, wraplength=900,
                   justify="left").pack(anchor="w", pady=(0, 6))
-        from .gui import Form
+        from .gui_forms import Form
 
         def fields(table):
             return [((key,), label, kind, None) for key, label, kind in table]

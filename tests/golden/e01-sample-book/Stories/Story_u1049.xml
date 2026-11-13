@@ -3,9 +3,21 @@
 <Story Self="u1049" AiGeneratedStory="false" AiModelName="$ID/" AiDigitalSourceType="$ID/" AiFirstParty="false" AiTextContent="$ID/" AppliedTOCStyle="n" UserText="true" IsEndnoteStory="false" TrackChanges="false" StoryTitle="$ID/" AppliedNamedGrid="n">
 <StoryPreference OpticalMarginAlignment="true" OpticalMarginSize="11" FrameType="TextFrameType" StoryOrientation="Horizontal" StoryDirection="LeftToRightDirection"/>
 <InCopyExportOption IncludeGraphicProxies="true" IncludeAllResources="false"/>
-<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Contents Title">
+<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Book Title">
 <CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
-<Content>Contents</Content>
+<Content>The Covenant Formula</Content>
+<Br/>
+</CharacterStyleRange>
+</ParagraphStyleRange>
+<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Book Subtitle">
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
+<Content>Studies in the Prophets</Content>
+<Br/>
+</CharacterStyleRange>
+</ParagraphStyleRange>
+<ParagraphStyleRange AppliedParagraphStyle="ParagraphStyle/Author">
+<CharacterStyleRange AppliedCharacterStyle="CharacterStyle/$ID/[No character style]">
+<Content>A. N. Author</Content>
 </CharacterStyleRange>
 </ParagraphStyleRange>
 </Story>
