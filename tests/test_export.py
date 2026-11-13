@@ -534,6 +534,30 @@ def test_running_head_style_from_profile():
             ex.cleanup()
 
 
+def test_export_folder_name():
+    """The export's folder and file name: short title, else the title before a colon; cut at
+    a word; never ending in a space or dot (Windows drops them from a folder's name, and the
+    export then failed: Beaux's "The Broken Heart: or, David's Penance..." cut at 80
+    characters ended in a space)."""
+    from docx2idml.export import file_name
+    title = ("The Broken Heart: or, David's Penance, Fully Expressed in Holy Meditations upon "
+             "the Fifty-First Psalm")
+    assert file_name(title) == "The Broken Heart"
+    assert file_name(title, "Broken Heart") == "Broken Heart"
+    long = "A Very Long Title Without Any Colon That Goes On and On Past the Limit of Sixty"
+    got = file_name(long)
+    assert len(got) <= 60 and long.startswith(got) and not got.endswith((" ", "."))
+    assert file_name("Ends with dots...") == "Ends with dots"
+    assert file_name('What? Why/How "now"') == "What- Why-How -now-"
+    assert file_name("nul") == "nul book" and file_name("") == "Book"
+    path = make_docx(os.path.join(TMP, "broken.docx"),
+                     [para(title, "Title"), para("Chapter", "Heading1"),
+                      para("Text of the chapter. " * 40)])
+    idml, _report = export([path], os.path.join(TMP, "named"), default_profile())
+    assert os.path.basename(idml) == "The Broken Heart.idml" and os.path.exists(idml)
+    assert os.path.basename(os.path.dirname(idml)) == "The Broken Heart"
+
+
 def test_web_addresses_can_break():
     """Chicago 6.8 break points in web addresses (zero-width spaces), so a justified line
     with a long link isn't spaced out letter by letter."""

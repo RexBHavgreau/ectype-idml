@@ -10,6 +10,8 @@ Download the program (`docx-to-idml-X.Y.Z.exe`) from
 [Releases](https://github.com/RexBHavgreau/docx-to-idml/releases); once installed, it offers
 new versions itself. The full list of changes is in [CHANGELOG.md](CHANGELOG.md).
 
+- **0.8.1** (in progress): exports of books with long titles no longer fail; the export is
+  named after the short title, or the title before a colon.
 - **0.8.0** (October 24, 2026, latest release): Hebrew or Greek in running heads gets masters of its own by
   default when the head font lacks it, with a pop-up saying so; the "Open the export folder"
   button is back after an export; long web addresses (in footnotes) break at Chicago's break

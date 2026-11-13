@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8.1 (not yet released)
+
+- Fixed: an export could fail with "No such file or directory" when the book's title was
+  long. The export folder's name was the title cut at 80 characters, and when the cut fell
+  after a space, Windows made the folder without it, so the IDML's path didn't exist (Beaux,
+  "The Broken Heart: or, David's Penance..."). The name is now the short title from Book
+  Details, else the title before a colon ("The Broken Heart"), cut at a word to 60
+  characters, never ending in a space or dot, and never a name Windows reserves (CON, NUL...).
+
 ## 0.8.0 (October 24, 2026)
 
 - Other programs (Ectype OCR first) can use the converter: the .exe takes a `convert` command
