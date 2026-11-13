@@ -10,6 +10,7 @@ Download the program (`Ectype-IDML-X.Y.Z.exe`; before 1.0.0 it was `docx-to-idml
 [Releases](https://github.com/RexBHavgreau/ectype-idml/releases); once installed, it offers
 new versions itself. The full list of changes is in [CHANGELOG.md](CHANGELOG.md).
 
+- **1.1.1** (in progress): the leading preview shows on Windows; errors are shown, not lost.
 - **1.1.0** (November 13, 2026, latest release): defaults from Bringhurst: classical-canon margins (or Gress's,
   the old ones, or your own proportions), 11 on 13 leading with a pop-up preview, sizes from
   the type scale, headings without bold (run-in below Heading C), whole-line spacing, 1 em

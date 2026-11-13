@@ -594,6 +594,18 @@ def test_leading_preview_and_margin_schemes():
         app._try_feel("open")
         assert app.pvar(("leading", "feel")).get() == "open"
         assert "pt on 14 pt leading" in app.leading_caption.get()
+        # A panel inside the window, visible, under its button.
+        panel = app.leading_popup
+        assert panel.winfo_toplevel() is root and panel.winfo_ismapped()
+        assert panel.winfo_rooty() > app.leading_button.winfo_rooty()
+        # A click inside it keeps it; a click elsewhere closes it.
+        inner = app.leading_canvas
+        app._leading_click(type("E", (), {"widget": inner})())
+        assert app.leading_popup is panel
+        app._leading_click(type("E", (), {"widget": app.leading_button})())
+        assert app.leading_popup is None
+        app.preview_leading()
+        root.update()
         app.close_leading_preview()
         assert app.leading_popup is None
 

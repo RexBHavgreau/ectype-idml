@@ -289,14 +289,13 @@ class LayoutTabMixin:
     # ---- leading preview ----
 
     def preview_leading(self):
-        """A pop-up under the button showing two paragraphs in the body font at the size,
-        leading and line length the forms give. It closes when you click anywhere else (or
-        press Esc); its buttons try tight, standard and open."""
+        """A panel laid over the window under the button (not a window of its own, which
+        Windows could open behind the main window), showing two paragraphs in the body font
+        at the size, leading and line length the forms give. Its buttons try tight, standard
+        and open; a click anywhere outside it, or Esc, closes it."""
         self.close_leading_preview()
-        top = tk.Toplevel(self.root)
-        top.overrideredirect(True)
-        top.transient(self.root)
-        frame = ttk.Frame(top, padding=8, relief="solid", borderwidth=1)
+        panel = tk.Frame(self.root, relief="solid", borderwidth=1)
+        frame = ttk.Frame(panel, padding=8)
         frame.pack(fill="both", expand=True)
         self.leading_caption = tk.StringVar()
         ttk.Label(frame, textvariable=self.leading_caption, wraplength=PREVIEW_WIDTH,
@@ -309,42 +308,47 @@ class LayoutTabMixin:
         for feel in ("tight", "standard", "open"):
             ttk.Button(btns, text=feel.capitalize(),
                        command=lambda f=feel: self._try_feel(f)).pack(side="left", padx=(0, 6))
-        ttk.Label(btns, text="Click anywhere else to close.", foreground="#555").pack(
+        ttk.Button(btns, text="Close", command=self.close_leading_preview).pack(
+            side="left", padx=(0, 6))
+        ttk.Label(btns, text="Or click anywhere else.", foreground="#555").pack(
             side="left", padx=(8, 0))
-        self.leading_popup = top
+        self.leading_popup = panel
         self._draw_leading()
-        b = self.leading_button
-        top.update_idletasks()
-        x = b.winfo_rootx()
-        y = b.winfo_rooty() + b.winfo_height() + 2
-        sw, sh = top.winfo_screenwidth(), top.winfo_screenheight()
-        x = max(0, min(x, sw - top.winfo_reqwidth()))
-        if y + top.winfo_reqheight() > sh:
-            y = max(0, b.winfo_rooty() - top.winfo_reqheight() - 2)
-        top.geometry("+%d+%d" % (x, y))
-        top.bind("<ButtonPress>", self._leading_click, add="+")
-        top.bind("<Escape>", lambda _e: self.close_leading_preview())
-        try:
-            top.grab_set()
-            top.focus_set()
-        except tk.TclError:
-            pass
+        # Under the button, within the window (above the button if there's no room below).
+        root, b = self.root, self.leading_button
+        root.update_idletasks()
+        w, h = panel.winfo_reqwidth(), panel.winfo_reqheight()
+        x = b.winfo_rootx() - root.winfo_rootx()
+        y = b.winfo_rooty() - root.winfo_rooty() + b.winfo_height() + 2
+        rw, rh = max(root.winfo_width(), w), max(root.winfo_height(), h)
+        x = max(0, min(x, rw - w))
+        if y + h > rh:
+            y = max(0, b.winfo_rooty() - root.winfo_rooty() - h - 2)
+        panel.place(x=x, y=y)
+        panel.lift()
+        if not getattr(self, "_leading_bound", False):
+            # Once: every click and Esc in the window come here while the panel is open.
+            root.bind_all("<ButtonPress>", self._leading_click, add="+")
+            root.bind_all("<Escape>", lambda _e: self.close_leading_preview(), add="+")
+            self._leading_bound = True
 
     def _leading_click(self, event):
-        """With the grab on, a click outside the pop-up comes here too: close it then."""
-        top = self.leading_popup
-        if top is None:
+        """A click outside the open panel closes it (the click still does its own work)."""
+        panel = getattr(self, "leading_popup", None)
+        if panel is None:
             return
-        w = top.winfo_containing(event.x_root, event.y_root)
-        if w is None or not str(w).startswith(str(top)):
-            self.close_leading_preview()
+        w = event.widget
+        while w is not None:
+            if w is panel:
+                return
+            w = getattr(w, "master", None)
+        self.close_leading_preview()
 
     def close_leading_preview(self):
-        top, self.leading_popup = getattr(self, "leading_popup", None), None
-        if top is not None:
+        panel, self.leading_popup = getattr(self, "leading_popup", None), None
+        if panel is not None:
             try:
-                top.grab_release()
-                top.destroy()
+                panel.destroy()
             except tk.TclError:
                 pass
 

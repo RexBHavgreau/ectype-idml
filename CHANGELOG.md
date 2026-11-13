@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.1 (not yet released)
+
+- Fixed: Preview the leading (Layout Profile > Type) showed nothing on Windows (Beaux). The
+  preview was a borderless window of its own, which Windows could hide; it is now a panel
+  over the program's own window, under the button, with a Close button (a click anywhere else
+  or Esc still closes it).
+- An error in anything a button starts is now shown in a message, with details for a bug
+  report, instead of passing silently (the program has no console to print it to).
+
 ## 1.1.0 (November 13, 2026)
 
 The book's defaults now follow Bringhurst's *Elements of Typographic Style* (Beaux, from his

@@ -230,6 +230,8 @@ class StyleMappingPanel:
 class App(BookTabMixin, HeadsTabMixin, LayoutTabMixin):
     def __init__(self, root, dnd=False):
         self.root = root
+        # An error in a button's work is shown, not lost (the .exe has no console to print it).
+        root.report_callback_exception = self._callback_error
         self.settings = appsettings.load()
         self.book = Book()
         self.book_path = None
@@ -322,6 +324,15 @@ class App(BookTabMixin, HeadsTabMixin, LayoutTabMixin):
         self._styles_tab()
         self._report_tab()
         self._fit_window()
+
+    def _callback_error(self, exc, value, tb):
+        detail = "".join(traceback.format_exception(exc, value, tb))
+        try:
+            self.status.set("Something went wrong: %s" % value)
+        except Exception:
+            pass
+        messagebox.showerror(TITLE, "Something went wrong: %s\n\nDetails for a bug report:"
+                             "\n\n%s" % (value, detail[-1500:]), parent=self.root)
 
     def _fit_window(self):
         """Open large enough for the tallest tab and the export row (Windows scales text,

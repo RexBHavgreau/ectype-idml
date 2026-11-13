@@ -43,6 +43,10 @@ DesignCraft, nor the window seen on Windows (Beaux, before or after tagging). CI
 1.1.0: jing runs with `-Djdk.xml.elementAttributeLimit=0` (newer JDKs refuse InDesign's
 200+-attribute elements).
 
+**1.1.1 (branch, not merged):** the leading preview as a panel inside the window (it never
+appeared on Windows in 1.1.0, Beaux); callback errors shown. Tested under Xvfb here; not yet
+seen on Windows.
+
 **Next / open:**
 - Convert The Broken Heart again with 1.0.0 (its export failed in 0.8.0 on the long title).
 - After 1.0.0 is released: check that a 0.8.0 copy updates to it (under the old name), that the
@@ -329,8 +333,12 @@ DesignCraft, nor the window seen on Windows (Beaux, before or after tagging). CI
   step down), tracking 75. Greek: `greek_ratio` (omicron vs o, `fonts.glyph_top`, 85-105%),
   "Greek" at body size, "Greek N pt" in other sizes (`_greek_style`, `is_script_style`).
   Heads "none" per side. Report: `layout.page_checks` (30-45 lines, 16-page signatures).
-  Leading preview: `LayoutTabMixin.preview_leading` (overrideredirect Toplevel with a grab;
-  a click outside closes it), `SAMPLE` text, `_try_feel`.
+  Leading preview: `LayoutTabMixin.preview_leading`, a Frame `place`d over the root under
+  its button (1.1.1: the first version, an overrideredirect Toplevel with a grab, never showed
+  on Windows though CI's test created it), closed by a root `bind_all("<ButtonPress>")` click
+  outside it (`_leading_click`), Esc or its Close button; `SAMPLE` text, `_try_feel`.
+- Errors in Tk callbacks: `App._callback_error` (root.report_callback_exception) shows them
+  in a message box and the status line (1.1.1; the .exe has no console, so they were lost).
 - Headings by formatting (Beaux, 0.6.0; `formatheads.py`): the reader records each body
   paragraph's dominant look (`Paragraph.look`, align, space_before, page_break_before).
   Candidates: body-role paragraphs of at most 15 words, no closing period unless numbered,
