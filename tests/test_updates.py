@@ -15,8 +15,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from docx_builder import run_tests
-from docx2idml import __version__
-from docx2idml import updates as U
+from ectype_idml import __version__
+from ectype_idml import updates as U
 
 PROGRAM = b"MZ" + bytes(range(256)) * 2000
 

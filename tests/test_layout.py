@@ -9,7 +9,7 @@ sys.path.insert(0, ROOT)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from docx_builder import run_tests
-from docx2idml import fonts, layout
+from ectype_idml import fonts, layout
 
 
 def test_kdp_gutter():

@@ -13,8 +13,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lxml import etree
 
 from docx_builder import run_tests
-from docx2idml.idml.model import Document, Paragraph, Run, Section, Story, Style
-from docx2idml.idml.writer import Writer, export_book, roman, write_idml
+from ectype_idml.idml.model import Document, Paragraph, Run, Section, Story, Style
+from ectype_idml.idml.writer import Writer, export_book, roman, write_idml
 from idml_check import check, schema_available
 from idml_inspect import inspect
 import make_generated_files as gen
@@ -168,7 +168,7 @@ def test_footnote_options_from_profile():
     doc.footnotes.update(rule=True, continuation_rule=False, space_above=18, rule_length=50,
                          numbering="continuous")
     w = Writer(doc)
-    w.prefs = etree.parse(os.path.join(ROOT, "docx2idml", "idml", "base", "Resources",
+    w.prefs = etree.parse(os.path.join(ROOT, "ectype_idml", "idml", "base", "Resources",
                                        "Preferences.xml")).getroot()
     w._write_preferences()
     fo = w.prefs.find("FootnoteOption")
@@ -299,7 +299,7 @@ def test_toc_grid_language_and_optical_margins():
 
 def test_image_info():
     import struct, zlib
-    from docx2idml.idml.images import image_info
+    from ectype_idml.idml.images import image_info
     assert image_info(gen.SAMPLE_IMAGE) == (450, 300, 150.0, 150.0, "JPEG")
     # A 3 x 2 px PNG at 300 ppi (11811 px per metre), built by hand.
     def chunk(kind, data):

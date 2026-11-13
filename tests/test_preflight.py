@@ -13,10 +13,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from docx_builder import (table, endnote_ref, field, footnote_ref, make_docx, para, run, run_tests,
                           textbox)
-from docx2idml import profile as profiles
-from docx2idml.book import Book, apply_saved_order, collect, natural_sort
-from docx2idml.cli import main
-from docx2idml.preflight import preflight, render_text
+from ectype_idml import profile as profiles
+from ectype_idml.book import Book, apply_saved_order, collect, natural_sort
+from ectype_idml.cli import main
+from ectype_idml.preflight import preflight, render_text
 
 TMP = tempfile.mkdtemp()
 os.environ["APPDATA"] = os.environ["XDG_CONFIG_HOME"] = os.path.join(TMP, "settings")
@@ -220,7 +220,7 @@ def test_cli():
     assert json.load(open(js, encoding="utf-8"))["files"][0]["name"] == "Chapter 2.docx"
     assert main(["preflight", os.path.join(TMP, "nothing-here.txt")]) == 2
     # As a module, the way users run it.
-    r = subprocess.run([sys.executable, "-m", "docx2idml", "preflight", folder], cwd=ROOT,
+    r = subprocess.run([sys.executable, "-m", "ectype_idml", "preflight", folder], cwd=ROOT,
                        capture_output=True, text=True, encoding="utf-8")
     assert r.returncode == 0 and "PREFLIGHT" in r.stdout, r.stderr
 

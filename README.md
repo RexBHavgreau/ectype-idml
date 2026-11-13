@@ -66,7 +66,7 @@ version. See [docs/ENGINE.md](docs/ENGINE.md).
 
 ```
 pip install -r requirements.txt
-python run_app.py            # or: python -m docx2idml
+python run_app.py            # or: python -m ectype_idml
 ```
 
 Add the .docx files (or drop them, with tkinterdnd2 installed), put them in order, fill in the
@@ -77,8 +77,8 @@ Windows program (`dist\docx-to-idml-X.Y.Z.exe`).
 ## Export
 
 ```
-python -m docx2idml export "Chapter 1.docx" "Chapter 2.docx" --out books
-python -m docx2idml export manuscript-folder --out books --profile "Series A"
+python -m ectype_idml export "Chapter 1.docx" "Chapter 2.docx" --out books
+python -m ectype_idml export manuscript-folder --out books --profile "Series A"
 ```
 
 Each export is a folder of its own (named after the book title, or `--name`) holding the IDML
@@ -89,10 +89,10 @@ or sent on.
 
 ```
 pip install -r requirements.txt
-python -m docx2idml preflight "Chapter 1.docx" "Chapter 2.docx"   # files in book order
-python -m docx2idml preflight manuscript-folder                   # a folder, natural name order
-python -m docx2idml preflight manuscript-folder --save-book book.json
-python -m docx2idml preflight --book book.json --json --out report.json
+python -m ectype_idml preflight "Chapter 1.docx" "Chapter 2.docx"   # files in book order
+python -m ectype_idml preflight manuscript-folder                   # a folder, natural name order
+python -m ectype_idml preflight manuscript-folder --save-book book.json
+python -m ectype_idml preflight --book book.json --json --out report.json
 ```
 
 The report covers:
@@ -113,11 +113,11 @@ Tracked changes and unusual fields are also listed.
 ## Profiles
 
 ```
-python -m docx2idml profile new "Series A"
-python -m docx2idml profile show "Series A"
-python -m docx2idml profile export "Series A" "Series A.json"
-python -m docx2idml profile import "Series A.json"
-python -m docx2idml preflight ms-folder --profile "Series A"
+python -m ectype_idml profile new "Series A"
+python -m ectype_idml profile show "Series A"
+python -m ectype_idml profile export "Series A" "Series A.json"
+python -m ectype_idml profile import "Series A.json"
+python -m ectype_idml preflight ms-folder --profile "Series A"
 ```
 
 Profiles are saved in `%APPDATA%\docx-to-idml\profiles` (on Linux and Mac,

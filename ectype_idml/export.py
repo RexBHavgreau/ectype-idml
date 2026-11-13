@@ -255,7 +255,7 @@ class Exporter(PaginationMixin):
                                    self.settings.get("unit_kinds"))
         self.doc = Document(name=self.outline.title or os.path.splitext(
             os.path.basename(self.paths[0]))[0])
-        self.tmp = tempfile.mkdtemp(prefix="docx2idml-")
+        self.tmp = tempfile.mkdtemp(prefix="ectype_idml-")
         self._fonts()
         self._page()
         self._book_styles()

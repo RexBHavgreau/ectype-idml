@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from docx_builder import (endnote_ref, field, footnote_ref, image, make_docx, para, run,
                           run_tests, section_break, textbox)
-from docx2idml.docx_reader import DocxError, read_docx
+from ectype_idml.docx_reader import DocxError, read_docx
 
 TMP = tempfile.mkdtemp()
 

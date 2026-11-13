@@ -26,8 +26,8 @@ TMP = tempfile.mkdtemp()
 os.environ["APPDATA"] = os.environ["XDG_CONFIG_HOME"] = os.path.join(TMP, "config")
 
 from docx_builder import footnote_ref, make_docx, para, run, run_tests  # noqa: E402
-from docx2idml.export import export  # noqa: E402
-from docx2idml.profile import default_profile  # noqa: E402
+from ectype_idml.export import export  # noqa: E402
+from ectype_idml.profile import default_profile  # noqa: E402
 
 GOLDEN = os.path.join(ROOT, "tests", "golden")
 MS = os.path.join(ROOT, "reference", "manuscript")

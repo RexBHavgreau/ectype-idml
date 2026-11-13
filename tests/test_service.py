@@ -17,7 +17,7 @@ TMP = tempfile.mkdtemp()
 os.environ["APPDATA"] = os.environ["XDG_CONFIG_HOME"] = os.path.join(TMP, "config")
 
 from docx_builder import run_tests  # noqa: E402
-from docx2idml import __version__, appsettings, cli, service, updates  # noqa: E402
+from ectype_idml import __version__, appsettings, cli, service, updates  # noqa: E402
 
 MS = os.path.join(ROOT, "reference", "manuscript")
 

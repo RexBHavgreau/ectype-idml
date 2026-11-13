@@ -1,8 +1,8 @@
 # docx-to-idml: notes for Claude
 
 Converts a Word book manuscript (one .docx or several) into IDML for InDesign, Affinity and
-DesignCraft. The tool's name is undecided ("docx-to-idml" and the package name `docx2idml` are
-placeholders; `APP_NAME` in `docx2idml/__init__.py` sets the settings folder). Python, CLI
+DesignCraft. The tool's name is undecided ("docx-to-idml" and the package name `ectype_idml` are
+placeholders; `APP_NAME` in `ectype_idml/__init__.py` sets the settings folder). Python, CLI
 first, then a Tkinter GUI built into one .exe with PyInstaller. The full plan is in `PLAN.md`;
 keep it up to date when decisions change.
 
@@ -39,27 +39,27 @@ keep it up to date when decisions change.
 
 | Path | What it is |
 |---|---|
-| `docx2idml/docx_reader.py` | Reads a .docx: styles, paragraphs, notes, sections, fields, scripts, unsupported items |
-| `docx2idml/stylemap.py` | Word style -> IDML style and role; defaults for Word's built-ins |
-| `docx2idml/formatheads.py` | Headings set by direct formatting (0.6.0): groups of paragraphs by look (size, bold, italic, caps, centered), ranked; `StyleMap.format_groups` / `paragraph_mapping` feed them to the outline, preflight and export |
-| `docx2idml/outline.py` | Units across files (front, part, chapter, back); title/author detection |
-| `docx2idml/preflight.py` | The preflight report (text and JSON) |
-| `docx2idml/profile.py` | Profiles: defaults, save/load, export/import, `PROFILE_VERSION` + `MIGRATIONS` |
-| `docx2idml/book.py` | Input files: drop/folder collection, natural order, saved order |
-| `docx2idml/content.py` | The text of a .docx for the exporter: runs with formatting features, notes, tables, images, list numbers; paragraph indexes match `docx_reader`'s |
-| `docx2idml/export.py` | Step 4, the exporter core: book styles, Word styles kept by name, runs to character styles, Hebrew/Greek, one story and section per outline unit, page estimate; `export()` writes the export folder |
-| `docx2idml/pagination.py` | `PaginationMixin` of the Exporter (moved out of export.py, 0.6.0): pages, stories, sections and markers, masters and running-head frames |
-| `docx2idml/layout.py` | Step 5: margins and measure (30 times the type size within 45-80 characters, floors, KDP gutter by page count), pagination (roman front matter, recto rules, masters per page) |
-| `docx2idml/frontmatter.py` | Step 6: book details (settings, then detected, else bracketed placeholders), half-title, title, copyright (English/Spanish, notices from the profile's library), contents entries and reserved pages |
-| `docx2idml/textcase.py`, `preview.py` | Title and sentence case for running heads (Chicago); the generated front pages as lines with sizes, for the window's preview (0.7.0) |
-| `docx2idml/fonts.py` | Installed fonts (system and user folders) and a font's average character width (fontTools), for the measure |
-| `docx2idml/cli.py` | `python -m docx2idml preflight / export / profile / convert / update` (the .exe takes the same; no arguments opens the window) |
-| `docx2idml/gui.py` | Step 7, the window (ttk): Files, Book Details, Running Heads, Layout Profile, Style Map, Report tabs; forms declared as field tables bound to the profile and book settings; work in threads, results through a queue polled by the window |
-| `docx2idml/gui_book.py` | `BookTabMixin` of the window (moved out of gui.py, 0.6.0): the Book Details tab, filling from the manuscript, the notice library |
-| `docx2idml/service.py`, `docs/ENGINE.md` | The converter as a tool for other programs (0.8.0): `convert` (JSON result), `program.json` (the .exe's location, rewritten at every start by `cli.main`), the silent daily update (`daily_check` starts a detached `update --quiet`); the contract for callers, API version 1 |
-| `docx2idml/updates.py`, `appsettings.py` | Update check and install (as Indicat's: versioned .exe beside the running one, SHA-256 digest, Downloads fallback, older copies offered for deletion); the program's own settings.json |
-| `run_app.py`, `build_exe.bat`, `.github/workflows/build.yml` | The .exe (PyInstaller, one file, "docx-to-idml-X.Y.Z.exe", with `docx2idml/idml/base`); the workflow builds and releases on a `vX.Y.Z` tag, or by hand |
-| `docx2idml/idml/` | The IDML writer: `model.py` (the book as pages, styles, stories, sections), `writer.py`, `images.py` (image size and resolution from file headers), `base/` (InDesign's own settings and root styles, made by `tools/make_base.py` from reference 01; `snippets.xml` holds elements the writer clones) |
+| `ectype_idml/docx_reader.py` | Reads a .docx: styles, paragraphs, notes, sections, fields, scripts, unsupported items |
+| `ectype_idml/stylemap.py` | Word style -> IDML style and role; defaults for Word's built-ins |
+| `ectype_idml/formatheads.py` | Headings set by direct formatting (0.6.0): groups of paragraphs by look (size, bold, italic, caps, centered), ranked; `StyleMap.format_groups` / `paragraph_mapping` feed them to the outline, preflight and export |
+| `ectype_idml/outline.py` | Units across files (front, part, chapter, back); title/author detection |
+| `ectype_idml/preflight.py` | The preflight report (text and JSON) |
+| `ectype_idml/profile.py` | Profiles: defaults, save/load, export/import, `PROFILE_VERSION` + `MIGRATIONS` |
+| `ectype_idml/book.py` | Input files: drop/folder collection, natural order, saved order |
+| `ectype_idml/content.py` | The text of a .docx for the exporter: runs with formatting features, notes, tables, images, list numbers; paragraph indexes match `docx_reader`'s |
+| `ectype_idml/export.py` | Step 4, the exporter core: book styles, Word styles kept by name, runs to character styles, Hebrew/Greek, one story and section per outline unit, page estimate; `export()` writes the export folder |
+| `ectype_idml/pagination.py` | `PaginationMixin` of the Exporter (moved out of export.py, 0.6.0): pages, stories, sections and markers, masters and running-head frames |
+| `ectype_idml/layout.py` | Step 5: margins and measure (30 times the type size within 45-80 characters, floors, KDP gutter by page count), pagination (roman front matter, recto rules, masters per page) |
+| `ectype_idml/frontmatter.py` | Step 6: book details (settings, then detected, else bracketed placeholders), half-title, title, copyright (English/Spanish, notices from the profile's library), contents entries and reserved pages |
+| `ectype_idml/textcase.py`, `preview.py` | Title and sentence case for running heads (Chicago); the generated front pages as lines with sizes, for the window's preview (0.7.0) |
+| `ectype_idml/fonts.py` | Installed fonts (system and user folders) and a font's average character width (fontTools), for the measure |
+| `ectype_idml/cli.py` | `python -m ectype_idml preflight / export / profile / convert / update` (the .exe takes the same; no arguments opens the window) |
+| `ectype_idml/gui.py` | Step 7, the window (ttk): Files, Book Details, Running Heads, Layout Profile, Style Map, Report tabs; forms declared as field tables bound to the profile and book settings; work in threads, results through a queue polled by the window |
+| `ectype_idml/gui_book.py` | `BookTabMixin` of the window (moved out of gui.py, 0.6.0): the Book Details tab, filling from the manuscript, the notice library |
+| `ectype_idml/service.py`, `docs/ENGINE.md` | The converter as a tool for other programs (0.8.0): `convert` (JSON result), `program.json` (the .exe's location, rewritten at every start by `cli.main`), the silent daily update (`daily_check` starts a detached `update --quiet`); the contract for callers, API version 1 |
+| `ectype_idml/updates.py`, `appsettings.py` | Update check and install (as Indicat's: versioned .exe beside the running one, SHA-256 digest, Downloads fallback, older copies offered for deletion); the program's own settings.json |
+| `run_app.py`, `build_exe.bat`, `.github/workflows/build.yml` | The .exe (PyInstaller, one file, "docx-to-idml-X.Y.Z.exe", with `ectype_idml/idml/base`); the workflow builds and releases on a `vX.Y.Z` tag, or by hand |
+| `ectype_idml/idml/` | The IDML writer: `model.py` (the book as pages, styles, stories, sections), `writer.py`, `images.py` (image size and resolution from file headers), `base/` (InDesign's own settings and root styles, made by `tools/make_base.py` from reference 01; `snippets.xml` holds elements the writer clones) |
 | `reference/` | `idml/` (the 13 InDesign reference IDMLs, used by tests and `tools/make_base.py`), `manuscript/` (the sample manuscript), `make_reference_files.jsx` (rebuilds the references in InDesign), README (what was checked, footnote findings). No .indd, PDFs or generated files (removed October 23) |
 | `idml-schema/` | Adobe's IDML schema for InDesign 2026 (21.6.0.57, DOM 21.5): `rnc/` as InDesign wrote it, `rng/` converted by `tools/prepare_schema.py` |
 | `tools/make_generated_files.py` | Step 3: the generator's versions of the reference files, in `reference/generated/` (ignored by git; tests build them in a temp folder) |
@@ -168,7 +168,7 @@ keep it up to date when decisions change.
 - Composer (0.2.0): the book's styles use the World-Ready composer (`HL Composer Optyca`) by
   default; the Adobe Paragraph Composer (`HL Composer`) reversed Hebrew in InDesign (Beaux).
   Profile `paragraph_composer` off = single-line (`HL Single`), unless the book has Hebrew.
-- Style template (0.2.0, `docx2idml/template.py`, profile `styles_template`): an IDML's
+- Style template (0.2.0, `ectype_idml/template.py`, profile `styles_template`): an IDML's
   paragraph and character styles replace the tool's by name (model level, so note runs and
   estimates use them); its other styles are added; attributes referring to swatches beyond
   InDesign's standard ones, lists, styles, and nested/GREP styles are dropped and reported.
@@ -327,7 +327,7 @@ keep it up to date when decisions change.
   two lines each, the version in progress first). Update it with every release. Its "Which
   programs open the files" table says what each program does with the IDML (tested or not);
   keep it current when a program is tried or a limit changes.
-- Version in `docx2idml/__init__.py` (`EXE_BASE` and `REPO` there too); a dated entry at the
+- Version in `ectype_idml/__init__.py` (`EXE_BASE` and `REPO` there too); a dated entry at the
   top of `CHANGELOG.md`. Pushing a tag `vX.Y.Z` (matching `__version__`) runs
   `.github/workflows/build.yml` on Windows: tests, the .exe, a check that it carries the IDML
   base files, and a GitHub Release with the .exe (its SHA-256 digest is what the updater

@@ -46,10 +46,10 @@ jobs:
       - name: Read the version (and check it matches the tag)
         shell: bash
         run: |
-          v=$(python -c "import docx2idml; print(docx2idml.__version__)")
+          v=$(python -c "import ectype_idml; print(ectype_idml.__version__)")
           echo "VERSION=$v" >> "$GITHUB_ENV"
           if [[ "$GITHUB_REF" == refs/tags/v* && "${GITHUB_REF#refs/tags/v}" != "$v" ]]; then
-            echo "The tag ${GITHUB_REF#refs/tags/} doesn't match the version in docx2idml/__init__.py ($v)."
+            echo "The tag ${GITHUB_REF#refs/tags/} doesn't match the version in ectype_idml/__init__.py ($v)."
             exit 1
           fi
 
@@ -57,7 +57,7 @@ jobs:
         run: >
           pyinstaller --noconfirm --clean --onefile --windowed
           --name "docx-to-idml-${{ env.VERSION }}"
-          --add-data "docx2idml/idml/base;docx2idml/idml/base"
+          --add-data "ectype_idml/idml/base;ectype_idml/idml/base"
           --collect-submodules fontTools.ttLib.tables
           --collect-all tkinterdnd2
           --hidden-import win32com.client --hidden-import pythoncom
@@ -78,7 +78,7 @@ jobs:
         shell: pwsh
         run: |
           # No update check here: it would download the latest release into dist.
-          python -c "from docx2idml import appsettings; d = appsettings.load(); d['check_updates'] = False; appsettings.save(d)"
+          python -c "from ectype_idml import appsettings; d = appsettings.load(); d['check_updates'] = False; appsettings.save(d)"
           $exe = "dist/docx-to-idml-${{ env.VERSION }}.exe"
           $p = Start-Process -FilePath $exe -Wait -PassThru -ArgumentList @(
             "convert", "--result", "$env:RUNNER_TEMP/result.json", "--out", "$env:RUNNER_TEMP/out",
@@ -93,7 +93,7 @@ jobs:
           tmp = os.environ["RUNNER_TEMP"]
           r = json.load(open(os.path.join(tmp, "result.json"), encoding="utf-8"))
           assert r["ok"] and os.path.exists(r["idml"]), r
-          from docx2idml import service
+          from ectype_idml import service
           loc = json.load(open(service.locator_path(), encoding="utf-8"))
           assert loc["exe"].endswith("docx-to-idml-${{ env.VERSION }}.exe"), loc
           print("convert ok:", r["idml"], "; program.json:", loc)
