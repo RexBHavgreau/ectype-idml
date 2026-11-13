@@ -116,9 +116,11 @@ def test_older_copies():
     for n in names:
         (d / n).write_bytes(b"x")
     old = U.older_copies(d, d / ("Ectype-IDML-%s.exe" % __version__))
-    assert [p.name for p in old] == ["Ectype-IDML-0.0.1.exe", "docx-to-idml-0.8.0.exe"]
+    # In any order: Windows sorts paths without regard to case.
+    assert sorted(p.name for p in old) == ["Ectype-IDML-0.0.1.exe", "docx-to-idml-0.8.0.exe"]
     deleted, left = U.delete_old(old, wait=0)
-    assert deleted == old and not left and not (d / "Ectype-IDML-0.0.1.exe").exists()
+    assert sorted(deleted) == sorted(old) and not left
+    assert not (d / "Ectype-IDML-0.0.1.exe").exists()
 
 
 def test_release_with_both_names():
