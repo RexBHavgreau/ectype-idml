@@ -7,7 +7,7 @@ front matter, running heads and pagination. The plan is in [PLAN.md](PLAN.md).
 ## Versions
 
 Download the program (`Ectype-IDML-X.Y.Z.exe`; before 1.0.0 it was `docx-to-idml`) from
-[Releases](https://github.com/RexBHavgreau/docx-to-idml/releases); once installed, it offers
+[Releases](https://github.com/RexBHavgreau/ectype-idml/releases); once installed, it offers
 new versions itself. The full list of changes is in [CHANGELOG.md](CHANGELOG.md).
 
 - **1.0.0** (in progress): the tool's name is now Ectype IDML (the program, its window and its

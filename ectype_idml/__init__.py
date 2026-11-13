@@ -8,4 +8,4 @@ EXE_BASE = "Ectype-IDML"  # the program's file name: "Ectype-IDML-1.0.0.exe"
 # releases also carry the program under the old name, which is all older copies look for.
 OLD_APP_NAME = "docx-to-idml"
 OLD_EXE_BASE = "docx-to-idml"
-REPO = "RexBHavgreau/docx-to-idml"  # GitHub repository whose releases the updater checks
+REPO = "RexBHavgreau/ectype-idml"  # GitHub repository whose releases the updater checks

@@ -23,7 +23,7 @@ copies, so don't store its path. Read it from `program.json` in the settings fol
 Every start of the program (window or command) rewrites it with its own location. If the file
 is missing, or `exe` no longer exists, Ectype IDML isn't installed (or hasn't been started
 since it was installed or moved): ask the user to install it from
-<https://github.com/RexBHavgreau/docx-to-idml/releases> and open it once. If `api` is higher
+<https://github.com/RexBHavgreau/ectype-idml/releases> and open it once. If `api` is higher
 than the version you were written for, the result may hold fields you don't know; ignore them.
 
 ## 2. Run the conversion

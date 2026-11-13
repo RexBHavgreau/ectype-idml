@@ -34,8 +34,9 @@ checked and where, what's next), so a new session knows where the tool stands.
 **Next / open:**
 - Convert The Broken Heart again with 1.0.0 (its export failed in 0.8.0 on the long title).
 - After 1.0.0 is released: check that a 0.8.0 copy updates to it (under the old name), that the
-  settings folder is carried over, and that the Start pin follows; rename the GitHub
-  repository to ectype-idml if wanted (then `REPO` in `ectype_idml/__init__.py`).
+  settings folder is carried over, and that the Start pin follows. (The GitHub repository was
+  renamed to ectype-idml on November 13; GitHub forwards the old address, which copies before
+  1.0.0 use to check for updates.)
 - Open a full 0.7.0+ export in InDesign and Affinity: opener drop (does the rule's offset
   match the old position?), title/sentence-case heads, Hebrew head masters.
 - Ectype OCR: write its side of docs/ENGINE.md; the first real call; the silent daily update
