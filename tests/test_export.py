@@ -1111,7 +1111,7 @@ def test_bringhurst_styles():
         assert r("Body")[0]["FirstLineIndent"] == 11 and r("Body")[0]["HyphenateBeforeLast"] == 3
         assert [r(n)[0]["PointSize"] for n in ("Chapter Title", "Heading A", "Footnote")] == \
             [18, 14, 9]
-        a, b, c = r("Heading A")[0], r("Heading B")[0], r("Heading C")[0]
+        b, c = r("Heading B")[0], r("Heading C")[0]
         assert "FontStyle" not in doc.style("Heading A").attrs          # text weight
         assert b["Capitalization"] == "SmallCaps" and b["Tracking"] == 50 and b["PointSize"] == 11
         assert c["FontStyle"] == "Italic" and c.get("Capitalization", "Normal") != "SmallCaps"
